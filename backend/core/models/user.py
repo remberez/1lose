@@ -1,4 +1,5 @@
-from fastapi_users_db_sqlalchemy import SQLAlchemyBaseUserTable
+from fastapi_users_db_sqlalchemy import SQLAlchemyBaseUserTable, SQLAlchemyUserDatabase
+from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import (
     Mapped,
     mapped_column,
@@ -41,3 +42,7 @@ class UserModel(
     )
 
     role: Mapped["UserRoleModel"] = relationship(back_populates="users")
+
+    @classmethod
+    def get_db(cls, session: AsyncSession):
+        return SQLAlchemyUserDatabase(session, cls)
