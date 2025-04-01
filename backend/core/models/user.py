@@ -29,10 +29,10 @@ class UserRoleModel(Base):
     users: Mapped[list["UserModel"]] = relationship(back_populates="role")
 
 
-class UserModel(Base, DateCreatedUpdatedMixin, IntegerIDMixin, SQLAlchemyBaseUserTable[UserID]):
-    __table_args__ = (
-        CheckConstraint("balance >= 0", name="non_negative_balance"),
-    )
+class UserModel(
+    Base, DateCreatedUpdatedMixin, IntegerIDMixin, SQLAlchemyBaseUserTable[UserID]
+):
+    __table_args__ = (CheckConstraint("balance >= 0", name="non_negative_balance"),)
 
     balance: Mapped[Decimal] = mapped_column(Numeric(12, 2), default=Decimal("0.00"))
     role_code: Mapped[str] = mapped_column(ForeignKey("user_role.code"))

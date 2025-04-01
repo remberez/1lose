@@ -6,7 +6,7 @@ from core.config import settings
 app = FastAPI()
 app.include_router(router=router)
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     uvicorn.run(
         "main:app",
         host=settings.run.host,

@@ -25,7 +25,7 @@ class Settings(BaseSettings):
         case_sensitive=False,
         env_nested_delimiter="__",
         env_prefix="APP__",
-        env_file=".env"
+        env_file=".env",
     )
 
     run: RunSettings = RunSettings()

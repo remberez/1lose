@@ -16,4 +16,6 @@ class IntegerIDMixin:
 
 class DateCreatedUpdatedMixin:
     created_at: Mapped[datetime] = mapped_column(default=datetime.now, nullable=True)
-    updated_at: Mapped[datetime] = mapped_column(default=datetime.now, onupdate=datetime.now, nullable=True)
+    updated_at: Mapped[datetime] = mapped_column(
+        default=datetime.now, onupdate=datetime.now, nullable=True
+    )

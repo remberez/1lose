@@ -1,5 +1,2 @@
 from .base import Base
-from .user import (
-    UserModel,
-    UserRoleModel
-)
+from .user import UserModel, UserRoleModel
