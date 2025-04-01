@@ -1,10 +1,13 @@
 from typing import AsyncGenerator
 
 from sqlalchemy.ext.asyncio import create_async_engine, async_sessionmaker, AsyncSession
+
 from core.config import settings
 
 
 class DataBaseHelper:
+    # Вспомогательный класс для работы с базой данных.
+
     def __init__(
         self,
         url: str,
@@ -28,9 +31,11 @@ class DataBaseHelper:
         )
 
     async def dispose(self):
+        # Освобождение пула соединений.
         await self.engine.dispose()
 
     async def session_getter(self) -> AsyncGenerator[AsyncSession, None]:
+        # Возвращает сессию для работы с данными. Используется как зависимости в FastAPI,
         async with self.session_maker() as session:
             yield session
 
