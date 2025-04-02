@@ -8,7 +8,7 @@ class AbstractRepository[ModelORM](ABC):
     """
 
     @abstractmethod
-    async def get(self, **kwargs) -> ModelORM:
+    async def get(self, *args, **kwargs) -> ModelORM:
         raise NotImplementedError()
 
     @abstractmethod
@@ -25,4 +25,4 @@ class AbstractRepository[ModelORM](ABC):
 
     @abstractmethod
     async def list(self, *args, **kwargs) -> list[ModelORM]:
-        raise NotImplementedError
+        raise NotImplementedError()
