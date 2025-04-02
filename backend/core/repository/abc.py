@@ -6,6 +6,7 @@ class AbstractRepository[ModelORM](ABC):
     Интерфейс репозитория для работы с моделью.
     Основное назначение инкапсулировать логику работы с данными.
     """
+
     @abstractmethod
     async def get(self, **kwargs) -> ModelORM:
         raise NotImplementedError()

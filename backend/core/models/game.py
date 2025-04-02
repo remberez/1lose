@@ -3,6 +3,7 @@ from sqlalchemy.orm import Mapped, mapped_column
 
 from .base import Base, IntegerIDMixin
 
+
 class GameModel(Base, IntegerIDMixin):
     __tablename__ = "game"
 
