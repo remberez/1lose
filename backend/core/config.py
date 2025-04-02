@@ -11,6 +11,7 @@ class RunSettings(BaseModel):
 class APISettings(BaseModel):
     prefix: str = "/api"
     auth: str = "/auth"
+    games: str = "/games"
 
     @property
     def token_url(self) -> str:
