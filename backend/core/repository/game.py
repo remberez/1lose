@@ -1,33 +1,22 @@
+from abc import ABC
+
 from typing_extensions import TypeVar
 
-from .sqlalchemy import SQLAlchemyAbstractRepository
-from abc import ABC
-from .abc import AbstractRepository
 from core.models.game import GameModel as SQLAlchemyGameModel
-
+from .abc import AbstractRepository
+from .sqlalchemy import SQLAlchemyAbstractRepository
 
 GameModel = TypeVar("GameModel")
 
 
 class GameRepository(AbstractRepository[GameModel], ABC):
-    async def list(self, *args, **kwargs) -> list[GameModel]:
-        raise NotImplementedError()
-
-    async def get(self, **kwargs) -> GameModel:
-        raise NotImplementedError()
-
-    async def delete(self, model_id: int) -> None:
-        raise NotImplementedError()
-
-    async def update(self, model_id: int, **data) -> GameModel:
-        raise NotImplementedError()
-
-    async def create(self, **model_data) -> GameModel:
-        raise NotImplementedError()
+    # Специфичные методы для работы с моделью Game.
+    ...
 
 
 class SQLAlchemyGameRepository(
-    SQLAlchemyAbstractRepository[SQLAlchemyGameModel], GameRepository
+    SQLAlchemyAbstractRepository[SQLAlchemyGameModel],
+    GameRepository,
 ):
     async def list(self, *args, **kwargs) -> list[SQLAlchemyGameModel]:
         raise NotImplementedError()
