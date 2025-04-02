@@ -13,6 +13,7 @@ def get_database_strategy(
         Depends(get_access_token_db),
     ],
 ) -> DatabaseStrategy:
+    # Зависимость для получения стратегии выпуска токена.
     return DatabaseStrategy(
         database=access_token_db,
         lifetime_seconds=settings.auth.lifetime_seconds,

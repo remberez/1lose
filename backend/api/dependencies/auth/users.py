@@ -12,4 +12,5 @@ async def get_users_db(
         Depends(db_helper.session_getter),
     ],
 ) -> AsyncGenerator[AsyncSession, None]:
+    # Зависимость для получения экземпляра класса SQLAlchemyUserDatabase.
     yield UserModel.get_db(session)

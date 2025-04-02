@@ -9,4 +9,5 @@ from .users import get_users_db
 async def get_user_manager(
     user_db: Annotated[SQLAlchemyUserDatabase, Depends(get_users_db)],
 ) -> AsyncGenerator[UserManager, None]:
+    # Зависимость для получения менеджера для управления пользователями.
     yield UserManager(user_db)
