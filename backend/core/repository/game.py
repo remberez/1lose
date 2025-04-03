@@ -9,14 +9,14 @@ from .sqlalchemy import SQLAlchemyAbstractRepository
 GameModel = TypeVar("GameModel")
 
 
-class GameRepository(AbstractRepository[GameModel], ABC):
+class AbstractGameRepository(AbstractRepository[GameModel], ABC):
     # Специфичные методы для работы с моделью Game.
     ...
 
 
 class SQLAlchemyGameRepository(
     SQLAlchemyAbstractRepository[SQLAlchemyGameModel],
-    GameRepository,
+    AbstractGameRepository,
 ):
     async def list(self, *args, **kwargs) -> list[SQLAlchemyGameModel]:
         raise NotImplementedError()
