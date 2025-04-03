@@ -32,15 +32,13 @@ router.include_router(
 
 
 @router.get("/me", response_model=UserReadSchema)
-async def get_me(
-        user: Annotated[UserReadSchema, Depends(current_user)]
-):
+async def get_me(user: Annotated[UserReadSchema, Depends(current_user)]):
     return user
 
 
 @router.get("/{user_id}", response_model=UserReadSchema)
 async def get_user(
-        user_id: int,
-        service: Annotated[UserService, Depends(get_user_service)],
+    user_id: int,
+    service: Annotated[UserService, Depends(get_user_service)],
 ):
     return await service.get(user_id)

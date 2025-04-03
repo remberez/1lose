@@ -11,9 +11,7 @@ GameModel = TypeVar("GameModel")
 
 
 class AbstractGameRepository(
-    AbstractReadRepository[GameModel],
-    AbstractWriteRepository[GameModel],
-    ABC
+    AbstractReadRepository[GameModel], AbstractWriteRepository[GameModel], ABC
 ):
     # Специфичные методы для работы с моделью Game.
     ...
@@ -38,7 +36,11 @@ class SQLAlchemyGameRepository(
         await self._session.commit()
 
     async def update(self, model_id: int, **data) -> SQLAlchemyGameModel | None:
-        stmt = update(SQLAlchemyGameModel).where(SQLAlchemyGameModel.id == model_id).values(**data)
+        stmt = (
+            update(SQLAlchemyGameModel)
+            .where(SQLAlchemyGameModel.id == model_id)
+            .values(**data)
+        )
         await self._session.execute(stmt)
 
         updated_game = await self._session.get(SQLAlchemyGameModel, model_id)

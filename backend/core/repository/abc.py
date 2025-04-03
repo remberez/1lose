@@ -6,6 +6,7 @@ class AbstractReadRepository[ModelORM](ABC):
     Интерфейс репозитория для чтения данных.
     Основное назначение инкапсулировать логику работы с базой данных.
     """
+
     @abstractmethod
     async def get(self, *args, **kwargs) -> ModelORM:
         raise NotImplementedError()
@@ -20,6 +21,7 @@ class AbstractWriteRepository[ModelORM](ABC):
     Интерфейс репозитория для изменения данных.
     Основное назначение инкапсулировать логику работы с базой данных.
     """
+
     @abstractmethod
     async def create(self, **data) -> ModelORM | None:
         raise NotImplementedError()

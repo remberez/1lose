@@ -7,6 +7,7 @@ from .sqlalchemy import SQLAlchemyAbstractRepository
 
 UserModelT = TypeVar("UserModelT")
 
+
 class AbstractUserRepository(
     AbstractReadRepository[UserModel],
     ABC,
@@ -20,5 +21,4 @@ class UserSQLAlchemyRepository(SQLAlchemyAbstractRepository, AbstractUserReposit
     async def get(self, user_id: int) -> UserModel | None:
         return await self._session.get(UserModel, user_id)
 
-    async def list(self, *args, **kwargs) -> list[UserModel]:
-        ...
+    async def list(self, *args, **kwargs) -> list[UserModel]: ...

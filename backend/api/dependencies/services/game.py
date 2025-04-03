@@ -17,7 +17,11 @@ async def get_sqlalchemy_game_repository(
 
 
 async def get_game_service(
-    repository: Annotated[AbstractGameRepository, Depends(get_sqlalchemy_game_repository)],
-    user_repository: Annotated[AbstractUserRepository, Depends(get_sqlalchemy_user_repository)]
+    repository: Annotated[
+        AbstractGameRepository, Depends(get_sqlalchemy_game_repository)
+    ],
+    user_repository: Annotated[
+        AbstractUserRepository, Depends(get_sqlalchemy_user_repository)
+    ],
 ) -> GameService:
     return GameService(repository=repository, user_repository=user_repository)

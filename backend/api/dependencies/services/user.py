@@ -9,12 +9,14 @@ from core.service.user import UserService
 
 
 async def get_sqlalchemy_user_repository(
-        session: Annotated[AsyncSession, Depends(db_helper.session_getter)],
+    session: Annotated[AsyncSession, Depends(db_helper.session_getter)],
 ) -> UserSQLAlchemyRepository:
     return UserSQLAlchemyRepository(session=session)
 
 
 async def get_user_service(
-        repository: Annotated[AbstractUserRepository, Depends(get_sqlalchemy_user_repository)],
+    repository: Annotated[
+        AbstractUserRepository, Depends(get_sqlalchemy_user_repository)
+    ],
 ) -> UserService:
     return UserService(repository=repository)

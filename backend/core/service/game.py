@@ -6,7 +6,11 @@ from core.schema.game import GameCreateSchema, GameReadSchema
 
 
 class GameService:
-    def __init__(self, repository: AbstractGameRepository, user_repository: AbstractUserRepository):
+    def __init__(
+        self,
+        repository: AbstractGameRepository,
+        user_repository: AbstractUserRepository,
+    ):
         self._repository = repository
         self._user_repository = user_repository
 
