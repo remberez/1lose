@@ -14,7 +14,7 @@ class AbstractUserRepository(AbstractRepository[UserModel], ABC):
 class UserSQLAlchemyRepository(SQLAlchemyAbstractRepository, AbstractUserRepository):
     # Реализация репозитория с помощью SQLAlchemy.
     async def get(self, user_id: int) -> UserModel | None:
-        return await self._session.get(UserModel, 3)
+        return await self._session.get(UserModel, user_id)
 
     async def list(self, *args, **kwargs) -> list[UserModel]:
         ...
