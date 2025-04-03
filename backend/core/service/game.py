@@ -27,3 +27,6 @@ class GameService:
             await self._repository.delete(game_id)
         else:
             raise UserPermissionError()
+
+    async def get(self, game_id: int):
+        return await self._repository.get(game_id=game_id)

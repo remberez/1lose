@@ -28,8 +28,9 @@ class SQLAlchemyGameRepository(
         result = await self._session.execute(stmt)
         return result.scalars().all()
 
-    async def get(self, **kwargs) -> SQLAlchemyGameModel:
-        raise NotImplementedError()
+    async def get(self, game_id: int) -> SQLAlchemyGameModel | None:
+        res = await self._session.get(SQLAlchemyGameModel, game_id)
+        return res
 
     async def delete(self, model_id: int) -> None:
         stmt = delete(SQLAlchemyGameModel).where(SQLAlchemyGameModel.id == model_id)

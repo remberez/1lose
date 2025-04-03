@@ -39,3 +39,10 @@ async def delete_game(
         service: Annotated["GameService", Depends(get_game_service)],
 ):
     return await service.delete(game_id=game_id, user_id=user.id)
+
+@router.get("/{game_id}", response_model=GameReadSchema)
+async def get_game(
+        game_id: int,
+        service: Annotated["GameService", Depends(get_game_service)],
+):
+    return await service.get(game_id=game_id)
