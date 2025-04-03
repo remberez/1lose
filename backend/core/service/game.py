@@ -19,3 +19,11 @@ class GameService:
 
     async def list(self) -> list[GameReadSchema]:
         return await self._repository.list()
+
+    async def delete(self, game_id: int, user_id: int) -> None:
+        user = await self._user_repository.get(user_id)
+
+        if user.role_code == UserRoleCodes.ADMIN.value:
+            await self._repository.delete(game_id)
+        else:
+            raise UserPermissionError()

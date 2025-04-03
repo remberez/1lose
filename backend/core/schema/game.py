@@ -9,7 +9,8 @@ class GameSchema(BaseModel):
 class GameCreateSchema(GameSchema): ...
 
 
-class GameReadSchema(GameSchema): ...
+class GameReadSchema(GameSchema):
+    id: int
 
 
 class GameUpdateSchema(GameSchema): ...

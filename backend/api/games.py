@@ -18,9 +18,9 @@ router = APIRouter(prefix=settings.api.games, tags=["Games"])
 
 @router.post("/", response_model=GameReadSchema)
 async def create_game(
-    game: GameCreateSchema,
-    user: Annotated[UserReadSchema, Depends(current_user)],
-    service: Annotated["GameService", Depends(get_game_service)],
+        game: GameCreateSchema,
+        user: Annotated[UserReadSchema, Depends(current_user)],
+        service: Annotated["GameService", Depends(get_game_service)],
 ):
     return await service.create(game=game, user_id=user.id)
 
@@ -30,3 +30,12 @@ async def list_games(
         service: Annotated["GameService", Depends(get_game_service)],
 ):
     return await service.list()
+
+
+@router.delete("/{game_id}", response_model=None)
+async def delete_game(
+        user: Annotated[UserReadSchema, Depends(current_user)],
+        game_id: int,
+        service: Annotated["GameService", Depends(get_game_service)],
+):
+    return await service.delete(game_id=game_id, user_id=user.id)
