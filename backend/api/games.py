@@ -13,7 +13,7 @@ from .dependencies.services.game import get_game_service
 if TYPE_CHECKING:
     from core.service.game import GameService
 
-router = APIRouter(prefix=settings.api.games)
+router = APIRouter(prefix=settings.api.games, tags=["Games"])
 
 
 @router.post("/", response_model=GameReadSchema)
@@ -23,3 +23,10 @@ async def create_game(
     service: Annotated["GameService", Depends(get_game_service)],
 ):
     return await service.create(game=game, user_id=user.id)
+
+
+@router.get("/", response_model=list[GameReadSchema])
+async def list_games(
+        service: Annotated["GameService", Depends(get_game_service)],
+):
+    return await service.list()

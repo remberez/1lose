@@ -1,6 +1,7 @@
 from abc import ABC
 
-from typing_extensions import TypeVar
+from sqlalchemy import select
+from typing_extensions import TypeVar, Sequence
 
 from core.models.game import GameModel as SQLAlchemyGameModel
 from .abc import AbstractReadRepository, AbstractWriteRepository
@@ -22,8 +23,10 @@ class SQLAlchemyGameRepository(
     SQLAlchemyAbstractRepository[SQLAlchemyGameModel],
     AbstractGameRepository,
 ):
-    async def list(self, *args, **kwargs) -> list[SQLAlchemyGameModel]:
-        raise NotImplementedError()
+    async def list(self, *args, **kwargs) -> Sequence[SQLAlchemyGameModel]:
+        stmt = select(SQLAlchemyGameModel)
+        result = await self._session.execute(stmt)
+        return result.scalars().all()
 
     async def get(self, **kwargs) -> SQLAlchemyGameModel:
         raise NotImplementedError()

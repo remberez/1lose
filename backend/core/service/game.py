@@ -16,3 +16,6 @@ class GameService:
         if user.role_code == UserRoleCodes.ADMIN.value:
             return await self._repository.create(**game.model_dump())
         raise UserPermissionError()
+
+    async def list(self) -> list[GameReadSchema]:
+        return await self._repository.list()
