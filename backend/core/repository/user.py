@@ -9,14 +9,14 @@ UserModelT = TypeVar("UserModelT")
 
 
 class AbstractUserRepository(
-    AbstractReadRepository[UserModel],
+    AbstractReadRepository[UserModelT],
     ABC,
 ):
     # Специфичные методы для работы с пользователями.
     ...
 
 
-class UserSQLAlchemyRepository(SQLAlchemyAbstractRepository, AbstractUserRepository):
+class UserSQLAlchemyRepository(SQLAlchemyAbstractRepository[UserModel], AbstractUserRepository):
     # Реализация репозитория с помощью SQLAlchemy.
     async def get(self, user_id: int) -> UserModel | None:
         return await self._session.get(UserModel, user_id)
