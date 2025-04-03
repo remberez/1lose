@@ -3,8 +3,10 @@ from typing import Annotated
 from fastapi.params import Depends
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from api.dependencies.services.user import get_sqlalchemy_user_repository
 from core.models.db_helper import db_helper
-from core.repository.game import SQLAlchemyGameRepository, GameRepository
+from core.repository.game import SQLAlchemyGameRepository, AbstractGameRepository
+from core.repository.user import AbstractUserRepository
 from core.service.game import GameService
 
 
@@ -15,6 +17,7 @@ async def get_sqlalchemy_game_repository(
 
 
 async def get_game_service(
-    repository: Annotated[GameRepository, Depends(get_sqlalchemy_game_repository)],
+    repository: Annotated[AbstractGameRepository, Depends(get_sqlalchemy_game_repository)],
+    user_repository: Annotated[AbstractUserRepository, Depends(get_sqlalchemy_user_repository)]
 ) -> GameService:
-    return GameService(repository=repository)
+    return GameService(repository=repository, user_repository=user_repository)
