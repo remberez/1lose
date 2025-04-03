@@ -5,7 +5,7 @@ from fastapi import APIRouter
 from fastapi.params import Depends
 
 from core.config import settings
-from core.schema.game import GameCreateSchema, GameReadSchema
+from core.schema.game import GameCreateSchema, GameReadSchema, GameUpdateSchema
 from core.schema.user import UserReadSchema
 from .dependencies.auth.current_user import current_user
 from .dependencies.services.game import get_game_service
@@ -46,3 +46,13 @@ async def get_game(
         service: Annotated["GameService", Depends(get_game_service)],
 ):
     return await service.get(game_id=game_id)
+
+
+@router.patch("/{game_id}", response_model=GameReadSchema)
+async def update_game(
+        game_id: int,
+        game: GameUpdateSchema,
+        user: Annotated[UserReadSchema, Depends(current_user)],
+        service: Annotated["GameService", Depends(get_game_service)],
+):
+    return await service.update(game_id=game_id, user_id=user.id, **game.model_dump(exclude_none=True))

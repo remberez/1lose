@@ -30,3 +30,10 @@ class GameService:
 
     async def get(self, game_id: int):
         return await self._repository.get(game_id=game_id)
+
+    async def update(self, game_id: int, user_id: int, **game_data):
+        user = await self._user_repository.get(user_id)
+
+        if user.role_code == UserRoleCodes.ADMIN.value:
+            return await self._repository.update(model_id=game_id, **game_data)
+        raise UserPermissionError()

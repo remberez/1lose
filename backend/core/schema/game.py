@@ -13,4 +13,6 @@ class GameReadSchema(GameSchema):
     id: int
 
 
-class GameUpdateSchema(GameSchema): ...
+class GameUpdateSchema(GameSchema):
+    name: str | None = Field(None, max_length=25)
+    description: str | None = None
