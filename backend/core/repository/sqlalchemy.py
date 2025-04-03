@@ -1,10 +1,10 @@
 from abc import ABC
 
 from sqlalchemy.ext.asyncio import AsyncSession
-from .abc import AbstractRepository
+from .abc import AbstractWriteRepository, AbstractReadRepository
 
 
-class SQLAlchemyAbstractRepository[Model](AbstractRepository[Model], ABC):
+class SQLAlchemyAbstractRepository[Model](AbstractWriteRepository[Model], AbstractReadRepository[Model], ABC):
     """
     Интерфейс репозитория SQLAlchemy, от которого должны наследоваться все репозитории,
     использующие SQLAlchemy ORM.

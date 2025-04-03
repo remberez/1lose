@@ -3,13 +3,17 @@ from abc import ABC
 from typing_extensions import TypeVar
 
 from core.models.game import GameModel as SQLAlchemyGameModel
-from .abc import AbstractRepository
+from .abc import AbstractReadRepository, AbstractWriteRepository
 from .sqlalchemy import SQLAlchemyAbstractRepository
 
 GameModel = TypeVar("GameModel")
 
 
-class AbstractGameRepository(AbstractRepository[GameModel], ABC):
+class AbstractGameRepository(
+    AbstractReadRepository[GameModel],
+    AbstractWriteRepository[GameModel],
+    ABC
+):
     # Специфичные методы для работы с моделью Game.
     ...
 

@@ -1,16 +1,25 @@
 from abc import ABC, abstractmethod
 
 
-class AbstractRepository[ModelORM](ABC):
+class AbstractReadRepository[ModelORM](ABC):
     """
-    Интерфейс репозитория для работы с моделью.
-    Основное назначение инкапсулировать логику работы с данными.
+    Интерфейс репозитория для чтения данных.
+    Основное назначение инкапсулировать логику работы с базой данных.
     """
-
     @abstractmethod
     async def get(self, *args, **kwargs) -> ModelORM:
         raise NotImplementedError()
 
+    @abstractmethod
+    async def list(self, *args, **kwargs) -> list[ModelORM]:
+        raise NotImplementedError()
+
+
+class AbstractWriteRepository[ModelORM](ABC):
+    """
+    Интерфейс репозитория для изменения данных.
+    Основное назначение инкапсулировать логику работы с базой данных.
+    """
     @abstractmethod
     async def create(self, **data) -> ModelORM | None:
         raise NotImplementedError()
