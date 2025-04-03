@@ -1,12 +1,12 @@
 from core.const.user_role import UserRoleCodes
 from core.exceptions.user_exc import UserPermissionError
-from core.repository.game import AbstractRepository
+from core.repository.game import AbstractGameRepository
 from core.repository.user import AbstractUserRepository
 from core.schema.game import GameCreateSchema, GameReadSchema
 
 
 class GameService:
-    def __init__(self, repository: AbstractRepository, user_repository: AbstractUserRepository):
+    def __init__(self, repository: AbstractGameRepository, user_repository: AbstractUserRepository):
         self._repository = repository
         self._user_repository = user_repository
 
