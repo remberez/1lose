@@ -31,7 +31,3 @@ class AbstractWriteRepository[ModelORM](ABC):
     @abstractmethod
     async def delete(self, model_id: int) -> None:
         raise NotImplementedError()
-
-    @abstractmethod
-    async def list(self, *args, **kwargs) -> list[ModelORM]:
-        raise NotImplementedError()
