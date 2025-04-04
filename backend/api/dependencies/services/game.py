@@ -8,6 +8,8 @@ from core.models.db_helper import db_helper
 from core.repository.game import SQLAlchemyGameRepository, AbstractGameRepository
 from core.repository.user import AbstractUserRepository
 from core.service.game import GameService
+from core.service.user import UserPermissionsService
+from .user import get_user_permissions_service
 
 
 async def get_sqlalchemy_game_repository(
@@ -23,5 +25,12 @@ async def get_game_service(
     user_repository: Annotated[
         AbstractUserRepository, Depends(get_sqlalchemy_user_repository)
     ],
+    permissions_service: Annotated[
+        UserPermissionsService, Depends(get_user_permissions_service),
+    ],
 ) -> GameService:
-    return GameService(repository=repository, user_repository=user_repository)
+    return GameService(
+        repository=repository,
+        user_repository=user_repository,
+        permissions_service=permissions_service,
+    )
