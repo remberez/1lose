@@ -50,7 +50,7 @@ class SQLAlchemyEATeamRepository(
         stmt = update(EATeamModel).where(EATeamModel.id == team_id).values(**data)
         await self._session.execute(stmt)
 
-        updated_team = await self._session.get(EATeamModel, team_id)
+        updated_team = await self.get(team_id)
         await self._session.commit()
         await self._session.refresh(updated_team)
 

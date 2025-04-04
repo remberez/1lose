@@ -11,7 +11,7 @@ class EATeamSchema(BaseModel):
 class EATeamCreateSchema(EATeamSchema): ...
 
 
-class EATeamUpdateSchema(BaseModel):
+class EATeamUpdateSchema(EATeamSchema):
     name: str | None = Field(None, max_length=32)
 
 

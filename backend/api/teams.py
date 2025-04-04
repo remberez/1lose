@@ -4,7 +4,7 @@ from fastapi import APIRouter
 from fastapi.params import Depends
 
 from core.config import settings
-from core.schema.team import EATeamReadSchema, EATeamCreateSchema
+from core.schema.team import EATeamReadSchema, EATeamCreateSchema, EATeamUpdateSchema
 from core.schema.user import UserReadSchema
 from core.service.team import EATeamService
 from .dependencies.services.team import get_ea_team_service
@@ -44,3 +44,13 @@ async def delete_team(
     user: Annotated[UserReadSchema, Depends(current_user)],
 ):
     return await service.delete(team_id=team_id, user_id=user.id)
+
+
+@router.patch("/{team_id}", response_model=EATeamReadSchema)
+async def update_team(
+    team_id: int,
+    service: Annotated[EATeamService, Depends(get_ea_team_service)],
+    user: Annotated[UserReadSchema, Depends(current_user)],
+    team_data: EATeamUpdateSchema,
+):
+    return await service.update(team_id=team_id, user_id=user.id, **team_data.model_dump(exclude_none=True))

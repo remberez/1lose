@@ -32,3 +32,7 @@ class EATeamService:
         await self._permissions_service.verify_admin_or_moderator(user_id=user_id)
 
         return await self._repository.delete(team_id)
+
+    async def update(self, team_id: int, user_id: int, **team_data):
+        await self._permissions_service.verify_admin_or_moderator(user_id=user_id)
+        return await self._repository.update(team_id, **team_data)
