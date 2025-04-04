@@ -2,6 +2,7 @@ from abc import ABC
 from typing import Sequence
 
 from sqlalchemy import select, update, delete
+from sqlalchemy.orm import joinedload
 from typing_extensions import TypeVar
 
 from core.models import TournamentModel
@@ -33,6 +34,7 @@ class SQLAlchemyTournamentRepository(
         stmt = (
             select(TournamentModel)
             .where(TournamentModel.id == tournament_id)
+            .options(joinedload(TournamentModel.game))
         )
         result = await self._session.execute(stmt)
         return result.scalar_one_or_none()
@@ -42,7 +44,9 @@ class SQLAlchemyTournamentRepository(
         self._session.add(tournament)
         await self._session.commit()
         await self._session.refresh(tournament)
-        return tournament
+
+        loaded_tournament = await self.get(tournament.id)
+        return loaded_tournament
 
     async def update(self, tournament_id: int, **data) -> TournamentModel:
         stmt = (
