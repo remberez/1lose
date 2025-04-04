@@ -23,19 +23,7 @@ class UserPermissionsService:
     def __init__(self, user_repository: AbstractUserRepository):
         self._user_repository = user_repository
 
-    def check_admin_or_moderator(
-            self,
-            func: Callable[P, Coroutine[Any, Any, R]]
-    ) -> Callable[P, Coroutine[Any, Any, R]]:
-        @wraps(func)
-        async def wrapper(*args: P.args, **kwargs: P.kwargs) -> R:
-            # Первый аргумент - self (метод класса), второй - user_id
-            user_id = kwargs.get('user_id') or args[1] if len(args) > 1 else None
-
-            user = await self._user_repository.get(user_id)
-            if user.role_code not in (UserRoleCodes.ADMIN.value, UserRoleCodes.MODERATOR.value):
-                raise UserPermissionError()
-
-            return await func(*args, **kwargs)
-
-        return wrapper
+    async def verify_admin_or_moderator(self, user_id: int) -> None:
+        user = await self._user_repository.get(user_id)
+        if user.role_code not in (UserRoleCodes.ADMIN.value, UserRoleCodes.MODERATOR.value):
+            raise UserPermissionError()
