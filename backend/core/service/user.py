@@ -8,8 +8,9 @@ from core.exceptions.user_exc import UserPermissionError
 from core.repository.user import AbstractUserRepository
 
 UserModelT = TypeVar("UserModelT")
-P = ParamSpec('P')
-R = TypeVar('R')
+P = ParamSpec("P")
+R = TypeVar("R")
+
 
 class UserService:
     def __init__(self, repository: AbstractUserRepository):
@@ -25,7 +26,10 @@ class UserPermissionsService:
 
     async def verify_admin_or_moderator(self, user_id: int) -> None:
         user = await self._user_repository.get(user_id)
-        if user.role_code not in (UserRoleCodes.ADMIN.value, UserRoleCodes.MODERATOR.value):
+        if user.role_code not in (
+            UserRoleCodes.ADMIN.value,
+            UserRoleCodes.MODERATOR.value,
+        ):
             raise UserPermissionError()
 
     async def verify_admin(self, user_id: int) -> None:

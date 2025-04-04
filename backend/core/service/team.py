@@ -7,10 +7,10 @@ from core.service.user import UserPermissionsService
 
 class EATeamService:
     def __init__(
-            self,
-            repository: AbstractEATeamRepository,
-            user_repository: AbstractUserRepository,
-            permissions_service: UserPermissionsService,
+        self,
+        repository: AbstractEATeamRepository,
+        user_repository: AbstractUserRepository,
+        permissions_service: UserPermissionsService,
     ):
         self._repository = repository
         self._user_repository = user_repository

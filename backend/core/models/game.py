@@ -4,6 +4,7 @@ from sqlalchemy import String
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from .base import Base, IntegerIDMixin
+
 if typing.TYPE_CHECKING:
     from .team import EATeamModel
 

@@ -12,18 +12,24 @@ from .user import get_sqlalchemy_user_repository, get_user_permissions_service
 
 
 async def get_sqlalchemy_ea_team_repository(
-        session: Annotated[AsyncSession, Depends(db_helper.session_getter)]
+    session: Annotated[AsyncSession, Depends(db_helper.session_getter)],
 ) -> SQLAlchemyEATeamRepository:
     return SQLAlchemyEATeamRepository(session=session)
 
 
 async def get_ea_team_service(
-        repository: Annotated[AbstractEATeamRepository, Depends(get_sqlalchemy_ea_team_repository)],
-        user_repository: Annotated[AbstractUserRepository, Depends(get_sqlalchemy_user_repository)],
-        permissions_service: Annotated[UserPermissionsService, Depends(get_user_permissions_service)],
+    repository: Annotated[
+        AbstractEATeamRepository, Depends(get_sqlalchemy_ea_team_repository)
+    ],
+    user_repository: Annotated[
+        AbstractUserRepository, Depends(get_sqlalchemy_user_repository)
+    ],
+    permissions_service: Annotated[
+        UserPermissionsService, Depends(get_user_permissions_service)
+    ],
 ) -> EATeamService:
     return EATeamService(
         repository=repository,
         user_repository=user_repository,
-        permissions_service=permissions_service
+        permissions_service=permissions_service,
     )

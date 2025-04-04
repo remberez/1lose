@@ -15,32 +15,32 @@ router = APIRouter(prefix=settings.api.teams, tags=["EA-Teams"])
 
 @router.get("/", response_model=list[EATeamReadSchema])
 async def list_team(
-        service: Annotated[EATeamService, Depends(get_ea_team_service)],
+    service: Annotated[EATeamService, Depends(get_ea_team_service)],
 ):
     return await service.list()
 
 
 @router.post("/", response_model=EATeamReadSchema)
 async def create_team(
-        service: Annotated[EATeamService, Depends(get_ea_team_service)],
-        user: Annotated[UserReadSchema, Depends(current_user)],
-        team: EATeamCreateSchema,
+    service: Annotated[EATeamService, Depends(get_ea_team_service)],
+    user: Annotated[UserReadSchema, Depends(current_user)],
+    team: EATeamCreateSchema,
 ):
     return await service.create(user_id=user.id, **team.model_dump())
 
 
 @router.get("/{team_id}", response_model=EATeamReadSchema)
 async def get_team(
-        team_id: int,
-        service: Annotated[EATeamService, Depends(get_ea_team_service)],
+    team_id: int,
+    service: Annotated[EATeamService, Depends(get_ea_team_service)],
 ):
     return await service.get(team_id=team_id)
 
 
 @router.delete("/{team_id}", response_model=None)
 async def delete_team(
-        team_id: int,
-        service: Annotated[EATeamService, Depends(get_ea_team_service)],
-        user: Annotated[UserReadSchema, Depends(current_user)],
+    team_id: int,
+    service: Annotated[EATeamService, Depends(get_ea_team_service)],
+    user: Annotated[UserReadSchema, Depends(current_user)],
 ):
     return await service.delete(team_id=team_id, user_id=user.id)

@@ -26,7 +26,8 @@ async def get_game_service(
         AbstractUserRepository, Depends(get_sqlalchemy_user_repository)
     ],
     permissions_service: Annotated[
-        UserPermissionsService, Depends(get_user_permissions_service),
+        UserPermissionsService,
+        Depends(get_user_permissions_service),
     ],
 ) -> GameService:
     return GameService(

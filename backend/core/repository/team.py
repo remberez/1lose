@@ -31,7 +31,11 @@ class SQLAlchemyEATeamRepository(
         return result.scalars().all()
 
     async def get(self, team_id: int) -> EATeamModel | None:
-        stmt = select(EATeamModel).where(EATeamModel.id == team_id).options(joinedload(EATeamModel.game))
+        stmt = (
+            select(EATeamModel)
+            .where(EATeamModel.id == team_id)
+            .options(joinedload(EATeamModel.game))
+        )
         result = await self._session.execute(stmt)
         return result.scalar_one_or_none()
 
@@ -43,11 +47,7 @@ class SQLAlchemyEATeamRepository(
         return team
 
     async def update(self, team_id: int, **data) -> EATeamModel | None:
-        stmt = (
-            update(EATeamModel)
-            .where(EATeamModel.id == team_id)
-            .values(**data)
-        )
+        stmt = update(EATeamModel).where(EATeamModel.id == team_id).values(**data)
         await self._session.execute(stmt)
 
         updated_team = await self._session.get(EATeamModel, team_id)
