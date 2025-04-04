@@ -1,9 +1,11 @@
 from pydantic import BaseModel, Field
 
+from core.schema.game import GameReadSchema
+
 
 class EATeamSchema(BaseModel):
     name: str = Field(max_length=32)
-    description: str
+    game_id: int
 
 
 class EATeamCreateSchema(EATeamSchema): ...
@@ -11,8 +13,9 @@ class EATeamCreateSchema(EATeamSchema): ...
 
 class EATeamUpdateSchema(BaseModel):
     name: str | None = Field(None, max_length=32)
-    description: str | None = None
 
 
 class EATeamReadSchema(BaseModel):
     id: int
+    name: str = Field(max_length=32)
+    game: GameReadSchema

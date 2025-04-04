@@ -16,12 +16,21 @@ class EATeamService:
         return await self._repository.list()
 
     async def get(self, team_id: int):
-        return self.get(team_id)
+        return await self._repository.get(team_id)
 
     async def create(self, user_id, **team_data):
         user = await self._user_repository.get(user_id)
 
         if user.role_code in (UserRoleCodes.ADMIN.value, UserRoleCodes.MODERATOR.value):
-            return await self._repository.create(**team_data)
+            team = await self._repository.create(**team_data)
+            return await self._repository.get(team.id)
+        else:
+            raise UserPermissionError()
+
+    async def delete(self, team_id: int, user_id: int) -> None:
+        user = await self._user_repository.get(user_id)
+
+        if user.role_code in (UserRoleCodes.ADMIN.value, UserRoleCodes.MODERATOR.value):
+            return await self._repository.delete(team_id)
         else:
             raise UserPermissionError()

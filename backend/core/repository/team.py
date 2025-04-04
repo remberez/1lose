@@ -2,6 +2,7 @@ from abc import ABC
 from typing import Sequence
 
 from sqlalchemy import select, update, delete
+from sqlalchemy.orm import joinedload
 from typing_extensions import TypeVar
 
 from .abc import AbstractReadRepository, AbstractWriteRepository
@@ -25,12 +26,14 @@ class SQLAlchemyEATeamRepository(
     AbstractEATeamRepository,
 ):
     async def list(self) -> Sequence[EATeamModel]:
-        stmt = select(EATeamModelT)
+        stmt = select(EATeamModel).options(joinedload(EATeamModel.game))
         result = await self._session.execute(stmt)
         return result.scalars().all()
 
     async def get(self, team_id: int) -> EATeamModel | None:
-        return await self._session.get(EATeamModel, team_id)
+        stmt = select(EATeamModel).where(EATeamModel.id == team_id).options(joinedload(EATeamModel.game))
+        result = await self._session.execute(stmt)
+        return result.scalar_one_or_none()
 
     async def create(self, **data) -> EATeamModel | None:
         team = EATeamModel(**data)
