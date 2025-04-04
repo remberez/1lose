@@ -13,7 +13,7 @@ class EATeamService:
         self._user_repository = user_repository
 
     async def list(self):
-        return self._repository.list()
+        return await self._repository.list()
 
     async def get(self, team_id: int):
         return self.get(team_id)
