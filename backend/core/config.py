@@ -12,6 +12,7 @@ class APISettings(BaseModel):
     prefix: str = "/api"
     auth: str = "/auth"
     games: str = "/games"
+    teams: str = "/ea-teams"
 
     @property
     def token_url(self) -> str:
