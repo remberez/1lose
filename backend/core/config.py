@@ -13,6 +13,7 @@ class APISettings(BaseModel):
     auth: str = "/auth"
     games: str = "/games"
     teams: str = "/ea-teams"
+    tournament: str = "/tournaments"
 
     @property
     def token_url(self) -> str:
