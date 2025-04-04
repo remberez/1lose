@@ -27,3 +27,9 @@ class UserPermissionsService:
         user = await self._user_repository.get(user_id)
         if user.role_code not in (UserRoleCodes.ADMIN.value, UserRoleCodes.MODERATOR.value):
             raise UserPermissionError()
+
+    async def verify_admin(self, user_id: int) -> None:
+        user = await self._user_repository.get(user_id)
+
+        if user.role_code != UserRoleCodes.MODERATOR.value:
+            raise UserPermissionError()
