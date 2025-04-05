@@ -14,7 +14,7 @@ class MatchSchema(BaseModel):
 
     @model_validator(mode="after")
     def validate_dates(self):
-        if self.date_end < self.date_start:
+        if self.date_end and self.date_start and self.date_end < self.date_start:
             raise ValueError("The end date cannot be earlier than the start date")
         return self
 
