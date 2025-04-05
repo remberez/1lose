@@ -1,24 +1,35 @@
+import typing
 from datetime import datetime, timedelta, timezone
 
+from core.exceptions.common import NotFoundError
 from core.repository.match import AbstractMatchRepository
 from core.schema.match import MatchCreateSchema, MatchUpdateSchema
-from core.service.user import UserPermissionsService
+
+if typing.TYPE_CHECKING:
+    from core.service.user import UserPermissionsService
+    from core.repository.tournament import AbstractTournamentRepository
 
 
 class MatchService:
     def __init__(
             self,
             repository: AbstractMatchRepository,
-            permissions_service: UserPermissionsService,
+            tournament_repository: "AbstractTournamentRepository",
+            permissions_service: "UserPermissionsService",
     ):
         self._repository = repository
         self._permissions_service = permissions_service
+        self._tournament_repository = tournament_repository
 
     async def list(self):
         return await self._repository.list()
 
     async def get(self, match_id: int):
-        return await self._repository.get(match_id)
+        match = await self._repository.get(match_id)
+
+        if not match:
+            raise NotFoundError("Match not found")
+        return match
 
     async def create(self, user_id: int, match_data: MatchCreateSchema):
         await self._permissions_service.verify_admin(user_id)
@@ -32,6 +43,8 @@ class MatchService:
 
             if match_data.date_start < min_start_date:
                 raise ValueError("The start date must be at least 24 hours later than the current time")
+
+        await self._tournament_repository.tournament_exists(match_data.tournament_id)
 
         return await self._repository.create(**match_data.model_dump())
 
