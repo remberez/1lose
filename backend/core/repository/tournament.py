@@ -13,8 +13,8 @@ TournamentT = TypeVar("TournamentT")
 
 
 class AbstractTournamentRepository(
-    AbstractReadRepository,
-    AbstractWriteRepository,
+    AbstractReadRepository[TournamentT],
+    AbstractWriteRepository[TournamentT],
     ABC,
 ):
     # Специфичные методы для работы с TournamentModel
