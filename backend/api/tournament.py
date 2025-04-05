@@ -28,3 +28,19 @@ async def create_tournament(
         service: Annotated[TournamentService, Depends(get_tournament_service)],
 ):
     return await service.create(user_id=user.id, **tournament.model_dump())
+
+
+@router.get("/", response_model=list[TournamentReadSchema])
+async def list_tournament(
+        service: Annotated[TournamentService, Depends(get_tournament_service)],
+):
+    return await service.list()
+
+
+@router.delete("/{tournament_id}", response_model=None)
+async def delete_tournament(
+        tournament_id: int,
+        user: Annotated[UserReadSchema, Depends(current_user)],
+        service: Annotated[TournamentService, Depends(get_tournament_service)]
+):
+    await service.delete(user_id=user.id, tournament_id=tournament_id)
