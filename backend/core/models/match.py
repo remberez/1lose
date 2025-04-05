@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from sqlalchemy import ForeignKey, ARRAY, Integer, SmallInteger, CheckConstraint
+from sqlalchemy import ForeignKey, ARRAY, Integer, SmallInteger, CheckConstraint, TIMESTAMP
 from sqlalchemy.orm import Mapped, mapped_column
 
 from .base import Base, IntegerIDMixin, DateCreatedUpdatedMixin
@@ -20,5 +20,5 @@ class MatchModel(Base, DateCreatedUpdatedMixin, IntegerIDMixin):
     second_team_id: Mapped[int | None] = mapped_column(ForeignKey("ea_team.id", ondelete="SET NULL"))
     score: Mapped[list[int]] = mapped_column(ARRAY(Integer), nullable=True)
     best_of: Mapped[int] = mapped_column(SmallInteger())
-    date_start: Mapped[datetime] = mapped_column(nullable=True, default=None)
-    date_end: Mapped[datetime] = mapped_column(nullable=True, default=None)
+    date_start: Mapped[datetime] = mapped_column(TIMESTAMP(timezone=True), nullable=True, default=None)
+    date_end: Mapped[datetime] = mapped_column(TIMESTAMP(timezone=True), nullable=True, default=None)
