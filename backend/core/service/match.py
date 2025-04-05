@@ -1,4 +1,4 @@
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 
 from core.repository.match import AbstractMatchRepository
 from core.schema.match import MatchCreateSchema, MatchUpdateSchema
@@ -23,9 +23,15 @@ class MatchService:
     async def create(self, user_id: int, match_data: MatchCreateSchema):
         await self._permissions_service.verify_admin(user_id)
 
-        min_start_date = datetime.now() + timedelta(hours=24)
-        if match_data.date_start and match_data.date_start < min_start_date:
-            raise ValueError("The start date must be at least 24 hours later than the current time")
+        current_time = datetime.now(timezone.utc)
+        min_start_date = current_time + timedelta(hours=24)
+
+        if match_data.date_start:
+            if match_data.date_start.tzinfo is None:
+                match_data.date_start = match_data.date_start.replace(tzinfo=timezone.utc)
+
+            if match_data.date_start < min_start_date:
+                raise ValueError("The start date must be at least 24 hours later than the current time")
 
         return await self._repository.create(**match_data.model_dump())
 
