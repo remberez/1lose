@@ -14,6 +14,7 @@ class APISettings(BaseModel):
     games: str = "/games"
     teams: str = "/ea-teams"
     tournament: str = "/tournaments"
+    match: str = "/matches"
 
     @property
     def token_url(self) -> str:
