@@ -35,5 +35,5 @@ class UserPermissionsService:
     async def verify_admin(self, user_id: int) -> None:
         user = await self._user_repository.get(user_id)
 
-        if user.role_code != UserRoleCodes.MODERATOR.value:
+        if user.role_code != UserRoleCodes.ADMIN.value:
             raise UserPermissionError()
