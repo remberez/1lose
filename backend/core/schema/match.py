@@ -24,8 +24,9 @@ class MatchSchema(BaseModel):
             raise ValueError("The commands cannot be the same")
         return self
 
+    @classmethod
     @field_validator("score")
-    def validate_score_items(self, score: list[int]):
+    def validate_score_items(cls, score: list[int]):
         if any(x < 0 for x in score):
             raise ValueError("All account values must be greater than or equal to zero")
         return score
