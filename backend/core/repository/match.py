@@ -20,7 +20,7 @@ class AbstractMatchRepository(
     ...
 
 
-class SQLAlchemyTournamentRepository(
+class SQLAlchemyMatchRepository(
     SQLAlchemyAbstractRepository[MatchModel],
     AbstractMatchRepository,
 ):
