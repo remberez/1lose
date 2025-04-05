@@ -26,7 +26,12 @@ class SQLAlchemyTournamentRepository(
     AbstractTournamentRepository,
 ):
     async def list(self) -> Sequence[TournamentModel]:
-        stmt = select(TournamentModel)
+        stmt = (
+            select(TournamentModel)
+            .options(
+                joinedload(TournamentModel.game)
+            )
+        )
         result = await self._session.execute(stmt)
         return result.scalars().all()
 
