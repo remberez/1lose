@@ -3,14 +3,18 @@ from datetime import datetime
 from pydantic import BaseModel, Field, model_validator, field_validator
 from pydantic_core import PydanticCustomError
 
+from core.schema.team import EATeamReadSchema
+from core.schema.tournament import TournamentReadSchema
+
+
 class MatchSchema(BaseModel):
-    tournament_id: int = Field(gt=0)
-    first_team_id: int = Field(gt=0)
-    second_team_id: int = Field(gt=0)
     score: list[int] = Field(min_length=0, max_length=2)
     best_of: int = Field(gt=0)
     date_start: datetime | None = None
     date_end: datetime | None = None
+    tournament_id: int = Field(gt=0)
+    first_team_id: int = Field(gt=0)
+    second_team_id: int = Field(gt=0)
 
     @model_validator(mode="after")
     def validate_dates(self):
@@ -46,6 +50,12 @@ class MatchCreateSchema(MatchSchema):
 
 class MatchReadSchema(MatchSchema):
     id: int
+    tournament: TournamentReadSchema
+    first_team: EATeamReadSchema
+    second_team: EATeamReadSchema
+    tournament_id: int = Field(gt=0, exclude=True)
+    first_team_id: int = Field(gt=0, exclude=True)
+    second_team_id: int = Field(gt=0, exclude=True)
 
 
 class MatchUpdateSchema(MatchSchema):
