@@ -2,6 +2,7 @@ import typing
 from datetime import datetime, timedelta, timezone
 
 from core.exceptions.common import NotFoundError
+from core.exceptions.match_exc import MatchInProgressException
 from core.schema.match import MatchCreateSchema, MatchUpdateSchema
 
 if typing.TYPE_CHECKING:
@@ -46,7 +47,7 @@ class MatchService:
                 match_data.date_start = match_data.date_start.replace(tzinfo=timezone.utc)
 
             if match_data.date_start < min_start_date:
-                raise ValueError("The start date must be at least 24 hours later than the current time")
+                raise MatchInProgressException("The start date must be at least 24 hours later than the current time")
 
         await self._tournament_repository.tournament_exists(match_data.tournament_id)
 
@@ -58,7 +59,7 @@ class MatchService:
 
         match = await self.get(match_id)
         if match_data.date_end and not match.date_start:
-            raise ValueError("You can't end a match that's not in progress")
+            raise MatchInProgressException("You can't end a match that's not in progress")
 
         return await self._repository.update(match_id, **match_data.model_dump(exclude_none=True))
 
@@ -69,6 +70,6 @@ class MatchService:
         match = await self.get(match_id)
         match_is_on = match.date_start and match.date_start <= datetime.now() and not match.date_end
         if match_is_on:
-            raise ValueError("You can't delete a match in progress")
+            raise MatchInProgressException("You can't delete a match in progress")
 
         return await self._repository.delete(match_id)
