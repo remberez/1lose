@@ -37,3 +37,20 @@ async def update_match(
         service: Annotated[MatchService, Depends(match_service)],
 ):
     return await service.update(user.id, match_id, match_data)
+
+
+@router.delete("/{match_id}")
+async def delete_match(
+        match_id: int,
+        user: Annotated[UserReadSchema, Depends(current_user)],
+        service: Annotated[MatchService, Depends(match_service)],
+):
+    return await service.delete(user.id, match_id)
+
+
+@router.get("/{match_id}")
+async def get_match(
+        match_id: int,
+        service: Annotated[MatchService, Depends(match_service)],
+):
+    return await service.get(match_id)
