@@ -1,7 +1,7 @@
 from abc import ABC
 from typing import Sequence
 
-from sqlalchemy import select, insert, update, Column, delete
+from sqlalchemy import select, insert, update, Column, delete, exists, Integer
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import DeclarativeBase
 
@@ -37,6 +37,10 @@ class SQLAlchemyAbstractReadRepository[Model: DeclarativeBase](
         result = await self._session.execute(stmt)
         return result.scalars().all()
 
+    async def is_exists(self, model_id: int) -> bool:
+        model_pk: Column[Integer] = self._model.id
+        stmt = select(exists().where(model_pk == model_id))
+        return bool(await self._session.scalar(stmt))
 
 class SQLAlchemyAbstractWriteRepository[Model: DeclarativeBase](
     AbstractWriteRepository[Model],

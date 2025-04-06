@@ -15,6 +15,9 @@ class AbstractReadRepository[ModelORM](ABC):
     async def list(self, *args, **kwargs) -> list[ModelORM]:
         raise NotImplementedError()
 
+    @abstractmethod
+    async def is_exists(self, model_id: int) -> bool:
+        raise NotImplementedError()
 
 class AbstractWriteRepository[ModelORM](ABC):
     """
