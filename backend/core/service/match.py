@@ -24,15 +24,16 @@ class MatchService:
         self._tournament_repository = tournament_repository
         self._team_repository = team_repository
 
+    async def is_exists(self, match_id: int):
+        if not await self._repository.is_exists(match_id):
+            raise NotFoundError(f"Match {match_id} not found")
+
     async def list(self):
         return await self._repository.list()
 
     async def get(self, match_id: int):
-        match = await self._repository.get(match_id)
-
-        if not match:
-            raise NotFoundError("Match not found")
-        return match
+        await self.is_exists(match_id)
+        return await self._repository.get(match_id)
 
     async def create(self, user_id: int, match_data: MatchCreateSchema):
         await self._permissions_service.verify_admin(user_id)
@@ -53,6 +54,7 @@ class MatchService:
 
     async def update(self, user_id: int, match_id: int, match_data: MatchUpdateSchema):
         await self._permissions_service.verify_admin(user_id)
+        await self.is_exists(match_id)
 
         match = await self.get(match_id)
         if match_data.date_end and not match.date_start:
@@ -62,6 +64,7 @@ class MatchService:
 
     async def delete(self, user_id: int, match_id: int):
         await self._permissions_service.verify_admin(user_id)
+        await self.is_exists(match_id)
 
         match = await self.get(match_id)
         match_is_on = match.date_start and match.date_start <= datetime.now() and not match.date_end
