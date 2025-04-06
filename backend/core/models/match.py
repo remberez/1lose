@@ -16,6 +16,7 @@ from .base import Base, IntegerIDMixin, DateCreatedUpdatedMixin
 if typing.TYPE_CHECKING:
     from core.models import TournamentModel
     from core.models import EATeamModel
+    from core.models import MapModel
 
 
 class MatchModel(Base, DateCreatedUpdatedMixin, IntegerIDMixin):
@@ -54,3 +55,4 @@ class MatchModel(Base, DateCreatedUpdatedMixin, IntegerIDMixin):
         back_populates="matches_as_second_team",
         foreign_keys=[second_team_id],
     )
+    maps: Mapped[list["MapModel"]] = relationship(back_populates="match")

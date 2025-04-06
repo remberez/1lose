@@ -5,3 +5,4 @@ from .game import GameModel
 from .team import EATeamModel
 from .tournament import TournamentModel
 from .match import MatchModel
+from .map import MapModel
