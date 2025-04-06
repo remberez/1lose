@@ -88,7 +88,7 @@ class MatchService:
         await self.is_exists(match_id)
 
         match = await self.get(match_id)
-        match_is_on = match.date_start and match.date_start <= datetime.now() and not match.date_end
+        match_is_on = match.date_start and match.date_start <= datetime.now(timezone.utc) and not match.date_end
         if match_is_on:
             raise MatchInProgressException("You can't delete a match in progress")
 
