@@ -14,7 +14,7 @@ if typing.TYPE_CHECKING:
 class MatchService:
     def __init__(
             self,
-            repository: AbstractMatchRepository,
+            repository: "AbstractMatchRepository",
             tournament_repository: "AbstractTournamentRepository",
             permissions_service: "UserPermissionsService",
             team_repository: "AbstractEATeamRepository",

@@ -8,7 +8,7 @@ from typing_extensions import TypeVar
 from core.exceptions.common import NotFoundError
 from core.models import TournamentModel
 from core.repository.abc import AbstractReadRepository, AbstractWriteRepository
-from core.repository.sqlalchemy import SQLAlchemyAbstractRepository
+from core.repository.sqlalchemy import SQLAlchemyAbstractWriteRepository, SQLAlchemyAbstractReadRepository
 
 TournamentT = TypeVar("TournamentT")
 
@@ -24,7 +24,8 @@ class AbstractTournamentRepository(
 
 
 class SQLAlchemyTournamentRepository(
-    SQLAlchemyAbstractRepository[TournamentModel],
+    SQLAlchemyAbstractWriteRepository[TournamentModel],
+    SQLAlchemyAbstractReadRepository[TournamentModel],
     AbstractTournamentRepository,
 ):
     async def list(self) -> Sequence[TournamentModel]:
@@ -41,39 +42,12 @@ class SQLAlchemyTournamentRepository(
         stmt = (
             select(TournamentModel)
             .where(TournamentModel.id == tournament_id)
-            .options(joinedload(TournamentModel.game))
+            .options(
+                joinedload(TournamentModel.game)
+            )
         )
         result = await self._session.execute(stmt)
         return result.scalar_one_or_none()
-
-    async def create(self, **data) -> TournamentModel | None:
-        tournament = TournamentModel(**data)
-        self._session.add(tournament)
-        await self._session.commit()
-        await self._session.refresh(tournament)
-
-        loaded_tournament = await self.get(tournament.id)
-        return loaded_tournament
-
-    async def update(self, tournament_id: int, **data) -> TournamentModel:
-        stmt = (
-            update(TournamentModel)
-            .where(TournamentModel.id == tournament_id)
-            .values(**data)
-        )
-        await self._session.execute(stmt)
-        await self._session.commit()
-
-        tournament = await self.get(tournament_id)
-        return tournament
-
-    async def delete(self, tournament_id: int) -> None:
-        stmt = (
-            delete(TournamentModel)
-            .where(TournamentModel.id == tournament_id)
-        )
-        await self._session.execute(stmt)
-        await self._session.commit()
 
     async def tournament_exists(self, tournament_id: int) -> None:
         # Вызывает NotFoundError, если турнир не был найден.

@@ -10,12 +10,13 @@ from core.repository.user import AbstractUserRepository
 from core.service.game import GameService
 from core.service.user import UserPermissionsService
 from .user import get_user_permissions_service
+from core.models.game import GameModel
 
 
 async def get_sqlalchemy_game_repository(
     session: Annotated[AsyncSession, Depends(db_helper.session_getter)],
 ) -> SQLAlchemyGameRepository:
-    return SQLAlchemyGameRepository(session=session)
+    return SQLAlchemyGameRepository(session=session, model=GameModel)
 
 
 async def get_game_service(

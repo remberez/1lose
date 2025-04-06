@@ -27,8 +27,8 @@ class GameService:
         await self._repository.delete(game_id)
 
     async def get(self, game_id: int):
-        return await self._repository.get(game_id=game_id)
+        return await self._repository.get(game_id)
 
     async def update(self, game_id: int, user_id: int, **game_data):
         await self._permissions_service.verify_admin(user_id)
-        return await self._repository.update(model_id=game_id, **game_data)
+        return await self._repository.update(game_id, **game_data)
