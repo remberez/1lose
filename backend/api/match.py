@@ -4,11 +4,11 @@ from fastapi import APIRouter
 from fastapi.params import Depends
 
 from core.config import settings
-from core.schema.match import MatchReadSchema, MatchCreateSchema
+from core.schema.match import MatchReadSchema, MatchCreateSchema, MatchUpdateSchema
 from core.schema.user import UserReadSchema
 from core.service.match import MatchService
-from .dependencies.services.match import match_service
 from .dependencies.auth.current_user import current_user
+from .dependencies.services.match import match_service
 
 router = APIRouter(prefix=settings.api.match, tags=["Matches"])
 
@@ -28,3 +28,12 @@ async def create_match(
 ):
     return await service.create(user_id=user.id, match_data=match)
 
+
+@router.patch("/{match_id}", response_model=MatchReadSchema)
+async def update_match(
+        match_id: int,
+        match_data: MatchUpdateSchema,
+        user: Annotated[UserReadSchema, Depends(current_user)],
+        service: Annotated[MatchService, Depends(match_service)],
+):
+    return await service.update(user.id, match_id, match_data)
