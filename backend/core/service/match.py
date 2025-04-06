@@ -2,7 +2,7 @@ import typing
 from datetime import datetime, timedelta, timezone
 
 from core.exceptions.common import NotFoundError
-from core.exceptions.match_exc import MatchInProgressException
+from core.exceptions.match_exc import MatchInProgressException, MatchDateTimeException
 from core.schema.match import MatchCreateSchema, MatchUpdateSchema
 
 if typing.TYPE_CHECKING:
@@ -47,7 +47,7 @@ class MatchService:
                 match_data.date_start = match_data.date_start.replace(tzinfo=timezone.utc)
 
             if match_data.date_start < min_start_date:
-                raise MatchInProgressException("The start date must be at least 24 hours later than the current time")
+                raise MatchDateTimeException("The start date must be at least 24 hours later than the current time")
 
         await self._tournament_repository.tournament_exists(match_data.tournament_id)
 
