@@ -25,6 +25,22 @@ class MatchService:
         self._tournament_repository = tournament_repository
         self._team_repository = team_repository
 
+    async def match_data_exists(
+            self,
+            first_team_id: int | None,
+            second_team_id: int | None,
+            tournament_id: int | None,
+    ):
+        msgs = []
+        if first_team_id and not await self._team_repository.is_exists(first_team_id):
+            msgs.append(f"Team {first_team_id} not found")
+        if second_team_id and not await self._team_repository.is_exists(second_team_id):
+            msgs.append(f"Team {second_team_id} not found")
+        if tournament_id and not await self._tournament_repository.is_exists(tournament_id):
+            msgs.append(f"Tournament {tournament_id} not found")
+
+        raise NotFoundError(*msgs)
+
     async def is_exists(self, match_id: int):
         if not await self._repository.is_exists(match_id):
             raise NotFoundError(f"Match {match_id} not found")
@@ -49,7 +65,11 @@ class MatchService:
             if match_data.date_start < min_start_date:
                 raise MatchDateTimeException("The start date must be at least 24 hours later than the current time")
 
-        await self._tournament_repository.tournament_exists(match_data.tournament_id)
+        await self.match_data_exists(
+            first_team_id=match_data.first_team_id,
+            second_team_id=match_data.second_team_id,
+            tournament_id=match_data.tournament_id,
+        )
 
         return await self._repository.create(**match_data.model_dump())
 
