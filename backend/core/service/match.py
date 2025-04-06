@@ -2,12 +2,13 @@ import typing
 from datetime import datetime, timedelta, timezone
 
 from core.exceptions.common import NotFoundError
-from core.repository.match import AbstractMatchRepository
 from core.schema.match import MatchCreateSchema, MatchUpdateSchema
 
 if typing.TYPE_CHECKING:
     from core.service.user import UserPermissionsService
     from core.repository.tournament import AbstractTournamentRepository
+    from core.repository.match import AbstractMatchRepository
+    from core.repository.team import AbstractEATeamRepository
 
 
 class MatchService:
@@ -16,10 +17,12 @@ class MatchService:
             repository: AbstractMatchRepository,
             tournament_repository: "AbstractTournamentRepository",
             permissions_service: "UserPermissionsService",
+            team_repository: "AbstractEATeamRepository",
     ):
         self._repository = repository
         self._permissions_service = permissions_service
         self._tournament_repository = tournament_repository
+        self._team_repository = team_repository
 
     async def list(self):
         return await self._repository.list()
