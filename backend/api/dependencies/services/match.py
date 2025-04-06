@@ -17,17 +17,24 @@ if typing.TYPE_CHECKING:
     from core.service.user import UserPermissionsService
     from core.repository.tournament import SQLAlchemyTournamentRepository
 
+
 async def sqlalchemy_match_repo(
-        session: Annotated[AsyncSession, Depends(db_helper.session_getter)],
+    session: Annotated[AsyncSession, Depends(db_helper.session_getter)],
 ) -> SQLAlchemyMatchRepository:
     return SQLAlchemyMatchRepository(session=session, model=MatchModel)
 
 
 async def match_service(
-        match_repo: Annotated[SQLAlchemyMatchRepository, Depends(sqlalchemy_match_repo)],
-        permissions_service: Annotated["UserPermissionsService", Depends(get_user_permissions_service)],
-        tournament_repo: Annotated["SQLAlchemyTournamentRepository", Depends(get_sqlalchemy_tournament_repository)],
-        team_repo: Annotated["SQLAlchemyEATeamRepository", Depends(get_sqlalchemy_ea_team_repository)],
+    match_repo: Annotated[SQLAlchemyMatchRepository, Depends(sqlalchemy_match_repo)],
+    permissions_service: Annotated[
+        "UserPermissionsService", Depends(get_user_permissions_service)
+    ],
+    tournament_repo: Annotated[
+        "SQLAlchemyTournamentRepository", Depends(get_sqlalchemy_tournament_repository)
+    ],
+    team_repo: Annotated[
+        "SQLAlchemyEATeamRepository", Depends(get_sqlalchemy_ea_team_repository)
+    ],
 ) -> MatchService:
     return MatchService(
         repository=match_repo,

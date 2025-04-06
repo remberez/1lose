@@ -3,7 +3,10 @@ from abc import ABC
 from black.nodes import TypeVar
 from core.repository.abc import AbstractReadRepository
 from core.models.user import UserModel
-from .sqlalchemy import SQLAlchemyAbstractReadRepository, SQLAlchemyAbstractWriteRepository
+from .sqlalchemy import (
+    SQLAlchemyAbstractReadRepository,
+    SQLAlchemyAbstractWriteRepository,
+)
 
 UserModelT = TypeVar("UserModelT")
 
@@ -20,5 +23,4 @@ class UserSQLAlchemyRepository(
     SQLAlchemyAbstractReadRepository[UserModel],
     SQLAlchemyAbstractWriteRepository[UserModel],
     AbstractUserRepository,
-):
-    ...
+): ...

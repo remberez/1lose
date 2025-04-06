@@ -33,10 +33,16 @@ def upgrade() -> None:
         sa.Column("created_at", sa.DateTime(), nullable=True),
         sa.Column("updated_at", sa.DateTime(), nullable=True),
         sa.Column("id", sa.Integer(), nullable=False),
-        sa.CheckConstraint("first_team_id != second_team_id", name="check_teams_not_equal"),
+        sa.CheckConstraint(
+            "first_team_id != second_team_id", name="check_teams_not_equal"
+        ),
         sa.ForeignKeyConstraint(["first_team_id"], ["ea_team.id"], ondelete="SET NULL"),
-        sa.ForeignKeyConstraint(["second_team_id"], ["ea_team.id"], ondelete="SET NULL"),
-        sa.ForeignKeyConstraint(["tournament_id"], ["tournament.id"], ondelete="CASCADE"),
+        sa.ForeignKeyConstraint(
+            ["second_team_id"], ["ea_team.id"], ondelete="SET NULL"
+        ),
+        sa.ForeignKeyConstraint(
+            ["tournament_id"], ["tournament.id"], ondelete="CASCADE"
+        ),
         sa.PrimaryKeyConstraint("id"),
     )
 

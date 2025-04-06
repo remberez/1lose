@@ -6,9 +6,9 @@ from ..exceptions.common import NotFoundError
 class TournamentService:
     # TODO: Доработать логику по созданию/удалению/обновлению.
     def __init__(
-            self,
-            repository: AbstractTournamentRepository,
-            permissions_service: UserPermissionsService,
+        self,
+        repository: AbstractTournamentRepository,
+        permissions_service: UserPermissionsService,
     ):
         self._repository = repository
         self._permissions_service = permissions_service

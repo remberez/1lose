@@ -8,7 +8,10 @@ from typing_extensions import TypeVar
 from core.exceptions.common import NotFoundError
 from core.models import TournamentModel
 from core.repository.abc import AbstractReadRepository, AbstractWriteRepository
-from core.repository.sqlalchemy import SQLAlchemyAbstractWriteRepository, SQLAlchemyAbstractReadRepository
+from core.repository.sqlalchemy import (
+    SQLAlchemyAbstractWriteRepository,
+    SQLAlchemyAbstractReadRepository,
+)
 
 TournamentT = TypeVar("TournamentT")
 
@@ -29,12 +32,7 @@ class SQLAlchemyTournamentRepository(
     AbstractTournamentRepository,
 ):
     async def list(self) -> Sequence[TournamentModel]:
-        stmt = (
-            select(TournamentModel)
-            .options(
-                joinedload(TournamentModel.game)
-            )
-        )
+        stmt = select(TournamentModel).options(joinedload(TournamentModel.game))
         result = await self._session.execute(stmt)
         return result.scalars().all()
 
@@ -42,9 +40,7 @@ class SQLAlchemyTournamentRepository(
         stmt = (
             select(TournamentModel)
             .where(TournamentModel.id == tournament_id)
-            .options(
-                joinedload(TournamentModel.game)
-            )
+            .options(joinedload(TournamentModel.game))
         )
         result = await self._session.execute(stmt)
         return result.scalar_one_or_none()

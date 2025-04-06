@@ -27,7 +27,9 @@ class MatchSchema(BaseModel):
 
     @model_validator(mode="after")
     def validate_team_not_equals(self):
-        if self.first_team_id == self.second_team_id and (self.first_team_id or self.second_team_id):
+        if self.first_team_id == self.second_team_id and (
+            self.first_team_id or self.second_team_id
+        ):
             raise PydanticCustomError(
                 "team_equal_error",
                 "the commands cannot be the same",
@@ -43,6 +45,7 @@ class MatchSchema(BaseModel):
                 "all account values must be greater than or equal to zero",
             )
         return score
+
 
 class MatchCreateSchema(MatchSchema):
     date_end: None = Field(exclude=True, default=None)
@@ -60,7 +63,7 @@ class MatchReadSchema(MatchSchema):
 
 class MatchUpdateSchema(MatchSchema):
     tournament_id: int | None = Field(None, gt=0)
-    first_team_id: int | None  = Field(None, gt=0)
+    first_team_id: int | None = Field(None, gt=0)
     second_team_id: int | None = Field(None, gt=0)
     score: list[int] | None = Field(None, min_length=0, max_length=2)
     best_of: int | None = Field(None, gt=0)

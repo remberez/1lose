@@ -12,16 +12,19 @@ from core.models.tournament import TournamentModel
 
 
 async def get_sqlalchemy_tournament_repository(
-        session: Annotated[AsyncSession, Depends(db_helper.session_getter)],
+    session: Annotated[AsyncSession, Depends(db_helper.session_getter)],
 ) -> SQLAlchemyTournamentRepository:
     return SQLAlchemyTournamentRepository(session=session, model=TournamentModel)
 
 
 async def get_tournament_service(
-        repository: Annotated[SQLAlchemyTournamentRepository, Depends(get_sqlalchemy_tournament_repository)],
-        permission_service: Annotated[UserPermissionsService, Depends(get_user_permissions_service)],
+    repository: Annotated[
+        SQLAlchemyTournamentRepository, Depends(get_sqlalchemy_tournament_repository)
+    ],
+    permission_service: Annotated[
+        UserPermissionsService, Depends(get_user_permissions_service)
+    ],
 ) -> TournamentService:
     return TournamentService(
-        repository=repository,
-        permissions_service=permission_service
+        repository=repository, permissions_service=permission_service
     )

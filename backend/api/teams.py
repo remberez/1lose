@@ -53,4 +53,6 @@ async def update_team(
     user: Annotated[UserReadSchema, Depends(current_user)],
     team_data: EATeamUpdateSchema,
 ):
-    return await service.update(team_id=team_id, user_id=user.id, **team_data.model_dump(exclude_none=True))
+    return await service.update(
+        team_id=team_id, user_id=user.id, **team_data.model_dump(exclude_none=True)
+    )

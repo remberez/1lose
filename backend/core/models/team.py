@@ -17,10 +17,8 @@ class EATeamModel(Base, IntegerIDMixin):
 
     game: Mapped["GameModel"] = relationship(back_populates="teams")
     matches_as_first_team: Mapped[list["MatchModel"]] = relationship(
-        back_populates="first_team",
-        foreign_keys="MatchModel.first_team_id"
+        back_populates="first_team", foreign_keys="MatchModel.first_team_id"
     )
     matches_as_second_team: Mapped[list["MatchModel"]] = relationship(
-        back_populates="second_team",
-        foreign_keys="MatchModel.second_team_id"
+        back_populates="second_team", foreign_keys="MatchModel.second_team_id"
     )

@@ -19,6 +19,7 @@ class AbstractReadRepository[ModelORM](ABC):
     async def is_exists(self, model_id: int) -> bool:
         raise NotImplementedError()
 
+
 class AbstractWriteRepository[ModelORM](ABC):
     """
     Интерфейс репозитория для изменения данных.

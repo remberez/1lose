@@ -4,7 +4,10 @@ from typing_extensions import TypeVar
 
 from core.models.game import GameModel as SQLAlchemyGameModel
 from .abc import AbstractReadRepository, AbstractWriteRepository
-from .sqlalchemy import SQLAlchemyAbstractWriteRepository, SQLAlchemyAbstractReadRepository
+from .sqlalchemy import (
+    SQLAlchemyAbstractWriteRepository,
+    SQLAlchemyAbstractReadRepository,
+)
 
 GameModel = TypeVar("GameModel")
 
@@ -20,5 +23,4 @@ class SQLAlchemyGameRepository(
     SQLAlchemyAbstractWriteRepository[SQLAlchemyGameModel],
     SQLAlchemyAbstractReadRepository[SQLAlchemyGameModel],
     AbstractGameRepository,
-):
-    ...
+): ...

@@ -35,6 +35,7 @@ async def not_found_handler(_request: Request, exc: NotFoundError):
     # Обработчик исключений для NotFoundError
     raise HTTPException(status_code=404, detail=exc.messages)
 
+
 @app.exception_handler(MatchInProgressException)
 async def match_progress_handler(_request: Request, exc: NotFoundError):
     raise HTTPException(status_code=400, detail=str(exc))

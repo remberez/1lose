@@ -13,6 +13,7 @@ from .abc import AbstractReadRepository, AbstractWriteRepository
 Для моделей со специфичным названием первичного ключа нужно переопределить методы.
 """
 
+
 class SQLAlchemyAbstractRepository[Model: DeclarativeBase](ABC):
     """
     Интерфейс репозитория SQLAlchemy, от которого должны наследоваться все репозитории,
@@ -42,21 +43,17 @@ class SQLAlchemyAbstractReadRepository[Model: DeclarativeBase](
         stmt = select(exists().where(model_pk == model_id))
         return bool(await self._session.scalar(stmt))
 
+
 class SQLAlchemyAbstractWriteRepository[Model: DeclarativeBase](
     AbstractWriteRepository[Model],
     SQLAlchemyAbstractRepository,
     ABC,
 ):
     async def create(self, **model_data) -> Model:
-        stmt = (
-            insert(self._model)
-            .values(**model_data)
-            .returning(self._model)
-        )
+        stmt = insert(self._model).values(**model_data).returning(self._model)
         model = await self._session.execute(stmt)
         await self._session.commit()
         return model.scalar_one()
-
 
     async def update(self, model_id: int, **data) -> Model:
         id_column: Column[int] = self._model.id
@@ -72,9 +69,6 @@ class SQLAlchemyAbstractWriteRepository[Model: DeclarativeBase](
 
     async def delete(self, model_id: int) -> None:
         id_column: Column[int] = self._model.id
-        stmt = (
-            delete(self._model)
-            .where(id_column == model_id)
-        )
+        stmt = delete(self._model).where(id_column == model_id)
         await self._session.execute(stmt)
         await self._session.commit()

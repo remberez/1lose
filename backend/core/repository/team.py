@@ -6,7 +6,10 @@ from sqlalchemy.orm import joinedload
 from typing_extensions import TypeVar
 
 from .abc import AbstractReadRepository, AbstractWriteRepository
-from .sqlalchemy import SQLAlchemyAbstractReadRepository, SQLAlchemyAbstractWriteRepository
+from .sqlalchemy import (
+    SQLAlchemyAbstractReadRepository,
+    SQLAlchemyAbstractWriteRepository,
+)
 from core.models.team import EATeamModel
 from core.exceptions.common import NotFoundError
 
@@ -18,9 +21,9 @@ class AbstractEATeamRepository(
     AbstractWriteRepository[EATeamModelT],
     ABC,
 ):
-   @abstractmethod
-   async def team_exists(self, team_id: int):
-       raise NotImplementedError()
+    @abstractmethod
+    async def team_exists(self, team_id: int):
+        raise NotImplementedError()
 
 
 class SQLAlchemyEATeamRepository(

@@ -15,42 +15,42 @@ router = APIRouter(prefix=settings.api.match, tags=["Matches"])
 
 @router.get("/", response_model=list[MatchReadSchema])
 async def list_matches(
-        service: Annotated[MatchService, Depends(match_service)],
+    service: Annotated[MatchService, Depends(match_service)],
 ):
     return await service.list()
 
 
 @router.post("/", response_model=MatchReadSchema)
 async def create_match(
-        user: Annotated[UserReadSchema, Depends(current_user)],
-        service: Annotated[MatchService, Depends(match_service)],
-        match: MatchCreateSchema,
+    user: Annotated[UserReadSchema, Depends(current_user)],
+    service: Annotated[MatchService, Depends(match_service)],
+    match: MatchCreateSchema,
 ):
     return await service.create(user_id=user.id, match_data=match)
 
 
 @router.patch("/{match_id}", response_model=MatchReadSchema)
 async def update_match(
-        match_id: int,
-        match_data: MatchUpdateSchema,
-        user: Annotated[UserReadSchema, Depends(current_user)],
-        service: Annotated[MatchService, Depends(match_service)],
+    match_id: int,
+    match_data: MatchUpdateSchema,
+    user: Annotated[UserReadSchema, Depends(current_user)],
+    service: Annotated[MatchService, Depends(match_service)],
 ):
     return await service.update(user.id, match_id, match_data)
 
 
 @router.delete("/{match_id}")
 async def delete_match(
-        match_id: int,
-        user: Annotated[UserReadSchema, Depends(current_user)],
-        service: Annotated[MatchService, Depends(match_service)],
+    match_id: int,
+    user: Annotated[UserReadSchema, Depends(current_user)],
+    service: Annotated[MatchService, Depends(match_service)],
 ):
     return await service.delete(user.id, match_id)
 
 
 @router.get("/{match_id}")
 async def get_match(
-        match_id: int,
-        service: Annotated[MatchService, Depends(match_service)],
+    match_id: int,
+    service: Annotated[MatchService, Depends(match_service)],
 ):
     return await service.get(match_id)
