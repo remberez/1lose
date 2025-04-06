@@ -33,7 +33,7 @@ async def user_permission_handler(_request: Request, _exc: UserPermissionError):
 @app.exception_handler(NotFoundError)
 async def not_found_handler(_request: Request, exc: NotFoundError):
     # Обработчик исключений для NotFoundError
-    raise HTTPException(status_code=404, detail=str(exc))
+    raise HTTPException(status_code=404, detail=exc.messages)
 
 @app.exception_handler(MatchInProgressException)
 async def match_progress_handler(_request: Request, exc: NotFoundError):
