@@ -1,9 +1,14 @@
+import typing
 from datetime import datetime
 
 from sqlalchemy import ForeignKey, ARRAY, Integer, SmallInteger, CheckConstraint, TIMESTAMP
-from sqlalchemy.orm import Mapped, mapped_column
+from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from .base import Base, IntegerIDMixin, DateCreatedUpdatedMixin
+
+if typing.TYPE_CHECKING:
+    from core.models import TournamentModel
+    from core.models import EATeamModel
 
 
 class MatchModel(Base, DateCreatedUpdatedMixin, IntegerIDMixin):
@@ -22,3 +27,13 @@ class MatchModel(Base, DateCreatedUpdatedMixin, IntegerIDMixin):
     best_of: Mapped[int] = mapped_column(SmallInteger())
     date_start: Mapped[datetime] = mapped_column(TIMESTAMP(timezone=True), nullable=True, default=None)
     date_end: Mapped[datetime] = mapped_column(TIMESTAMP(timezone=True), nullable=True, default=None)
+
+    tournament: Mapped["TournamentModel"] = relationship(back_populates="matches")
+    first_team: Mapped["EATeamModel"] = relationship(
+        back_populates="matches_as_first_team",
+        foreign_keys=[first_team_id],
+    )
+    second_team: Mapped["EATeamModel"] = relationship(
+        back_populates="matches_as_second_team",
+        foreign_keys=[second_team_id],
+    )
