@@ -1,6 +1,6 @@
 from typing import Annotated
 
-from fastapi import Depends
+from fastapi.params import Depends
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from core.models import MapModel
@@ -18,8 +18,8 @@ async def sqlalchemy_map_repo(
 
 
 async def map_service(
-        repo: [SQLAlchemyMapRepository, Depends(sqlalchemy_map_repo)],
-        permissions_service: [UserPermissionsService, Depends(get_user_permissions_service)],
+        repo: Annotated[SQLAlchemyMapRepository, Depends(sqlalchemy_map_repo)],
+        permissions_service: Annotated[UserPermissionsService, Depends(get_user_permissions_service)],
 ) -> MapService:
     return MapService(
         repository=repo,
