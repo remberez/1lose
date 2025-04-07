@@ -10,7 +10,7 @@ from core.service.map import MapService
 from .dependencies.services.map import map_service
 from .dependencies.auth.current_user import current_user
 
-router = APIRouter(prefix=settings.api.map)
+router = APIRouter(prefix=settings.api.map, tags=["Maps"])
 
 
 @router.get("/", response_model=list[MapReadSchema])
