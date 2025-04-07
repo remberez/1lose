@@ -20,4 +20,4 @@ class MapModel(Base, IntegerIDMixin, DateCreatedUpdatedMixin):
 
     winner: Mapped["EATeamModel"] = relationship()
     match: Mapped["MatchModel"] = relationship(back_populates="maps")
-    events: Mapped["EventModel"] = relationship(back_populates="match")
+    events: Mapped["EventModel"] = relationship(back_populates="map")
