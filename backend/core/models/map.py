@@ -8,6 +8,7 @@ from .base import Base, IntegerIDMixin, DateCreatedUpdatedMixin
 if typing.TYPE_CHECKING:
     from core.models import EATeamModel
     from core.models import MatchModel
+    from core.models import EventModel
 
 
 class MapModel(Base, IntegerIDMixin, DateCreatedUpdatedMixin):
@@ -19,3 +20,4 @@ class MapModel(Base, IntegerIDMixin, DateCreatedUpdatedMixin):
 
     winner: Mapped["EATeamModel"] = relationship()
     match: Mapped["MatchModel"] = relationship(back_populates="maps")
+    events: Mapped["EventModel"] = relationship(back_populates="match")
