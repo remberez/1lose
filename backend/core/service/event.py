@@ -2,7 +2,7 @@ from core.repository.event import AbstractEventRepository
 from core.service.user import UserPermissionsService
 
 
-class EventRepository:
+class EventService:
     def __init__(
             self,
             repository: AbstractEventRepository,
