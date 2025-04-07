@@ -1,3 +1,4 @@
+from sqlalchemy import ForeignKey
 from sqlalchemy.orm import (
     DeclarativeBase,
     Mapped,
@@ -19,3 +20,7 @@ class DateCreatedUpdatedMixin:
     updated_at: Mapped[datetime] = mapped_column(
         default=datetime.now, onupdate=datetime.now, nullable=True
     )
+
+
+class UpdatedByMixin:
+    updated_by: Mapped[int] = mapped_column(ForeignKey("user.id"))
