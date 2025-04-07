@@ -1,3 +1,5 @@
+import typing
+
 from fastapi_users_db_sqlalchemy import SQLAlchemyBaseUserTable, SQLAlchemyUserDatabase
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import (
@@ -21,6 +23,9 @@ from .base import (
 )
 from core.types.user_id import UserID
 
+if typing.TYPE_CHECKING:
+    from core.models import EventModel
+
 
 class UserRoleModel(Base):
     __tablename__ = "user_role"
@@ -42,6 +47,7 @@ class UserModel(
     )
 
     role: Mapped["UserRoleModel"] = relationship(back_populates="users")
+    events_updated: Mapped["EventModel"] = relationship(back_populates="updated_by_r")
 
     @classmethod
     def get_db(cls, session: AsyncSession):

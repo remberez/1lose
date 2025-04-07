@@ -8,6 +8,7 @@ from .base import Base, IntegerIDMixin, DateCreatedUpdatedMixin, UpdatedByMixin
 if typing.TYPE_CHECKING:
     from core.models import MatchModel
     from core.models import MapModel
+    from core.models import UserModel
 
 
 class OutComeModel(Base, IntegerIDMixin):
@@ -30,3 +31,4 @@ class EventModel(Base, IntegerIDMixin, DateCreatedUpdatedMixin, UpdatedByMixin):
     map: Mapped["MapModel"] = relationship(back_populates="events")
     first_outcome: Mapped["OutComeModel"] = relationship(foreign_keys=first_outcome_id)
     second_outcome: Mapped["OutComeModel"] = relationship(foreign_keys=second_outcome_id)
+    updated_by_r: Mapped["UserModel"] = relationship(back_populates="events_updated")
