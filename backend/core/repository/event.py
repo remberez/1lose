@@ -55,26 +55,7 @@ class SQLAlchemyEventRepository(
         result = await self._session.execute(stmt)
         return result.scalars().all()
 
-    async def _create_outcome(self, **outcome_data) -> int:
-        stmt = (
-            insert(OutComeModel)
-            .values(**outcome_data)
-            .returning(OutComeModel.id)
-        )
-        result = await self._session.execute(stmt)
-        outcome_id = result.scalar_one()
-        await self._session.commit()
-        return outcome_id
-
     async def create(self, **model_data) -> EventModel:
-        first_outcome, second_outcome = model_data.pop("first_outcome"), model_data.pop("second_outcome")
-
-        if not (first_outcome and second_outcome):
-            raise ValueError("Required fields 'first_outcome' and 'second_outcome'")
-
-        model_data["first_outcome_id"] = await self._create_outcome(**first_outcome)
-        model_data["second_outcome_id"] = await self._create_outcome(**second_outcome)
-
         stmt = (
             insert(EventModel)
             .values(**model_data)
