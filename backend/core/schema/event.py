@@ -32,8 +32,8 @@ class EventReadSchema(EventSchema):
     id: int
     match: MatchReadSchema
     map: MapReadSchema | None = None
-    first_outcome: OutComeSchema
-    second_outcome: OutComeSchema
+    first_outcome: OutComeReadSchema
+    second_outcome: OutComeReadSchema
     created_at: datetime
     updated_at: datetime
 
