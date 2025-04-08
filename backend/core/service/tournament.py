@@ -1,39 +1,49 @@
-from core.repository.tournament import AbstractTournamentRepository
+import typing
+
 from .user import UserPermissionsService
 from ..exceptions.common import NotFoundError
+from ..uow.uow import UnitOfWork
 
 
 class TournamentService:
     # TODO: Доработать логику по созданию/удалению/обновлению.
     def __init__(
-        self,
-        repository: AbstractTournamentRepository,
-        permissions_service: UserPermissionsService,
+            self,
+            uow_factory: typing.Callable[[], UnitOfWork],
+            permissions_service: UserPermissionsService
     ):
-        self._repository = repository
         self._permissions_service = permissions_service
+        self._uow_factory = uow_factory
 
-    async def is_exists(self, tournament_id: int):
-        if not await self._repository.is_exists(tournament_id):
+    async def _is_exists(self, tournament_id: int, uow: UnitOfWork):
+        if not await uow.tournaments.is_exists(tournament_id):
             raise NotFoundError(f"Tournament {tournament_id} not found")
 
     async def create(self, user_id: int, **tournament_data):
         await self._permissions_service.verify_admin_or_moderator(user_id)
-        return await self._repository.create(**tournament_data)
+
+        async with self._uow_factory() as uow:
+            return await uow.tournaments.create(**tournament_data)
 
     async def update(self, user_id: int, tournament_id: int, **tournament_data):
         await self._permissions_service.verify_admin_or_moderator(user_id)
-        await self.is_exists(tournament_id)
-        return await self._repository.update(tournament_id, **tournament_data)
+
+        async with self._uow_factory() as uow:
+            await self._is_exists(tournament_id, uow)
+            return await uow.tournaments.update(tournament_id, **tournament_data)
 
     async def delete(self, user_id: int, tournament_id: int):
         await self._permissions_service.verify_admin_or_moderator(user_id)
-        await self.is_exists(tournament_id)
-        return await self._repository.delete(tournament_id)
+
+        async with self._uow_factory() as uow:
+            await self._is_exists(tournament_id, uow)
+            return await uow.tournaments.delete(tournament_id)
 
     async def list(self):
-        return await self._repository.list()
+        async with self._uow_factory() as uow:
+            return await uow.tournaments.list()
 
     async def get(self, tournament_id):
-        await self.is_exists(tournament_id)
-        return await self._repository.get(tournament_id)
+        async with self._uow_factory() as uow:
+            await self._is_exists(tournament_id, uow)
+            return await uow.tournaments.get(tournament_id)
