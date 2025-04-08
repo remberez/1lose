@@ -1,5 +1,5 @@
-from abc import ABC
-from typing import Sequence
+from abc import ABC, abstractmethod
+from typing import Sequence, cast
 
 from sqlalchemy import select, insert
 from sqlalchemy.orm import joinedload
@@ -16,6 +16,16 @@ class AbstractEventRepository[Model](
     ABC,
 ):
     # Специфичные методы для работы с EventModel
+    @abstractmethod
+    async def get_outcomes(self, event_id: int) -> Sequence:
+        raise NotImplementedError()
+
+
+class AbstractOutComeRepository[Model](
+    AbstractReadRepository[Model],
+    ABC,
+):
+    # Специфичные методы для работы с OutComeModel
     ...
 
 
@@ -64,3 +74,14 @@ class SQLAlchemyEventRepository(
         result = await self._session.execute(stmt)
         await self._session.commit()
         return await self.get(result.scalar())
+
+    async def get_outcomes(self, event_id: int) -> tuple[OutComeModel, OutComeModel]:
+        event = await self._session.get(EventModel, event_id)
+        return cast(OutComeModel, event.first_outcome), cast(OutComeModel, event.second_outcome)
+
+
+class SQLAlchemyOutComeRepository(
+    AbstractOutComeRepository[OutComeModel],
+    SQLAlchemyAbstractReadRepository[OutComeModel],
+):
+    ...
