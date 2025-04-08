@@ -29,15 +29,22 @@ class DataBaseHelper:
             autocommit=False,
             expire_on_commit=False,
         )
+        self._session = None
 
     async def dispose(self):
         # Освобождение пула соединений.
         await self.engine.dispose()
 
     async def session_getter(self) -> AsyncGenerator[AsyncSession, None]:
-        # Возвращает сессию для работы с данными. Используется как зависимости в FastAPI,
-        async with self.session_maker() as session:
+        if self._session is None:
+            self._session = self.session_maker()
+        async with self._session as session:
             yield session
+
+    async def reset_session(self):
+        if self._session:
+            await self._session.close()
+            self._session = None
 
 
 db_helper = DataBaseHelper(
