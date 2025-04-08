@@ -14,7 +14,7 @@ class MatchService:
     def __init__(
             self,
             uow_factory: typing.Callable[[], UnitOfWork],
-            permissions_service: UserPermissionsService
+            permissions_service: "UserPermissionsService"
     ):
         self._permissions_service = permissions_service
         self._uow_factory = uow_factory

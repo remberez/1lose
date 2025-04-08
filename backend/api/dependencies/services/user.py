@@ -1,34 +1,20 @@
 from typing import Annotated
 
 from fastapi.params import Depends
-from sqlalchemy.ext.asyncio import AsyncSession
 
-from core.models.db_helper import db_helper
-from core.repository.user import AbstractUserRepository, UserSQLAlchemyRepository
+from api.dependencies.services.uow import get_uow
 from core.service.user import UserService, UserPermissionsService
-from core.models.user import UserModel
-
-
-async def get_sqlalchemy_user_repository(
-    session: Annotated[AsyncSession, Depends(db_helper.session_getter)],
-) -> UserSQLAlchemyRepository:
-    return UserSQLAlchemyRepository(session=session, model=UserModel)
+from core.uow.uow import UnitOfWork
 
 
 async def get_user_permissions_service(
-    repository: Annotated[
-        AbstractUserRepository, Depends(get_sqlalchemy_user_repository)
-    ],
+    uow_factory: Annotated[UnitOfWork, Depends(get_uow)],
 ) -> UserPermissionsService:
-    return UserPermissionsService(user_repository=repository)
+    return UserPermissionsService(uow_factory=lambda: uow_factory)
 
 
 async def get_user_service(
-    repository: Annotated[
-        AbstractUserRepository, Depends(get_sqlalchemy_user_repository)
-    ],
-    permissions_service: Annotated[
-        UserPermissionsService, Depends(get_user_permissions_service),
-    ]
+    uow_factory: Annotated[UnitOfWork, Depends(get_uow)],
+    permissions_service: Annotated[UserPermissionsService, Depends(get_user_permissions_service)]
 ) -> UserService:
-    return UserService(repository=repository, permissions_service=permissions_service)
+    return UserService(uow_factory=lambda: uow_factory, permissions_service=permissions_service)
