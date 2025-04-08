@@ -18,6 +18,8 @@ class OutComeModel(Base, IntegerIDMixin):
     name: Mapped[str] = mapped_column(String(32))
     coefficient: Mapped[float] = mapped_column(Numeric(10, 2))
 
+    bets: Mapped[list["BetModel"]] = relationship(back_populates="outcome")
+
 
 class EventModel(Base, IntegerIDMixin, DateCreatedUpdatedMixin, UpdatedByMixin):
     __tablename__ = "event"
