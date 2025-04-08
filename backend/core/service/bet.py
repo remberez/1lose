@@ -37,7 +37,11 @@ class BetService:
             raise UserPermissionError()
 
     async def delete(self, bet_id: int, user_id: int):
-        ...
+        async with self._uow_factory() as uow:
+            bet_owner_id = await uow.bets.bet_owner_id(bet_id)
+            if bet_owner_id != user_id:
+                await self._permissions_service.verify_admin(user_id)
+            await uow.bets.delete(bet_id)
 
     async def create(self, user_id: int, bet: BetCreateSchema):
         async with self._uow_factory() as uow:
