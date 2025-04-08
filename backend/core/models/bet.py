@@ -6,18 +6,11 @@ from sqlalchemy import ForeignKey, Numeric, Enum as SQLEnum
 from sqlalchemy.orm import Mapped, mapped_column, Relationship, relationship
 
 from .base import Base, IntegerIDMixin, DateCreatedUpdatedMixin
+from ..const.bet_status import BetStatus
 
 if typing.TYPE_CHECKING:
     from core.models import UserModel
     from core.models import EventModel
-
-
-class BetStatus(Enum):
-    ACTIVE = "active"
-    WON = "won"
-    LOST = "lost"
-    SOLD = "sold"
-    CANCELED = "canceled"
 
 
 class BetModel(Base, IntegerIDMixin, DateCreatedUpdatedMixin):
