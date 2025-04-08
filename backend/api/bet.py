@@ -20,3 +20,20 @@ async def create_bet(
         service: Annotated[BetService, Depends(bet_service)],
 ):
     return await service.create(user_id=user.id, bet=bet)
+
+
+@router.get("/", response_model=list[BetReadSchema])
+async def user_bets_list(
+        service: Annotated[BetService, Depends(bet_service)],
+        user: Annotated[UserReadSchema, Depends(current_user)],
+):
+    return await service.user_list(user.id)
+
+
+@router.delete("/{bet_id}")
+async def delete_bet(
+        bet_id: int,
+        service: Annotated[BetService, Depends(bet_service)],
+        user: Annotated[UserReadSchema, Depends(current_user)],
+):
+    return await service.delete(bet_id, user.id)
