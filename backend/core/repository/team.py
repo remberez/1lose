@@ -48,14 +48,11 @@ class SQLAlchemyEATeamRepository(
     async def create(self, **data) -> EATeamModel:
         team = EATeamModel(**data)
         self._session.add(team)
-        await self._session.commit()
-        await self._session.refresh(team)
         return team
 
     async def delete(self, team_id: int) -> None:
         stmt = delete(EATeamModel).where(EATeamModel.id == team_id)
         await self._session.execute(stmt)
-        await self._session.commit()
 
     async def team_exists(self, team_id: int):
         # Вызывает NotFoundError, если команда не была найдена.

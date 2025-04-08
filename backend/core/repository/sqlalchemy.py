@@ -52,7 +52,6 @@ class SQLAlchemyAbstractWriteRepository[Model: DeclarativeBase](
     async def create(self, **model_data) -> Model:
         stmt = insert(self._model).values(**model_data).returning(self._model)
         model = await self._session.execute(stmt)
-        await self._session.commit()
         return model.scalar_one()
 
     async def update(self, model_id: int, **data) -> Model:
@@ -64,11 +63,9 @@ class SQLAlchemyAbstractWriteRepository[Model: DeclarativeBase](
             .returning(self._model)
         )
         model = await self._session.execute(stmt)
-        await self._session.commit()
         return model.scalar_one()
 
     async def delete(self, model_id: int) -> None:
         id_column: Column[int] = self._model.id
         stmt = delete(self._model).where(id_column == model_id)
         await self._session.execute(stmt)
-        await self._session.commit()

@@ -42,6 +42,5 @@ class UserSQLAlchemyRepository(
     async def update_user_balance(self, user_id: int, value: Decimal) -> Decimal:
         user = await self.get(user_id)
         user.balance += value
-        await self._session.commit()
         return user.balance
 

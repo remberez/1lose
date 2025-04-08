@@ -72,7 +72,6 @@ class SQLAlchemyEventRepository(
             .returning(EventModel.id)
         )
         result = await self._session.execute(stmt)
-        await self._session.commit()
         return await self.get(result.scalar())
 
     async def get_outcomes(self, event_id: int) -> tuple[OutComeModel, OutComeModel]:
