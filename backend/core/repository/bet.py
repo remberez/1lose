@@ -18,6 +18,11 @@ class AbstractBetRepository[Model](
     async def user_bets(self, user_id: int) -> Sequence[Model]:
         raise NotImplementedError()
 
+    @abstractmethod
+    async def bet_owner_id(self, bet_id: int) -> int:
+        # Возвращает id владельца ставки
+        raise NotImplementedError()
+
 
 class SQLAlchemyBetRepository(
     SQLAlchemyAbstractReadRepository[BetModel],
@@ -31,3 +36,12 @@ class SQLAlchemyBetRepository(
         )
         result = await self._session.execute(stmt)
         return result.scalars().all()
+
+    async def bet_owner_id(self, bet_id: int) -> int:
+        # Возвращает id владельца ставки
+        stmt = (
+            select(BetModel.user_id)
+            .where(BetModel.id == bet_id)
+        )
+        result = await self._session.execute(stmt)
+        return result.scalar_one()
