@@ -1,14 +1,34 @@
 from abc import abstractmethod, ABC
+from typing import Self
+
+from core.repository.bet import AbstractBetRepository
+from core.repository.event import AbstractEventRepository
+from core.repository.game import AbstractGameRepository
+from core.repository.map import AbstractMapRepository
+from core.repository.match import AbstractMatchRepository
+from core.repository.outcome import AbstractOutComeRepository
+from core.repository.team import AbstractEATeamRepository
+from core.repository.tournament import AbstractTournamentRepository
+from core.repository.user import AbstractUserRepository
 
 
 class UnitOfWork(ABC):
+    bets: AbstractBetRepository | None
+    events: AbstractEventRepository | None
+    games: AbstractGameRepository | None
+    maps: AbstractMapRepository | None
+    matches: AbstractMatchRepository | None
+    outcomes: AbstractOutComeRepository | None
+    teams: AbstractEATeamRepository | None
+    tournaments: AbstractTournamentRepository | None
+    users: AbstractUserRepository | None
 
     @abstractmethod
     def __init__(self):
         ...
 
     @abstractmethod
-    async def __aenter__(self):
+    async def __aenter__(self) -> Self:
         ...
 
     @abstractmethod
