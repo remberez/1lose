@@ -1,7 +1,4 @@
-from requests import session
-
 from .uow import UnitOfWork
-from ..repository.user import UserSQLAlchemyRepository
 
 
 class SqlAlchemyUnitOfWork(UnitOfWork):
