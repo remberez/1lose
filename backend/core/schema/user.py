@@ -1,5 +1,5 @@
 from fastapi_users import schemas
-from pydantic import Field
+from pydantic import Field, BaseModel
 
 from core.types.user_id import UserID
 from decimal import Decimal
@@ -14,3 +14,7 @@ class UserCreateSchema(schemas.BaseUserCreate): ...
 
 
 class UserUpdateSchema(schemas.BaseUserUpdate): ...
+
+
+class UpdateBalanceSchema(BaseModel):
+    balance: Decimal = Field(max_digits=12, decimal_places=2)
