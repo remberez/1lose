@@ -8,6 +8,7 @@ from .base import Base, IntegerIDMixin
 if typing.TYPE_CHECKING:
     from .team import EATeamModel
     from core.models.tournament import TournamentModel
+    from core.models import MatchModel
 
 
 class GameModel(Base, IntegerIDMixin):
@@ -18,3 +19,4 @@ class GameModel(Base, IntegerIDMixin):
 
     teams: Mapped[list["EATeamModel"]] = relationship(back_populates="game")
     tournaments: Mapped[list["TournamentModel"]] = relationship(back_populates="game")
+    matches: Mapped[list["MatchModel"]] = relationship(back_populates="game")
