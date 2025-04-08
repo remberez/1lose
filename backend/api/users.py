@@ -4,7 +4,7 @@ from fastapi import APIRouter
 from fastapi.params import Depends
 
 from core.config import settings
-from core.schema.user import UserReadSchema, UserCreateSchema
+from core.schema.user import UserReadSchema, UserCreateSchema, UpdateBalanceSchema
 from core.service.user import UserService
 from .dependencies.auth.backend import auth_backend
 from .dependencies.auth.current_user import current_user
@@ -42,3 +42,13 @@ async def get_user(
     service: Annotated[UserService, Depends(get_user_service)],
 ):
     return await service.get(user_id)
+
+
+@router.patch("/{user_id}", response_model=UpdateBalanceSchema)
+async def update_balance(
+        user_id: int,
+        service: Annotated[UserService, Depends(get_user_service)],
+        value: UpdateBalanceSchema,
+        user: Annotated[UserReadSchema, Depends(current_user)],
+):
+    return UpdateBalanceSchema(balance=await service.update_balance(user_id, user.id, value.balance))
