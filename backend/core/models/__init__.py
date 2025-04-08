@@ -7,3 +7,4 @@ from .tournament import TournamentModel
 from .match import MatchModel
 from .map import MapModel
 from .event import EventModel
+from .bet import BetModel

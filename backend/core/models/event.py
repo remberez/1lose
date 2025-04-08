@@ -9,6 +9,7 @@ if typing.TYPE_CHECKING:
     from core.models import MatchModel
     from core.models import MapModel
     from core.models import UserModel
+    from core.models import BetModel
 
 
 class OutComeModel(Base, IntegerIDMixin):
@@ -32,3 +33,4 @@ class EventModel(Base, IntegerIDMixin, DateCreatedUpdatedMixin, UpdatedByMixin):
     first_outcome: Mapped["OutComeModel"] = relationship(foreign_keys=first_outcome_id)
     second_outcome: Mapped["OutComeModel"] = relationship(foreign_keys=second_outcome_id)
     updated_by_r: Mapped["UserModel"] = relationship(back_populates="events_updated")
+    bets: Mapped[list["BetModel"]] = relationship(back_populates="event")

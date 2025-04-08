@@ -25,6 +25,7 @@ from core.types.user_id import UserID
 
 if typing.TYPE_CHECKING:
     from core.models import EventModel
+    from core.models import BetModel
 
 
 class UserRoleModel(Base):
@@ -47,7 +48,9 @@ class UserModel(
     )
 
     role: Mapped["UserRoleModel"] = relationship(back_populates="users")
-    events_updated: Mapped["EventModel"] = relationship(back_populates="updated_by_r")
+    events_updated: Mapped[list["EventModel"]] = relationship(back_populates="updated_by_r")
+    bets: Mapped[list["BetModel"]] = relationship(back_populates="user")
+
 
     @classmethod
     def get_db(cls, session: AsyncSession):
