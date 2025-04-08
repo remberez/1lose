@@ -1,3 +1,4 @@
+from decimal import Decimal
 from functools import wraps
 from typing import Callable, TypeVar, Any, Coroutine
 
@@ -14,8 +15,13 @@ R = TypeVar("R")
 
 
 class UserService:
-    def __init__(self, repository: AbstractUserRepository):
+    def __init__(
+            self,
+            repository: AbstractUserRepository,
+            permissions_service: "UserPermissionsService",
+    ):
         self._repository = repository
+        self._permissions_service = permissions_service
 
     async def is_exists(self, user_id: int):
         if not await self._repository.is_exists(user_id):
@@ -24,6 +30,10 @@ class UserService:
     async def get(self, user_id: int) -> UserModelT:
         await self.is_exists(user_id)
         return await self._repository.get(user_id)
+
+    async def update_balance(self, user_id: int, target_user_id: int, balance: Decimal):
+        await self._permissions_service.verify_admin(user_id)
+        return await self._repository.update_user_balance(target_user_id, balance)
 
 
 class UserPermissionsService:
