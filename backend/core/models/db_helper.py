@@ -46,6 +46,9 @@ class DataBaseHelper:
             await self._session.close()
             self._session = None
 
+    async def get_session_maker(self):
+        return self.session_maker
+
 
 db_helper = DataBaseHelper(
     url=str(settings.database.url),
