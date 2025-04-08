@@ -27,5 +27,8 @@ async def get_user_service(
     repository: Annotated[
         AbstractUserRepository, Depends(get_sqlalchemy_user_repository)
     ],
+    permissions_service: Annotated[
+        UserPermissionsService, Depends(get_user_permissions_service),
+    ]
 ) -> UserService:
-    return UserService(repository=repository)
+    return UserService(repository=repository, permissions_service=permissions_service)
