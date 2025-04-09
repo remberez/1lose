@@ -37,3 +37,12 @@ async def delete_bet(
         user: Annotated[UserReadSchema, Depends(current_user)],
 ):
     return await service.delete(bet_id, user.id)
+
+
+@router.get("/{bet_id}", response_model=BetReadSchema)
+async def get_bet(
+        bet_id: int,
+        service: Annotated[BetService, Depends(bet_service)],
+        user: Annotated[UserReadSchema, Depends(current_user)],
+):
+    return await service.get(bet_id, user.id)
