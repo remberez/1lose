@@ -8,7 +8,7 @@ from core.const.bet_status import BetStatus
 class BetSchema(BaseModel):
     event_id: int = Field(gt=0)
     outcome_id: int = Field(gt=0)
-    amount: Decimal = Field(max_digits=12, decimal_places=2)
+    amount: Decimal = Field(max_digits=12, decimal_places=2, gt=0)
 
 
 class BetReadSchema(BetSchema):
