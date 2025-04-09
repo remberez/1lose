@@ -43,9 +43,9 @@ class BetService:
 
     async def delete(self, bet_id: int, user_id: int):
         async with self._uow_factory() as uow:
-            bet_owner_id = await uow.bets.bet_owner_id(bet_id)
-            if bet_owner_id != user_id:
-                await self._permissions_service.verify_admin(user_id)
+            bet = await uow.bets.get(bet_id)
+            await self._permissions_service.verify_admin(user_id)
+            await uow.users.update_user_balance(user_id, bet.amount)
             await uow.bets.delete(bet_id)
 
     async def _validate_user_balance(self, user_id: int, bet_amount: Decimal, uow: UnitOfWork):
