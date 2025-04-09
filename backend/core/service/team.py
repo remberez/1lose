@@ -20,7 +20,7 @@ class EATeamService:
 
     async def list(self):
         async with self._uow_factory() as uow:
-            return await uow.matches.list()
+            return await uow.teams.list()
 
     async def get(self, team_id: int):
         async with self._uow_factory() as uow:
