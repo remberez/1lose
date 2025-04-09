@@ -7,7 +7,7 @@ from starlette.requests import Request
 
 from api import router
 from core.config import settings
-from core.exceptions.common import NotFoundError
+from core.exceptions.common import NotFoundError, BusinessValidationError
 from core.exceptions.match_exc import MatchInProgressException, MatchDateTimeException
 from core.exceptions.user_exc import UserPermissionError
 from core.models.db_helper import db_helper
@@ -43,6 +43,11 @@ async def match_progress_handler(_request: Request, exc: NotFoundError):
 
 @app.exception_handler(MatchDateTimeException)
 async def match_datetime_handler(_request, exc: MatchDateTimeException):
+    raise HTTPException(status_code=400, detail=str(exc))
+
+
+@app.exception_handler(BusinessValidationError)
+async def business_validation_handler(_request: Request, exc: BusinessValidationError):
     raise HTTPException(status_code=400, detail=str(exc))
 
 
