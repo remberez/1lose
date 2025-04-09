@@ -17,6 +17,10 @@ class BetService:
         self._permissions_service = permissions_service
         self._uow_factory = uow_factory
 
+    async def _is_exists(self, bet_id: int, uow: UnitOfWork):
+        if not await uow.bets.is_exists(bet_id):
+            raise NotFoundError(f"Bet {bet_id} not found")
+
     async def list(self):
         # TODO: Использовать только для модераторов/администраторов
         ...
