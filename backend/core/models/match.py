@@ -47,7 +47,7 @@ class MatchModel(Base, DateCreatedUpdatedMixin, IntegerIDMixin):
     date_end: Mapped[datetime] = mapped_column(
         TIMESTAMP(timezone=True), nullable=True, default=None
     )
-    game_id: Mapped[int] = mapped_column(ForeignKey("game.id", ondelete="CASCADE"))
+    game_id: Mapped[int] = mapped_column(ForeignKey("game.id", ondelete="CASCADE"), nullable=True)
 
     tournament: Mapped["TournamentModel"] = relationship(back_populates="matches")
     first_team: Mapped["EATeamModel"] = relationship(
