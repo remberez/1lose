@@ -1,4 +1,8 @@
-from core.models import BetModel, EventModel, GameModel, MapModel, MatchModel, EATeamModel, TournamentModel, UserModel
+from core.models import (
+    BetModel, EventModel, GameModel,
+    MapModel, MatchModel, EATeamModel,
+    TournamentModel, UserModel, BusinessSettings,
+)
 from core.models.event import OutComeModel
 from core.repository.bet import AbstractBetRepository, SQLAlchemyBetRepository
 from core.repository.event import AbstractEventRepository, SQLAlchemyEventRepository
@@ -10,6 +14,7 @@ from core.repository.team import AbstractEATeamRepository, SQLAlchemyEATeamRepos
 from core.repository.tournament import AbstractTournamentRepository, SQLAlchemyTournamentRepository
 from core.repository.user import AbstractUserRepository, UserSQLAlchemyRepository
 from .uow import UnitOfWork
+from ..repository.business_settings import SQLAlchemyBusinessSettingsRepository
 
 
 class SqlAlchemyUnitOfWork(UnitOfWork):
@@ -39,6 +44,8 @@ class SqlAlchemyUnitOfWork(UnitOfWork):
         self.teams = SQLAlchemyEATeamRepository(session=self.session, model=EATeamModel)
         self.tournaments = SQLAlchemyTournamentRepository(session=self.session, model=TournamentModel)
         self.users = UserSQLAlchemyRepository(session=self.session, model=UserModel)
+        self.business_settings = SQLAlchemyBusinessSettingsRepository(session=self.session, model=BusinessSettings)
+
         return self
 
     async def __aexit__(self, exc_type, *_):

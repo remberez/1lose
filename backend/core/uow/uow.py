@@ -2,6 +2,7 @@ from abc import abstractmethod, ABC
 from typing import Self
 
 from core.repository.bet import AbstractBetRepository
+from core.repository.business_settings import AbstractBusinessSettingsRepository
 from core.repository.event import AbstractEventRepository
 from core.repository.game import AbstractGameRepository
 from core.repository.map import AbstractMapRepository
@@ -22,6 +23,7 @@ class UnitOfWork(ABC):
     teams: AbstractEATeamRepository | None
     tournaments: AbstractTournamentRepository | None
     users: AbstractUserRepository | None
+    business_settings: AbstractBusinessSettingsRepository | None
 
     @abstractmethod
     def __init__(self):
