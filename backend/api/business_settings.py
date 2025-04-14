@@ -33,3 +33,11 @@ async def create_settings(
         service: Annotated[BusinessSettingsService, Depends(business_settings)],
 ):
     return await service.create(user.id, settings_data)
+
+
+@router.get("/", response_model=list[BusinessSettingsReadSchema])
+async def list_settings(
+        user: Annotated[UserReadSchema, Depends(current_user)],
+        service: Annotated[BusinessSettingsService, Depends(business_settings)],
+):
+    return await service.list(user.id)
