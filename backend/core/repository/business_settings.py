@@ -1,6 +1,6 @@
 from abc import ABC
 
-from sqlalchemy import select, delete, update
+from sqlalchemy import select, delete, update, exists
 
 from core.models import BusinessSettings
 from core.repository.abc import AbstractReadRepository, AbstractWriteRepository
@@ -21,13 +21,13 @@ class SQLAlchemyBusinessSettingsRepository(
     SQLAlchemyAbstractReadRepository,
     SQLAlchemyAbstractWriteRepository,
 ):
-    async def get(self, settings_name: str) -> str:
+    async def get(self, settings_name: str) -> str | None:
         stmt = (
             select(BusinessSettings)
             .where(BusinessSettings.name == settings_name)
         )
         result = await self._session.execute(stmt)
-        return result.scalar_one().value
+        return result.scalar_one_or_none()
 
     async def delete(self, settings_name: str) -> None:
         stmt = (
@@ -44,3 +44,11 @@ class SQLAlchemyBusinessSettingsRepository(
         )
         result = await self._session.execute(stmt)
         return result.scalar_one()
+
+    async def is_exists(self, settings_name: str) -> bool:
+        stmt = (
+            select(
+                exists().where(BusinessSettings.name == settings_name)
+            )
+        )
+        return await self._session.scalar(stmt)
