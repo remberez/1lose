@@ -8,6 +8,7 @@ from .match import router as match_router
 from .map import router as map_router
 from .event import router as event_router
 from .bet import router as bet_router
+from .business_settings import router as business_settings_router
 
 router = APIRouter(prefix=settings.api.prefix)
 router.include_router(router=user_router)
@@ -18,3 +19,4 @@ router.include_router(router=match_router)
 router.include_router(router=map_router)
 router.include_router(router=event_router)
 router.include_router(router=bet_router)
+router.include_router(router=business_settings_router)
