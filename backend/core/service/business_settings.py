@@ -1,6 +1,6 @@
 from typing import Callable
 
-from core.schema.business_settings import BusinessSettingsUpdateSchema
+from core.schema.business_settings import BusinessSettingsUpdateSchema, BusinessSettingsCreateSchema
 from core.service.user import UserPermissionsService
 from core.uow.uow import UnitOfWork
 
@@ -24,10 +24,10 @@ class BusinessSettingsService:
         async with self._uow_factory() as uow:
             return await uow.business_settings.get(settings_name)
 
-    async def create(self, user_id):
+    async def create(self, user_id: int, settings_data: BusinessSettingsCreateSchema):
         await self._permissions_service.verify_admin(user_id)
         async with self._uow_factory() as uow:
-            return await uow.business_settings.create()
+            return await uow.business_settings.create(**settings_data.model_dump())
 
     async def delete(self, settings_name: str, user_id: int):
         await self._permissions_service.verify_admin(user_id)
