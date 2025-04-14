@@ -11,7 +11,8 @@ class BusinessSettingsCreateSchema(BusinessSettingsSchema):
 
 
 class BusinessSettingsUpdateSchema(BusinessSettingsSchema):
-    ...
+    name: str | None = None
+    value: str | None = None
 
 
 class BusinessSettingsReadSchema(BusinessSettingsSchema):
