@@ -1,4 +1,5 @@
 from abc import ABC, abstractmethod
+from typing import Any
 
 
 class AbstractReadRepository[ModelORM](ABC):
@@ -16,7 +17,7 @@ class AbstractReadRepository[ModelORM](ABC):
         raise NotImplementedError()
 
     @abstractmethod
-    async def is_exists(self, model_id: int) -> bool:
+    async def is_exists(self, model_id: Any) -> bool:
         raise NotImplementedError()
 
 
@@ -31,9 +32,9 @@ class AbstractWriteRepository[ModelORM](ABC):
         raise NotImplementedError()
 
     @abstractmethod
-    async def update(self, model_id: int, **data) -> ModelORM | None:
+    async def update(self, model_id: Any, **data) -> ModelORM | None:
         raise NotImplementedError()
 
     @abstractmethod
-    async def delete(self, model_id: int) -> None:
+    async def delete(self, model_id: Any) -> None:
         raise NotImplementedError()
