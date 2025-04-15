@@ -52,7 +52,7 @@ const Header = () => {
         <header className="bg-oneWinBlue text-white">
             <div className="flex container items-center justify-between">
                 <div className="flex gap-x-12 h-full">
-                    <Link>
+                    <Link to={"/"}>
                         <img 
                             src={logo} 
                             alt="Логотип 1lose"
@@ -64,10 +64,10 @@ const Header = () => {
                     <NavBar/>
                 </div>
                 <div className="flex gap-x-4 h-full text-sm">
-                    <Link className="bg-oneWinBlue-400 px-4 rounded-sm hover:bg-oneWinBlue-300 duration-200">
+                    <Link className="bg-oneWinBlue-400 px-4 rounded-sm hover:bg-oneWinBlue-300 duration-200" to={"/login"}>
                         Войти
                     </Link>
-                    <Link className="bg-oneWinBrandBlue px-4 rounded-sm hover:bg-oneWinBrandBlue-600 duration-200">
+                    <Link className="bg-oneWinBrandBlue px-4 rounded-sm hover:bg-oneWinBrandBlue-600 duration-200" to={"/registration"}>
                         Регистрация
                     </Link>
                 </div>
