@@ -1,9 +1,9 @@
+import MainBanner from "../components/MainBanner";
+
 const MainPage = () => {
     return (
         <>
-            <h1>
-                MainPage
-            </h1>
+            <MainBanner/>
         </>
     )
 }
