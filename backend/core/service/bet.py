@@ -2,6 +2,7 @@ from decimal import Decimal
 from typing import Callable
 
 from core.const.bet_status import BetStatus
+from core.const.business_settings import BusinessSettingsItems
 from core.schema.bet import BetCreateSchema, BetUpdateSchema
 from core.service.user import UserPermissionsService
 from core.exceptions.common import BusinessValidationError, NotFoundError
@@ -79,4 +80,20 @@ class BetService:
 
     async def sell(self, bet_id: int, user_id: int):
         # Продаёт ставку, устанавливает поле bet_status = 'sold' и возвращает часть денег на баланс пользователю
-        ...
+        async with self._uow_factory() as uow:
+            await self._is_exists(bet_id, uow)
+            bet = await uow.bets.get(bet_id)
+            outcome = await uow.outcomes.get(bet.outcome_id)
+            sales_commission = await uow.business_settings.get(BusinessSettingsItems.SALES_COMMISSION.value)
+
+            if bet.user_id != user_id:
+                raise PermissionError()
+
+            sales_coefficient = bet.coefficient / outcome.coefficient
+            commission = Decimal((100 - int(sales_commission.value)) / 100)
+            selling_price = bet.amount * round(sales_coefficient * commission, 2)
+
+            await uow.users.update_user_balance(user_id, selling_price)
+            bet.bet_status = BetStatus.SOLD
+
+            return bet
