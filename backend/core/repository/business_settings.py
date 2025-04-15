@@ -41,9 +41,10 @@ class SQLAlchemyBusinessSettingsRepository(
             update(BusinessSettings)
             .where(BusinessSettings.name == settings_name)
             .values(**data)
+            .returning(BusinessSettings)
         )
         result = await self._session.execute(stmt)
-        return result.scalar_one()
+        return result.scalar_one_or_none()
 
     async def is_exists(self, settings_name: str) -> bool:
         stmt = (
