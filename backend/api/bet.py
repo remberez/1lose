@@ -46,3 +46,12 @@ async def get_bet(
         user: Annotated[UserReadSchema, Depends(current_user)],
 ):
     return await service.get(bet_id, user.id)
+
+
+@router.patch("/{bet_id}/sell", response_model=BetReadSchema)
+async def sell_bet(
+        bet_id: int,
+        service: Annotated[BetService, Depends(bet_service)],
+        user: Annotated[UserReadSchema, Depends(current_user)],
+):
+    return await service.sell(bet_id, user.id)
