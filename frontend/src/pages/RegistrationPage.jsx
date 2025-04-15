@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { HiOutlinePlus } from 'react-icons/hi';
+import { Link } from 'react-router-dom';
 
 const RegistrationPage = () => {
   const [tab, setTab] = useState('fast');
@@ -86,7 +87,7 @@ const RegistrationPage = () => {
         </button>
 
         <div className="mt-5 text-center text-gray-400 text-sm">
-          Уже есть аккаунт? <a href="#" className="text-oneWinBrandBlue hover:underline">Войти</a>
+          Уже есть аккаунт? <Link to={"/login"} className="text-oneWinBrandBlue hover:underline">Войти</Link>
         </div>
       </div>
     </div>
