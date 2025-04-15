@@ -41,3 +41,12 @@ async def list_settings(
         service: Annotated[BusinessSettingsService, Depends(business_settings)],
 ):
     return await service.list(user.id)
+
+
+@router.delete("/{settings_name}", status_code=204)
+async def delete_settings(
+        settings_name: str,
+        user: Annotated[UserReadSchema, Depends(current_user)],
+        service: Annotated[BusinessSettingsService, Depends(business_settings)],
+):
+    return await service.delete(settings_name, user.id)
