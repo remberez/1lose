@@ -50,3 +50,13 @@ async def delete_settings(
         service: Annotated[BusinessSettingsService, Depends(business_settings)],
 ):
     return await service.delete(settings_name, user.id)
+
+
+@router.patch("/{settings_name}", response_model=BusinessSettingsReadSchema)
+async def update_settings(
+        settings_name: str,
+        user: Annotated[UserReadSchema, Depends(current_user)],
+        settings_data: BusinessSettingsUpdateSchema,
+        service: Annotated[BusinessSettingsService, Depends(business_settings)],
+):
+    return await service.update(settings_name, settings_data, user.id)
