@@ -4,7 +4,7 @@ import logo from "../assets/logo.png";
 const NavBarItem = ({ children }) => {
     return (
       <Link className="
-        hover:bg-oneWinBlue-400 
+        hover:bg-oneWinBlue-600 
         transition-colors 
         duration-200 
         h-full 
