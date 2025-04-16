@@ -9,7 +9,7 @@ class RunSettings(BaseModel):
 
 
 class CorsSettings(BaseModel):
-    allow_origins: list[str] = ["http://localhost"]
+    allow_origins: list[str] = ["http://localhost:5173"]
     allow_credentials: bool = True
     allow_methods: list[str] = ["*"]
     allow_headers: list[str] = ["*"]
