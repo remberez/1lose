@@ -41,6 +41,11 @@ class AuthSettings(BaseModel):
     verification_token_secret: str
 
 
+class StaticFilesSettings(BaseModel):
+    media_url: str = "/media"
+    media_path: str = "media"
+
+
 class Settings(BaseSettings):
     model_config = SettingsConfigDict(
         case_sensitive=False,
@@ -53,6 +58,7 @@ class Settings(BaseSettings):
     api: APISettings = APISettings()
     database: DataBaseSettings
     auth: AuthSettings
+    static_files: StaticFilesSettings = StaticFilesSettings()
 
 
 settings = Settings()
