@@ -1,9 +1,11 @@
-from typing import Callable
+import uuid
+from typing import Callable, BinaryIO
 
 from core.exceptions.common import NotFoundError
 from core.schema.game import GameCreateSchema, GameReadSchema
 from core.service.user import UserPermissionsService
 from core.uow.uow import UnitOfWork
+from core.utils.files import save_file
 
 
 class GameService:
@@ -20,10 +22,11 @@ class GameService:
             if not await uow.games.is_exists(game_id):
                 raise NotFoundError(f"Game {game_id} not found")
 
-    async def create(self, game: GameCreateSchema, user_id: int) -> GameReadSchema:
+    async def create(self, game: GameCreateSchema, icon: BinaryIO, user_id: int) -> GameReadSchema:
         async with self._uow_factory() as uow:
             await self._permissions_service.verify_admin(user_id=user_id)
-            return await uow.games.create(**game.model_dump())
+            icon_path = await save_file(icon, str(uuid.uuid4()) + ".png", "/games")
+            return await uow.games.create(**game.model_dump(), icon_path=icon_path)
 
     async def list(self) -> list[GameReadSchema]:
         async with self._uow_factory() as uow:
