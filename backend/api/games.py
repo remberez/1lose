@@ -1,8 +1,8 @@
 from typing import Annotated
 from typing import TYPE_CHECKING
 
-from fastapi import APIRouter
-from fastapi.params import Depends
+from fastapi import APIRouter, UploadFile, Form
+from fastapi.params import Depends, File
 
 from core.config import settings
 from core.schema.game import GameCreateSchema, GameReadSchema, GameUpdateSchema
@@ -18,11 +18,14 @@ router = APIRouter(prefix=settings.api.games, tags=["Games"])
 
 @router.post("/", response_model=GameReadSchema)
 async def create_game(
-    game: GameCreateSchema,
     user: Annotated[UserReadSchema, Depends(current_user)],
+    name: Annotated[str, Form()],
+    description: Annotated[str, Form()],
+    icon: Annotated[UploadFile, File()],
     service: Annotated["GameService", Depends(get_game_service)],
 ):
-    return await service.create(game=game, user_id=user.id)
+    game_data = GameCreateSchema(name=name, description=description)
+    return await service.create(game=game_data, user_id=user.id, icon=icon.file)
 
 
 @router.get("/", response_model=list[GameReadSchema])
