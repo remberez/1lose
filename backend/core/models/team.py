@@ -14,6 +14,7 @@ class EATeamModel(Base, IntegerIDMixin):
     __tablename__ = "ea_team"
     name: Mapped[str] = mapped_column(String(32))
     game_id: Mapped[int] = mapped_column(ForeignKey("game.id"))
+    icon_path: Mapped[str]
 
     game: Mapped["GameModel"] = relationship(back_populates="teams")
     matches_as_first_team: Mapped[list["MatchModel"]] = relationship(
