@@ -16,6 +16,7 @@ class GameModel(Base, IntegerIDMixin):
 
     name: Mapped[str] = mapped_column(String(25))
     description: Mapped[str]
+    icon_path: Mapped[str]
 
     teams: Mapped[list["EATeamModel"]] = relationship(back_populates="game")
     tournaments: Mapped[list["TournamentModel"]] = relationship(back_populates="game")
