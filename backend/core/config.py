@@ -8,6 +8,13 @@ class RunSettings(BaseModel):
     reload: bool = True
 
 
+class CorsSettings(BaseModel):
+    allow_origins: list[str] = ["http://localhost"]
+    allow_credentials: bool = True
+    allow_methods: list[str] = ["*"]
+    allow_headers: list[str] = ["*"]
+
+
 class APISettings(BaseModel):
     prefix: str = "/api"
     auth: str = "/auth"
@@ -59,6 +66,7 @@ class Settings(BaseSettings):
     database: DataBaseSettings
     auth: AuthSettings
     static_files: StaticFilesSettings = StaticFilesSettings()
+    cors: CorsSettings = CorsSettings()
 
 
 settings = Settings()

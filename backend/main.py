@@ -3,6 +3,7 @@ from contextlib import asynccontextmanager
 
 import uvicorn
 from fastapi import FastAPI, HTTPException
+from starlette.middleware.cors import CORSMiddleware
 from starlette.requests import Request
 from starlette.staticfiles import StaticFiles
 
@@ -24,7 +25,13 @@ async def lifespan(_app: FastAPI) -> AsyncGenerator[None, None]:
 app = FastAPI(lifespan=lifespan)
 app.include_router(router=router)
 app.mount(settings.static_files.media_url, StaticFiles(directory=settings.static_files.media_path), name="media")
-
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=settings.cors.allow_origins,
+    allow_credentials=settings.cors.allow_credentials,
+    allow_methods=settings.cors.allow_methods,
+    allow_headers=settings.cors.allow_headers,
+)
 
 @app.exception_handler(UserPermissionError)
 async def user_permission_handler(_request: Request, _exc: UserPermissionError):
