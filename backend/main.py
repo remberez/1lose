@@ -4,6 +4,7 @@ from contextlib import asynccontextmanager
 import uvicorn
 from fastapi import FastAPI, HTTPException
 from starlette.requests import Request
+from starlette.staticfiles import StaticFiles
 
 from api import router
 from core.config import settings
@@ -17,11 +18,12 @@ from core.models.db_helper import db_helper
 @asynccontextmanager
 async def lifespan(_app: FastAPI) -> AsyncGenerator[None, None]:
     yield
-    db_helper.dispose()
+    await db_helper.dispose()
 
 
 app = FastAPI(lifespan=lifespan)
 app.include_router(router=router)
+app.mount(settings.static_files.media_url, StaticFiles(directory=settings.static_files.media_path), name="media")
 
 
 @app.exception_handler(UserPermissionError)
