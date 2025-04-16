@@ -35,9 +35,9 @@ class SQLAlchemyMatchRepository(
             select(MatchModel)
             .where(MatchModel.id == model_id)
             .options(
-                joinedload(
-                    MatchModel.first_team, MatchModel.second_team, MatchModel.tournament
-                )
+                joinedload(MatchModel.first_team).joinedload(EATeamModel.game),
+                joinedload(MatchModel.second_team).joinedload(EATeamModel.game),
+                joinedload(MatchModel.tournament).joinedload(TournamentModel.game),
             )
         )
         result = await self._session.execute(stmt)

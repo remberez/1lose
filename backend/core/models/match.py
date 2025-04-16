@@ -52,11 +52,11 @@ class MatchModel(Base, DateCreatedUpdatedMixin, IntegerIDMixin):
     tournament: Mapped["TournamentModel"] = relationship(back_populates="matches")
     first_team: Mapped["EATeamModel"] = relationship(
         back_populates="matches_as_first_team",
-        foreign_keys=[first_team_id],
+        foreign_keys="MatchModel.first_team_id",
     )
     second_team: Mapped["EATeamModel"] = relationship(
         back_populates="matches_as_second_team",
-        foreign_keys=[second_team_id],
+        foreign_keys="MatchModel.second_team_id",
     )
     maps: Mapped[list["MapModel"]] = relationship(back_populates="match")
     events: Mapped[list["EventModel"]] = relationship(back_populates="match")
