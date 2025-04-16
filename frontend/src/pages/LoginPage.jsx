@@ -1,7 +1,33 @@
+import { useState } from 'react';
 import { FaGoogle, FaVk, FaTelegram, FaAt, FaYandex, FaOdnoklassniki, FaSteam } from 'react-icons/fa';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import authService from '../services/AuthService';
+import { userStore } from '../stores/authStore';
+import userService from '../services/userService';
 
 const LoginPage = () => {
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+  const navigate = useNavigate();
+
+  const handleLogin = async (e) => {
+    e.preventDefault();
+    
+    try {
+      const data = await authService.login(username, password);
+      if (data?.access_token) {
+        localStorage.setItem("token", data.access_token);
+        const userData = await userService.getMe();
+        userStore.login(userData);
+        navigate("/");
+      } else {
+        alert("Неверные данные или ошибка авторизации");
+      }
+    } catch (e) {
+      alert("Ошибка при входе");
+    }
+  };
+
   return (
     <div className="flex flex-col flex-grow items-center justify-center bg-oneWinBlue-400">
       <div className="bg-white rounded-2xl shadow-lg w-[360px] px-6 py-8">
@@ -23,25 +49,36 @@ const LoginPage = () => {
           <span className="mx-2 text-gray-400 text-sm">или</span>
           <div className="flex-grow h-px bg-gray-200" />
         </div>
+        
+        <form onSubmit={handleLogin}>
+          <input
+            type="text"
+            placeholder="E-mail / телефон"
+            name="username"
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
+            className="w-full mb-3 px-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-oneWinBrandBlue"
+          />
+          <input
+            name="password"
+            type="password"
+            placeholder="Пароль"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            className="w-full mb-2 px-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-oneWinBrandBlue"
+          />
 
-        <input
-          type="text"
-          placeholder="E-mail / телефон"
-          className="w-full mb-3 px-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-oneWinBrandBlue"
-        />
-        <input
-          type="password"
-          placeholder="Пароль"
-          className="w-full mb-2 px-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-oneWinBrandBlue"
-        />
+          <div className="text-right mb-5">
+            <a href="#" className="text-sm text-gray-400 hover:text-oneWinBrandBlue">Забыли пароль?</a>
+          </div>
 
-        <div className="text-right mb-5">
-          <a href="#" className="text-sm text-gray-400 hover:text-oneWinBrandBlue">Забыли пароль?</a>
-        </div>
-
-        <button className="w-full py-2 rounded-lg bg-gradient-to-r from-oneWinBrandBlue to-blue-600 text-white font-semibold hover:opacity-90 transition">
-          Войти
-        </button>
+          <button
+            type="submit"
+            className="w-full py-2 rounded-lg bg-gradient-to-r from-oneWinBrandBlue to-blue-600 text-white font-semibold hover:opacity-90 transition"
+          >
+            Войти
+          </button>
+        </form>
 
         <div className="mt-5 text-center text-sm text-gray-400">
           Ещё нет аккаунта? <Link to={"/registration"} className="text-oneWinBrandBlue font-medium hover:underline">Зарегистрируйтесь</Link>

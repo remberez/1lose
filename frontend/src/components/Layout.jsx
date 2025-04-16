@@ -7,7 +7,6 @@ const Layout = () => {
       <div className="min-h-screen flex flex-col font-inter">
         <Header />
         <main className="flex-grow flex flex-col">
-          {/* Этот контейнер позволяет Outlet'у занять оставшуюся высоту */}
             <Outlet />
         </main>
         <Footer />
