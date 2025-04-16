@@ -1,3 +1,4 @@
+import os
 import uuid
 from typing import Callable, BinaryIO
 
@@ -37,6 +38,8 @@ class GameService:
 
         async with self._uow_factory() as uow:
             await self.is_exists(game_id)
+            game = await uow.games.get(game_id)
+            os.remove(game.icon_path)
             await uow.games.delete(game_id)
 
     async def get(self, game_id: int):
