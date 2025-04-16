@@ -4,14 +4,16 @@ import Footer from "./Footer";
 
 const Layout = () => {
     return (
-        <div className="min-h-screen flex flex-col font-inter">
-            <Header />
-            <main className="flex-grow h-[85vh]">
-                <Outlet />
-            </main>
-            <Footer />
-        </div>
+      <div className="min-h-screen flex flex-col font-inter">
+        <Header />
+        <main className="flex-grow flex flex-col">
+          {/* Этот контейнер позволяет Outlet'у занять оставшуюся высоту */}
+            <Outlet />
+        </main>
+        <Footer />
+      </div>
     );
 };
+  
 
 export default Layout;

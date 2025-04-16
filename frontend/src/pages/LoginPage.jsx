@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 
 const LoginPage = () => {
   return (
-    <div className="flex items-center justify-center h-full bg-oneWinBlue-400">
+    <div className="flex flex-col flex-grow items-center justify-center bg-oneWinBlue-400">
       <div className="bg-white rounded-2xl shadow-lg w-[360px] px-6 py-8">
         <div className="text-xl font-semibold text-oneWinBlue mb-1">Вход</div>
         <div className="text-sm text-gray-500 mb-5">Добро пожаловать в 1win</div>

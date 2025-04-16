@@ -7,7 +7,7 @@ const RegistrationPage = () => {
   const [agreed, setAgreed] = useState(true);
 
   return (
-    <div className="flex items-center justify-center h-full bg-oneWinBlue-400">
+    <div className="flex items-center justify-center h-full bg-oneWinBlue-400 flex-grow">
       <div className="bg-white rounded-2xl shadow-lg w-[400px] px-6 py-8 text-sm">
         
         <div className="text-xl font-semibold text-oneWinBlue mb-4">Регистрация</div>
