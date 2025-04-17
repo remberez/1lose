@@ -1,4 +1,5 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
+import gameService from "../services/gameService";
 
 const esports = [
   { name: "Live", events: 120, color: "from-pink-500 to-red-500", icon: "🎮" },
@@ -10,26 +11,43 @@ const esports = [
 ];
 
 const EsportsCategories = () => {
+  const [esports, setEsports] = useState([]);
+
+  useEffect(() => {
+    async function getEsports() {
+      const esportsData = await gameService.getGames();
+      setEsports(esportsData);
+    }
+
+    getEsports();
+  }, []);
   return (
     <section>
       <h2 className="text-2xl font-bold mb-4">Киберспорт</h2>
       <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
+        <div className="rounded-2xl shadow-md bg-gradient-to-br from-red-500 to-red-700 text-white p-4 flex flex-col justify-between h-32 transition-transform duration-200 hover:scale-105">
+          <div className="text-4xl">
+            🎮
+          </div>
+          <div>
+            <p className="font-semibold text-lg leading-tight">Live</p>
+            <p className="text-xs mt-1 text-gray-300">120 событий</p>
+          </div>
+        </div>
         {esports.map((item, index) => (
           <div
             key={index}
             className={`rounded-2xl shadow-md bg-gradient-to-br ${
-              item.color || "from-gray-800 to-gray-700"
+              item.color || "from-oneWinBlue-400 to-oneWinBlue-500"
             } text-white p-4 flex flex-col justify-between h-32 transition-transform duration-200 hover:scale-105`}
           >
-            <div className="text-3xl mb-2">{item.icon}</div>
+            <img
+              src={item.icon_path}
+              width={50}
+              height={50}
+            />
             <div>
               <p className="font-semibold text-lg leading-tight">{item.name}</p>
-              {item.subtitle && (
-                <p className="text-sm text-gray-200">{item.subtitle}</p>
-              )}
-              {item.events && (
-                <p className="text-xs mt-1 text-gray-300">{item.events} событий</p>
-              )}
             </div>
           </div>
         ))}
