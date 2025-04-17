@@ -60,14 +60,6 @@ async def business_validation_handler(_request: Request, exc: BusinessValidation
     raise HTTPException(status_code=400, detail=str(exc))
 
 
-@app.middleware("http")
-async def session_middleware(request: Request, call_next):
-    try:
-        response = await call_next(request)
-    finally:
-        await db_helper.reset_session()
-    return response
-
 
 # Входная точка
 if __name__ == "__main__":

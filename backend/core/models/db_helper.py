@@ -41,11 +41,6 @@ class DataBaseHelper:
         async with self._session as session:
             yield session
 
-    async def reset_session(self):
-        if self._session:
-            await self._session.close()
-            self._session = None
-
     async def get_session_maker(self):
         return self.session_maker
 
