@@ -24,22 +24,10 @@ const SideBar = () => {
                     Бизнес-настройки
                 </NavLink>
                 <NavLink
-                    to={"/admin/bets"}
-                    className={linkClassName}
-                >
-                    Ставки
-                </NavLink>
-                <NavLink
                     to="/admin/matches"
                     className={linkClassName}
                 >
                     Матчи
-                </NavLink>
-                <NavLink
-                    to="/admin/events"
-                    className={linkClassName}
-                >
-                    События
                 </NavLink>
                 <NavLink
                     to="/admin/games"
@@ -52,6 +40,12 @@ const SideBar = () => {
                     className={linkClassName}
                 >
                     Команды
+                </NavLink>
+                <NavLink
+                    to="/admin/tournaments"
+                    className={linkClassName}
+                >
+                    Турниры
                 </NavLink>
             </nav>
         </aside>

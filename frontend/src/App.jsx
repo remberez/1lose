@@ -8,6 +8,7 @@ import UserAdminPage from './pages/UserAdminPage';
 import MatchAdminPage from './pages/MatchAdminPage';
 import GameAdminPage from './pages/GameAdminPage';
 import TeamAdminPage from './pages/TeamAdminPage';
+import TournamentAdminPage from './pages/TournamentAdminPage';
 
 function App() {
   return (
@@ -22,6 +23,7 @@ function App() {
             <Route path="matches" element={<MatchAdminPage/>}/>
             <Route path="games" element={<GameAdminPage/>}/>
             <Route path="teams" element={<TeamAdminPage/>}/>
+            <Route path="tournaments" element={<TournamentAdminPage/>}/>
           </Route>
         </Route>
       </Routes>
