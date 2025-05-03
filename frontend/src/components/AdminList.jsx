@@ -1,11 +1,9 @@
 const AdminList = ({ columns, data }) => {
     const renderCell = (value, row, col) => {
-      // Если значение булевое, то отображаем "Да"/"Нет"
       if (typeof value === 'boolean') {
         return value ? "Да" : "Нет";
       }
-  
-      // Вставь сюда другие правила для рендеринга значений, если нужно
+      
       if (col.render) {
         return col.render(value, row);
       }

@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import AdminList from "./AdminList";
 import userService from "../services/userService";
+import { Link } from "react-router-dom";
 
 
 const columns = [
@@ -14,7 +15,7 @@ const columns = [
       title: "Действия",
       render: (_, row) => (
         <div className="flex gap-2">
-          <button className="text-blue-600 hover:underline">✏️</button>
+          <Link className="text-blue-600 hover:underline" to={`/admin/users/${row.id}`}>✏️</Link>
           <button className="text-red-600 hover:underline">🗑</button>
         </div>
       ),

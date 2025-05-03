@@ -14,6 +14,7 @@ import { userStore } from './stores/authStore';
 import { observer } from 'mobx-react-lite';
 import { useEffect } from 'react';
 import userService from './services/userService';
+import UserEditPage from './components/UserEditPage';
 
 function App() {
   useEffect(() => {
@@ -47,6 +48,8 @@ function App() {
             !userStore.isLoading && userStore.user?.role_code === "admin" &&
               <Route path="/admin" element={<AdminLayout/>}>
                 <Route path="users" element={<UserAdminPage/>}/>
+                <Route path="users/:id" element={<UserEditPage/>}/>
+
                 <Route path="matches" element={<MatchAdminPage/>}/>
                 <Route path="games" element={<GameAdminPage/>}/>
                 <Route path="teams" element={<TeamAdminPage/>}/>

@@ -20,4 +20,4 @@ class UserUpdateSelfSchema(schemas.BaseUserUpdate):
 
 class UserUpdateAdminSchema(schemas.BaseUserUpdate):
     balance: Decimal | None = Field(None, max_digits=12, decimal_places=2)
-    role_code: UserRoleCodes | None = None
+    role_code: str | None = None
