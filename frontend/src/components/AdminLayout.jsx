@@ -41,6 +41,12 @@ const SideBar = () => {
                 >
                     События
                 </NavLink>
+                <NavLink
+                    to="/admin/games"
+                    className={linkClassName}
+                >
+                    Игры
+                </NavLink>
             </nav>
         </aside>
     );
