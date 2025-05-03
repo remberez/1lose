@@ -9,7 +9,6 @@ from core.schema.event import EventReadSchema
 
 
 class MatchSchema(BaseModel):
-    score: list[int] = Field(min_length=0, max_length=2)
     best_of: int = Field(gt=0)
     date_start: datetime | None = None
     date_end: datetime | None = None
@@ -37,16 +36,6 @@ class MatchSchema(BaseModel):
             )
         return self
 
-    @field_validator("score", mode="before")
-    @classmethod
-    def validate_score_items(cls, score: list[int]):
-        if score and any(x < 0 for x in score):
-            raise PydanticCustomError(
-                "the_score_error",
-                "all account values must be greater than or equal to zero",
-            )
-        return score
-
 
 class MatchCreateSchema(MatchSchema):
     date_end: None = Field(exclude=True, default=None)
@@ -61,6 +50,8 @@ class MatchReadSchema(MatchSchema):
     first_team_id: int = Field(gt=0, exclude=True)
     second_team_id: int = Field(gt=0, exclude=True)
     win_event: EventReadSchema | None = None
+    score: list[int] | None = Field(None, min_length=0, max_length=2)
+
 
 class MatchUpdateSchema(MatchSchema):
     tournament_id: int | None = Field(None, gt=0)
@@ -69,6 +60,16 @@ class MatchUpdateSchema(MatchSchema):
     score: list[int] | None = Field(None, min_length=0, max_length=2)
     best_of: int | None = Field(None, gt=0)
     win_event_id: int | None = Field(None, gt=0)
+
+    @field_validator("score", mode="before")
+    @classmethod
+    def validate_score_items(cls, score: list[int]):
+        if score and any(x < 0 for x in score):
+            raise PydanticCustomError(
+                "the_score_error",
+                "all account values must be greater than or equal to zero",
+            )
+        return score
 
 
 class MathFilterSchema(BaseModel):

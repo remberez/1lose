@@ -72,7 +72,7 @@ class MatchService:
                 uow=uow,
             )
 
-            match = await uow.matches.create(**match_data.model_dump())
+            match = await uow.matches.create(**match_data.model_dump(), score=[0, 0])
             return await uow.matches.get(match.id)
 
     async def update(self, user_id: int, match_id: int, match_data: MatchUpdateSchema):
