@@ -47,6 +47,12 @@ const SideBar = () => {
                 >
                     Игры
                 </NavLink>
+                <NavLink
+                    to="/admin/teams"
+                    className={linkClassName}
+                >
+                    Команды
+                </NavLink>
             </nav>
         </aside>
     );

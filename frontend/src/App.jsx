@@ -7,6 +7,7 @@ import AdminLayout from './components/AdminLayout';
 import UserAdminPage from './pages/UserAdminPage';
 import MatchAdminPage from './pages/MatchAdminPage';
 import GameAdminPage from './pages/GameAdminPage';
+import TeamAdminPage from './pages/TeamAdminPage';
 
 function App() {
   return (
@@ -20,6 +21,7 @@ function App() {
             <Route path="users" element={<UserAdminPage/>}/>
             <Route path="matches" element={<MatchAdminPage/>}/>
             <Route path="games" element={<GameAdminPage/>}/>
+            <Route path="teams" element={<TeamAdminPage/>}/>
           </Route>
         </Route>
       </Routes>
