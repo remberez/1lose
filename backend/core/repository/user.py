@@ -4,7 +4,7 @@ from decimal import Decimal
 from black.nodes import TypeVar
 from sqlalchemy import select, update
 
-from core.repository.abc import AbstractReadRepository
+from core.repository.abc import AbstractReadRepository, AbstractWriteRepository
 from core.models.user import UserModel
 from .sqlalchemy import (
     SQLAlchemyAbstractReadRepository,
@@ -16,6 +16,7 @@ UserModelT = TypeVar("UserModelT")
 
 class AbstractUserRepository(
     AbstractReadRepository[UserModelT],
+    AbstractWriteRepository[UserModelT],
     ABC,
 ):
     # Специфичные методы для работы с пользователями.

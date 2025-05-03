@@ -5,6 +5,7 @@ from typing import TypeVar
 from core.const.user_role import UserRoleCodes
 from core.exceptions.common import NotFoundError
 from core.exceptions.user_exc import UserPermissionError
+from core.schema.user import UserUpdateSelfSchema, UserUpdateAdminSchema
 from core.uow.uow import UnitOfWork
 
 UserModelT = TypeVar("UserModelT")
@@ -40,6 +41,13 @@ class UserService:
         async with self._uow_factory() as uow:
             return await uow.users.list()
 
+    async def update(self, target_user_id: int, user_data: UserUpdateSelfSchema | UserUpdateAdminSchema,
+                     user_id: int | None = None):
+        if user_id and user_id != target_user_id:
+            await self._permissions_service.verify_admin(user_id)
+
+        async with self._uow_factory() as uow:
+            return await uow.users.update(target_user_id, **user_data.model_dump(exclude_none=True))
 
 class UserPermissionsService:
     def __init__(
