@@ -1,4 +1,18 @@
 const AdminList = ({ columns, data }) => {
+    const renderCell = (value, row, col) => {
+      // Если значение булевое, то отображаем "Да"/"Нет"
+      if (typeof value === 'boolean') {
+        return value ? "Да" : "Нет";
+      }
+  
+      // Вставь сюда другие правила для рендеринга значений, если нужно
+      if (col.render) {
+        return col.render(value, row);
+      }
+  
+      return value;
+    };
+  
     return (
       <div className="overflow-x-auto rounded-2xl border border-gray-200 shadow">
         <table className="min-w-full bg-white text-sm font-inter">
@@ -26,7 +40,7 @@ const AdminList = ({ columns, data }) => {
                 >
                   {columns.map((col) => (
                     <td key={col.key} className="px-4 py-3 whitespace-nowrap">
-                      {col.render ? col.render(row[col.key], row) : row[col.key]}
+                      {renderCell(row[col.key], row, col)}
                     </td>
                   ))}
                 </tr>
@@ -36,7 +50,7 @@ const AdminList = ({ columns, data }) => {
         </table>
       </div>
     );
-  };
+};
   
-  export default AdminList;
+export default AdminList;
   
