@@ -34,6 +34,12 @@ class UserService:
         async with self._uow_factory() as uow:
             return await uow.users.update_user_balance(target_user_id, balance)
 
+    async def list(self, user_id: int):
+        await self._permissions_service.verify_admin(user_id=user_id)
+
+        async with self._uow_factory() as uow:
+            return await uow.users.list()
+
 
 class UserPermissionsService:
     def __init__(

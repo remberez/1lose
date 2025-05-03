@@ -52,3 +52,11 @@ async def update_balance(
         user: Annotated[UserReadSchema, Depends(current_user)],
 ):
     return UpdateBalanceSchema(balance=await service.update_balance(user_id, user.id, value.balance))
+
+
+@router.get("/", response_model=list[UserReadSchema])
+async def user_list(
+        service: Annotated[UserService, Depends(get_user_service)],
+        user: Annotated[UserReadSchema, Depends(current_user)],
+):
+    return await service.list(user_id=user.id)
