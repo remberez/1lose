@@ -29,16 +29,13 @@ class DataBaseHelper:
             autocommit=False,
             expire_on_commit=False,
         )
-        self._session = None
 
     async def dispose(self):
         # Освобождение пула соединений.
         await self.engine.dispose()
 
     async def session_getter(self) -> AsyncGenerator[AsyncSession, None]:
-        if self._session is None:
-            self._session = self.session_maker()
-        async with self._session as session:
+        async with self.session_maker() as session:
             yield session
 
     async def get_session_maker(self):
