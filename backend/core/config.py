@@ -26,6 +26,7 @@ class APISettings(BaseModel):
     event: str = "/events"
     bet: str = "/bets"
     business: str = "/business-settings"
+    users: str = "/users"
 
     @property
     def token_url(self) -> str:
