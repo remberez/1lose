@@ -53,24 +53,6 @@ const NavBar = () => {
 
 
 const Header = observer(() => {
-    useEffect(() => {
-        const initAuth = async () => {
-            const token = localStorage.getItem("token");
-    
-            if (token) {
-                try {
-                    const userData = await userService.getMe();
-                    userStore.login(userData);
-                } catch (e) {
-                    console.error("Ошибка при проверке токена:", e);
-                    userStore.logout();
-                }
-            }
-        };
-
-        initAuth();
-    }, []);
-
     return (
         <header className="bg-oneWinBlue text-white">
             <div className="flex container items-center justify-between">

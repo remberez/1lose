@@ -3,6 +3,7 @@ import { makeAutoObservable } from "mobx";
 class UserStore {
     user = null;
     isAuth = false;
+    isLoading = null;
 
     constructor() {
         makeAutoObservable(this);
@@ -24,6 +25,10 @@ class UserStore {
     logout() {
         this.setUser(null);
         this.setAuth(false);
+    }
+
+    setIsLoading(value) {
+        this.isLoading = value;
     }
 }
 

@@ -10,8 +10,32 @@ import GameAdminPage from './pages/GameAdminPage';
 import TeamAdminPage from './pages/TeamAdminPage';
 import TournamentAdminPage from './pages/TournamentAdminPage';
 import BusinessSettingsAdminPage from './pages/BusinessSettingsAdminPage';
+import { userStore } from './stores/authStore';
+import { observer } from 'mobx-react-lite';
+import { useEffect } from 'react';
+import userService from './services/userService';
 
 function App() {
+  useEffect(() => {
+    const initAuth = async () => {
+        const token = localStorage.getItem("token");
+
+        if (token) {
+            try {
+                userStore.setIsLoading(true);
+                const userData = await userService.getMe();
+                userStore.login(userData);
+                userStore.setIsLoading(false);
+            } catch (e) {
+                console.error("Ошибка при проверке токена:", e);
+                userStore.logout();
+            }
+        }
+    };
+
+    initAuth();
+  }, []);
+
   return (
     <BrowserRouter>
       <Routes>
@@ -19,18 +43,21 @@ function App() {
           <Route index element={<MainPage />} />
           <Route path="/login" element={<LoginPage/>} />
           <Route path="/registration" element={<RegistrationPage/>}/>
-          <Route path="/admin" element={<AdminLayout/>}>
-            <Route path="users" element={<UserAdminPage/>}/>
-            <Route path="matches" element={<MatchAdminPage/>}/>
-            <Route path="games" element={<GameAdminPage/>}/>
-            <Route path="teams" element={<TeamAdminPage/>}/>
-            <Route path="tournaments" element={<TournamentAdminPage/>}/>
-            <Route path="business-settings" element={<BusinessSettingsAdminPage/>}/>
-          </Route>
+          {
+            !userStore.isLoading && userStore.user?.role_code === "admin" &&
+              <Route path="/admin" element={<AdminLayout/>}>
+                <Route path="users" element={<UserAdminPage/>}/>
+                <Route path="matches" element={<MatchAdminPage/>}/>
+                <Route path="games" element={<GameAdminPage/>}/>
+                <Route path="teams" element={<TeamAdminPage/>}/>
+                <Route path="tournaments" element={<TournamentAdminPage/>}/>
+                <Route path="business-settings" element={<BusinessSettingsAdminPage/>}/>
+              </Route>
+          }
         </Route>
       </Routes>
     </BrowserRouter>
   )
 }
 
-export default App
+export default observer(App);
