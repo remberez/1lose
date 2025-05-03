@@ -41,7 +41,7 @@ class EventService:
         async with self._uow_factory() as uow:
             map_match_id = await uow.maps.get_match_id(event_data.map_id)
 
-            if map_match_id != event_data.match_id:
+            if map_match_id and map_match_id != event_data.match_id:
                 raise BusinessValidationError("Map does not belong to the specified match")
 
             first_outcome_data = event_data.first_outcome.model_dump()

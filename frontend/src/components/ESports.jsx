@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import gameService from "../services/gameService";
+import matchService from "../services/matchService";
 
 const esports = [
   { name: "Live", events: 120, color: "from-pink-500 to-red-500", icon: "🎮" },
@@ -88,42 +89,50 @@ const matches = [
   ];
   
 function EsportsMatchCards() {
+  const [liveMatches, setliveMatches] = useState([]);
+
+  useEffect(() => {
+    async function getLiveGames() {
+      const liveMatchesData = await matchService.getLiveMatches();
+      setliveMatches(liveMatchesData);
+      console.log(liveMatchesData)
+    }
+    getLiveGames();
+  }, [])
     return (
       <div className="mt-4">
         <h2 className="text-2xl font-bold mb-4">Топ-события</h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-          {matches.map((match, index) => (
+          {liveMatches?.map((match, index) => (
             <div
               key={index}
               className="bg-white shadow-md rounded-lg p-4 border border-gray-200"
             >
               <div className="text-xs text-purple-600 font-semibold mb-1">Киберспорт</div>
-              <div className="text-sm text-gray-500 mb-2">{match.tournament}</div>
+              <div className="text-sm text-gray-500 mb-2">{match?.tournament.name}</div>
   
               <div className="flex items-center justify-between mb-2">
                 <div className="flex flex-col">
-                  <span className="font-medium">{match.teams[0]}</span>
-                  <span className="font-medium">{match.teams[1]}</span>
+                  <span className="font-medium">{match?.first_team.name}</span>
+                  <span className="font-medium">{match?.second_team.name}</span>
                 </div>
                 <div className="flex flex-col text-right">
-                  <span className="text-lg font-bold text-gray-700">{match.scores[0]}</span>
-                  <span className="text-lg font-bold text-gray-700">{match.scores[1]}</span>
+                  <span className="text-lg font-bold text-gray-700">{match.score[0]}</span>
+                  <span className="text-lg font-bold text-gray-700">{match.score[1]}</span>
                 </div>
               </div>
   
               <div className="flex items-center justify-between text-sm mb-2">
-                <span className="text-green-600 font-semibold">{match.status}</span>
-                <span className="text-gray-400">●</span>
-                <span className="text-gray-400">{match.status === "Live" ? "Идёт сейчас" : "Скоро"}</span>
+                <span className="text-green-600 font-semibold">Live</span>
               </div>
   
               <div className="flex justify-between gap-2 mt-2">
                 <button className="bg-gray-100 text-gray-800 py-1 px-2 rounded-md w-full">
-                  {match.odds[0]}
+                  {match?.win_event.first_outcome.coefficient}
                 </button>
                 <button className="bg-gray-100 text-gray-800 py-1 px-2 rounded-md w-full">X</button>
                 <button className="bg-gray-100 text-gray-800 py-1 px-2 rounded-md w-full">
-                  {match.odds[1]}
+                  {match?.win_event.second_outcome.coefficient}
                 </button>
               </div>
             </div>

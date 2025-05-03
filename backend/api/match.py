@@ -1,10 +1,10 @@
 from typing import Annotated
 
 from fastapi import APIRouter
-from fastapi.params import Depends
+from fastapi.params import Depends, Query
 
 from core.config import settings
-from core.schema.match import MatchReadSchema, MatchCreateSchema, MatchUpdateSchema
+from core.schema.match import MatchReadSchema, MatchCreateSchema, MatchUpdateSchema, MathFilterSchema
 from core.schema.user import UserReadSchema
 from core.service.match import MatchService
 from .dependencies.auth.current_user import current_user
@@ -16,8 +16,9 @@ router = APIRouter(prefix=settings.api.match, tags=["Matches"])
 @router.get("/", response_model=list[MatchReadSchema])
 async def list_matches(
     service: Annotated[MatchService, Depends(match_service)],
+    filters: Annotated[MathFilterSchema, Query()],
 ):
-    return await service.list()
+    return await service.list(filters)
 
 
 @router.post("/", response_model=MatchReadSchema)

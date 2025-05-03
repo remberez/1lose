@@ -3,7 +3,7 @@ import uuid
 from typing import Callable, BinaryIO
 
 from core.exceptions.common import NotFoundError
-from core.schema.game import GameCreateSchema, GameReadSchema
+from core.schema.game import GameCreateSchema, GameReadSchema, GameUpdateSchema
 from core.service.user import UserPermissionsService
 from core.uow.uow import UnitOfWork
 from core.utils.files import save_file
@@ -48,9 +48,19 @@ class GameService:
         async with self._uow_factory() as uow:
             return await uow.games.get(game_id)
 
-    async def update(self, game_id: int, user_id: int, **game_data):
+    async def update(self, game_id: int, user_id: int, game: GameUpdateSchema, icon: BinaryIO | None = None):
         await self._permissions_service.verify_admin(user_id)
         await self.is_exists(game_id)
 
         async with self._uow_factory() as uow:
-            return await uow.games.update(game_id, **game_data)
+            if icon:
+                game_model = await uow.games.get(game_id)
+                try:
+                    os.remove(game_model.icon_path)
+                except FileNotFoundError:
+                    ...
+
+                icon_path = await save_file(icon, str(uuid.uuid4()) + ".png", "games")
+                return await uow.games.update(game_id, **game.model_dump(exclude_none=True), icon_path=icon_path)
+            else:
+                return await uow.games.update(game_id, **game.model_dump(exclude_none=True))

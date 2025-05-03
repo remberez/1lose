@@ -1,6 +1,7 @@
 from abc import ABC, abstractmethod
 from typing import Sequence
 
+from requests import session
 from sqlalchemy import select, delete, exists
 from sqlalchemy.orm import joinedload
 from typing_extensions import TypeVar
@@ -48,6 +49,7 @@ class SQLAlchemyEATeamRepository(
     async def create(self, **data) -> EATeamModel:
         team = EATeamModel(**data)
         self._session.add(team)
+        await self._session.flush()
         return team
 
     async def delete(self, team_id: int) -> None:

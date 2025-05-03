@@ -1,7 +1,7 @@
 from typing import Annotated
 
-from fastapi import APIRouter
-from fastapi.params import Depends
+from fastapi import APIRouter, Form, UploadFile
+from fastapi.params import Depends, File
 
 from core.config import settings
 from core.schema.team import EATeamReadSchema, EATeamCreateSchema, EATeamUpdateSchema
@@ -24,9 +24,12 @@ async def list_team(
 async def create_team(
     service: Annotated[EATeamService, Depends(get_ea_team_service)],
     user: Annotated[UserReadSchema, Depends(current_user)],
-    team: EATeamCreateSchema,
+    name: Annotated[str, Form()],
+    game_id: Annotated[int, Form()],
+    icon: Annotated[UploadFile, File()],
 ):
-    return await service.create(user_id=user.id, **team.model_dump())
+    team = EATeamCreateSchema(name=name, game_id=game_id)
+    return await service.create(user_id=user.id, team=team, icon=icon.file)
 
 
 @router.get("/{team_id}", response_model=EATeamReadSchema)
@@ -51,8 +54,11 @@ async def update_team(
     team_id: int,
     service: Annotated[EATeamService, Depends(get_ea_team_service)],
     user: Annotated[UserReadSchema, Depends(current_user)],
-    team_data: EATeamUpdateSchema,
+    name: Annotated[str | None, Form()] = None,
+    game_id: Annotated[int | None, Form()] = None,
+    icon: Annotated[UploadFile | None, File()] = None,
 ):
+    team = EATeamUpdateSchema(name=name, game_id=game_id)
     return await service.update(
-        team_id=team_id, user_id=user.id, **team_data.model_dump(exclude_none=True)
+        team_id=team_id, user_id=user.id, team=team, icon=icon.file,
     )

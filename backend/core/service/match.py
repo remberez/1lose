@@ -3,7 +3,7 @@ from datetime import datetime, timedelta, timezone
 
 from core.exceptions.common import NotFoundError
 from core.exceptions.match_exc import MatchInProgressException, MatchDateTimeException
-from core.schema.match import MatchCreateSchema, MatchUpdateSchema
+from core.schema.match import MatchCreateSchema, MatchUpdateSchema, MathFilterSchema
 from core.uow.uow import UnitOfWork
 
 if typing.TYPE_CHECKING:
@@ -34,15 +34,16 @@ class MatchService:
         if tournament_id and not await uow.tournaments.is_exists(tournament_id):
             msgs.append(f"Tournament {tournament_id} not found")
 
-        raise NotFoundError(*msgs)
+        if msgs:
+            raise NotFoundError(*msgs)
 
     async def _is_exists(self, match_id: int, uow: UnitOfWork):
         if not await uow.matches.is_exists(match_id):
             raise NotFoundError(f"Match {match_id} not found")
 
-    async def list(self):
+    async def list(self, filters: MathFilterSchema):
         async with self._uow_factory() as uow:
-            return await uow.matches.list()
+            return await uow.matches.list(is_live=filters.is_live)
 
     async def get(self, match_id: int):
         async with self._uow_factory() as uow:
@@ -71,7 +72,8 @@ class MatchService:
                 uow=uow,
             )
 
-            return await uow.matches.create(**match_data.model_dump())
+            match = await uow.matches.create(**match_data.model_dump())
+            return await uow.matches.get(match.id)
 
     async def update(self, user_id: int, match_id: int, match_data: MatchUpdateSchema):
         await self._permissions_service.verify_admin(user_id)
@@ -85,9 +87,10 @@ class MatchService:
                     "You can't end a match that's not in progress"
                 )
 
-            return await uow.matches.update(
+            match = await uow.matches.update(
                 match_id, **match_data.model_dump(exclude_none=True)
             )
+            return await uow.matches.get(match.id)
 
     async def delete(self, user_id: int, match_id: int):
         async with self._uow_factory() as uow:

@@ -30,9 +30,12 @@ class EventModel(Base, IntegerIDMixin, DateCreatedUpdatedMixin, UpdatedByMixin):
     first_outcome_id = mapped_column(ForeignKey("outcome.id"))
     second_outcome_id = mapped_column(ForeignKey("outcome.id"))
 
-    match: Mapped["MatchModel"] = relationship(back_populates="events")
+    match: Mapped["MatchModel"] = relationship(back_populates="events", foreign_keys=match_id)
     map: Mapped["MapModel"] = relationship(back_populates="events")
     first_outcome: Mapped["OutComeModel"] = relationship(foreign_keys=first_outcome_id)
     second_outcome: Mapped["OutComeModel"] = relationship(foreign_keys=second_outcome_id)
     updated_by_r: Mapped["UserModel"] = relationship(back_populates="events_updated")
     bets: Mapped[list["BetModel"]] = relationship(back_populates="event")
+    match_as_win_event: Mapped["MatchModel"] = relationship(back_populates="win_event",
+                                                            foreign_keys="MatchModel.win_event_id",
+                                                            uselist=False)

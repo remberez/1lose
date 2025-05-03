@@ -1,8 +1,8 @@
 import typing
 
 from .user import UserPermissionsService
-from ..exceptions.common import NotFoundError
-from ..uow.uow import UnitOfWork
+from core.exceptions.common import NotFoundError
+from core.uow.uow import UnitOfWork
 
 
 class TournamentService:
@@ -23,14 +23,16 @@ class TournamentService:
         await self._permissions_service.verify_admin_or_moderator(user_id)
 
         async with self._uow_factory() as uow:
-            return await uow.tournaments.create(**tournament_data)
+            tournament = await uow.tournaments.create(**tournament_data)
+            return await uow.tournaments.get(tournament.id)
 
     async def update(self, user_id: int, tournament_id: int, **tournament_data):
         await self._permissions_service.verify_admin_or_moderator(user_id)
 
         async with self._uow_factory() as uow:
             await self._is_exists(tournament_id, uow)
-            return await uow.tournaments.update(tournament_id, **tournament_data)
+            tournament = await uow.tournaments.update(tournament_id, **tournament_data)
+            return await uow.tournaments.get(tournament.id)
 
     async def delete(self, user_id: int, tournament_id: int):
         await self._permissions_service.verify_admin_or_moderator(user_id)

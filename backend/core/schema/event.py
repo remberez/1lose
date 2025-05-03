@@ -4,7 +4,6 @@ from decimal import Decimal
 from pydantic import BaseModel, Field
 
 from core.schema.map import MapReadSchema
-from core.schema.match import MatchReadSchema
 
 
 class OutComeSchema(BaseModel):
@@ -30,7 +29,7 @@ class EventSchema(BaseModel):
 
 class EventReadSchema(EventSchema):
     id: int
-    match: MatchReadSchema
+    match_id: int
     map: MapReadSchema | None = None
     first_outcome: OutComeReadSchema
     second_outcome: OutComeReadSchema
@@ -40,7 +39,7 @@ class EventReadSchema(EventSchema):
 
 class EventCreateSchema(EventSchema):
     match_id: int = Field(gt=0)
-    map_id: int = Field(gt=0)
+    map_id: int | None = Field(None, gt=0)
     first_outcome: OutComeCreateSchema
     second_outcome: OutComeCreateSchema
     updated_by: int | None = Field(None, exclude=True)

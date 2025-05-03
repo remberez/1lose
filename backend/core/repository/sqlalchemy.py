@@ -52,6 +52,7 @@ class SQLAlchemyAbstractWriteRepository[Model: DeclarativeBase](
     async def create(self, **model_data) -> Model:
         stmt = insert(self._model).values(**model_data).returning(self._model)
         model = await self._session.execute(stmt)
+        await self._session.flush()
         return model.scalar_one()
 
     async def update(self, model_id: int, **data) -> Model:

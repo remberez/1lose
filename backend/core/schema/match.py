@@ -5,6 +5,7 @@ from pydantic_core import PydanticCustomError
 
 from core.schema.team import EATeamReadSchema
 from core.schema.tournament import TournamentReadSchema
+from core.schema.event import EventReadSchema
 
 
 class MatchSchema(BaseModel):
@@ -59,7 +60,7 @@ class MatchReadSchema(MatchSchema):
     tournament_id: int = Field(gt=0, exclude=True)
     first_team_id: int = Field(gt=0, exclude=True)
     second_team_id: int = Field(gt=0, exclude=True)
-
+    win_event: EventReadSchema | None = None
 
 class MatchUpdateSchema(MatchSchema):
     tournament_id: int | None = Field(None, gt=0)
@@ -67,3 +68,8 @@ class MatchUpdateSchema(MatchSchema):
     second_team_id: int | None = Field(None, gt=0)
     score: list[int] | None = Field(None, min_length=0, max_length=2)
     best_of: int | None = Field(None, gt=0)
+    win_event_id: int | None = Field(None, gt=0)
+
+
+class MathFilterSchema(BaseModel):
+    is_live: bool | None = None
