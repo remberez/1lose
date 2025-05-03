@@ -9,6 +9,11 @@ class MatchService {
             console.error(error);
         }
     }
+
+    async getAllMatches({}) {
+        const response = await api.get("/matches");
+        return response.data;
+    }
 }
 
 export default new MatchService();

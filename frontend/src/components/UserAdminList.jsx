@@ -21,11 +21,6 @@ const columns = [
     },
   ];
   
-  const data = [
-    { id: 1, name: "Артём", email: "artem@example.com" },
-    { id: 2, name: "Анна", email: "anna@example.com" },
-  ];
-
 
 const UserAdminList = () => {
     const [users, setUsers] = useState([]);

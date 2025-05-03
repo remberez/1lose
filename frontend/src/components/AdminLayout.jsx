@@ -36,7 +36,7 @@ const SideBar = () => {
                     Матчи
                 </NavLink>
                 <NavLink
-                    to="/admin/matches"
+                    to="/admin/events"
                     className={linkClassName}
                 >
                     События

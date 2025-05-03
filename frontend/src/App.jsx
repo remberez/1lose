@@ -5,6 +5,7 @@ import LoginPage from './pages/LoginPage';
 import RegistrationPage from './pages/RegistrationPage';
 import AdminLayout from './components/AdminLayout';
 import UserAdminPage from './pages/UserAdminPage';
+import MatchAdminPage from './pages/MatchAdminPage';
 
 function App() {
   return (
@@ -16,6 +17,7 @@ function App() {
           <Route path="/registration" element={<RegistrationPage/>}/>
           <Route path="/admin" element={<AdminLayout/>}>
             <Route path="users" element={<UserAdminPage/>}/>
+            <Route path="matches" element={<MatchAdminPage/>}/>
           </Route>
         </Route>
       </Routes>
