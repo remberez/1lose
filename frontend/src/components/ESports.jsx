@@ -57,37 +57,6 @@ const EsportsCategories = () => {
   );
 }
 
-const matches = [
-    {
-      teams: ["OG", "Metizport"],
-      scores: [1, 2],
-      odds: [2.35, 1.55],
-      status: "Live",
-      tournament: "Counter-Strike. BLAST.tv Austin Major",
-    },
-    {
-      teams: ["TEAM NEXT LEVEL", "Sangal Esports"],
-      scores: [5, 2],
-      odds: [1.05, 7.70],
-      status: "Live",
-      tournament: "Counter-Strike. Galaxy Battle. Bo3",
-    },
-    {
-      teams: ["Heroic", "Nemiga Gaming"],
-      scores: [10, 11],
-      odds: [1.11, 5.80],
-      status: "Live",
-      tournament: "Counter-Strike. BLAST.tv Austin Major",
-    },
-    {
-      teams: ["Complexity Gaming", "Getting Info"],
-      scores: [3, 5],
-      odds: [1.15, 4.90],
-      status: "Live",
-      tournament: "Counter-Strike. BLAST.tv Austin Major",
-    },
-  ];
-  
 function EsportsMatchCards() {
   const [liveMatches, setliveMatches] = useState([]);
 
@@ -95,7 +64,6 @@ function EsportsMatchCards() {
     async function getLiveGames() {
       const liveMatchesData = await matchService.getLiveMatches();
       setliveMatches(liveMatchesData);
-      console.log(liveMatchesData)
     }
     getLiveGames();
   }, [])
@@ -128,11 +96,11 @@ function EsportsMatchCards() {
   
               <div className="flex justify-between gap-2 mt-2">
                 <button className="bg-gray-100 text-gray-800 py-1 px-2 rounded-md w-full">
-                  {match?.win_event.first_outcome.coefficient}
+                  {match?.win_event?.first_outcome?.coefficient || "Неизвестно"}
                 </button>
                 <button className="bg-gray-100 text-gray-800 py-1 px-2 rounded-md w-full">X</button>
                 <button className="bg-gray-100 text-gray-800 py-1 px-2 rounded-md w-full">
-                  {match?.win_event.second_outcome.coefficient}
+                  {match?.win_event?.second_outcome?.coefficient || "Неизвестно"}
                 </button>
               </div>
             </div>
