@@ -3,6 +3,8 @@ import MainPage from './pages/MainPage';
 import Layout from './components/Layout';
 import LoginPage from './pages/LoginPage';
 import RegistrationPage from './pages/RegistrationPage';
+import AdminLayout from './components/AdminLayout';
+import UserAdminPage from './pages/UserAdminPage';
 
 function App() {
   return (
@@ -12,6 +14,9 @@ function App() {
           <Route index element={<MainPage />} />
           <Route path="/login" element={<LoginPage/>} />
           <Route path="/registration" element={<RegistrationPage/>}/>
+          <Route path="/admin" element={<AdminLayout/>}>
+            <Route path="users" element={<UserAdminPage/>}/>
+          </Route>
         </Route>
       </Routes>
     </BrowserRouter>

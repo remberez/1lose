@@ -1,4 +1,4 @@
-import { NavLink } from "react-router-dom"
+import { NavLink, Outlet } from "react-router-dom"
 
 
 const SideBar = () => {
@@ -52,7 +52,7 @@ const AdminLayout = () => {
       <div className="container mx-auto flex pt-12 px-4">
         <SideBar />
         <div className="flex-grow ml-6 bg-white rounded-2xl p-6 shadow-md">
-            
+            <Outlet/>
         </div>
       </div>
     </div>
