@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { use, useEffect, useState } from "react";
 import MatchHeader from "../components/MatchHeader";
 import ExpandableBlock from "../components/CoefficientBlock";
 import { useParams } from "react-router-dom";
@@ -13,6 +13,7 @@ const MatchPage = () => {
     const [match, setMatch] = useState({});
     const [bet, setBet] = useState({});
     const [betIsActive, setBetIsActive] = useState(false);
+    const [activeEvent, setActiveEvent] = useState({});
 
     useEffect(() => {
         async function fetchData() {
@@ -25,9 +26,10 @@ const MatchPage = () => {
         fetchData();
     }, [])
 
-    function onEventClick(eventData) {
+    function onEventClick(betData, eventData) {
         setBetIsActive(true);
-        setBet(eventData);
+        setBet(betData);
+        setActiveEvent(eventData);
     }
 
     return (
@@ -43,7 +45,7 @@ const MatchPage = () => {
                 </div>
 
                 <div className="col-span-2">
-                    <MatchSideBar bet={bet} betIsActive={betIsActive} match={match}/>
+                    <MatchSideBar bet={bet} betIsActive={betIsActive} match={match} event={activeEvent}/>
                 </div>
             </div>
         </div>

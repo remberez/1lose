@@ -2,15 +2,27 @@ import { useState } from "react";
 import { BsTicketPerforated } from "react-icons/bs";
 import { FaGamepad } from "react-icons/fa";
 import { CgClose } from "react-icons/cg";
+import betService from "../services/betService";
+import { Link, useNavigate } from "react-router-dom";
+import { userStore } from "../stores/authStore";
 
-const MatchSideBar = ({ bet, betIsActive, match }) => {
+const MatchSideBar = ({ bet, betIsActive, match, event }) => {
     const [amount, setAmount] = useState(0);
+    const navigate = useNavigate();
   
     const handleQuickAmount = (val) => {
       setAmount(prev => prev + val);
     };
   
     const possibleWin = (amount * (bet?.coefficient || 0)).toFixed(2);
+
+    async function onButtonClick() {
+        const responseData = await betService.createBet({event_id: event.id, outcome_id: bet.id, amount});
+        
+        if (responseData.status === 200) {
+            navigate("/")
+        }
+    }
   
     return (
       <div className="bg-red-800 rounded-md p-2">
@@ -22,7 +34,7 @@ const MatchSideBar = ({ bet, betIsActive, match }) => {
               <FaGamepad color="black" size={20} />
               <div>
                 <div>{match.first_team?.name} - {match.second_team?.name}</div>
-                <div className="text-sm font-bold">{bet.name}</div>
+                <div className="text-sm font-bold">{event.name} - {bet.name}</div>
               </div>
               <div className="ml-auto font-semibold self-center border-2 p-2 border-gray-300 rounded-md">
                 {bet.coefficient}
@@ -57,9 +69,15 @@ const MatchSideBar = ({ bet, betIsActive, match }) => {
                 Возможный выигрыш:{" "}
                 <span className="font-bold">{possibleWin}</span>
               </div>
-              <button className="bg-blue-600 text-white block w-full mt-2 py-2 rounded-md">
-                Заключить пари на { amount }
-              </button>
+              {
+                userStore.isAuth ?
+                <button className="bg-blue-600 text-white block w-full mt-2 py-2 rounded-md" onClick={onButtonClick}>
+                    Заключить пари на { amount }
+                </button> :
+                <Link className="bg-blue-600 text-white block w-full mt-2 py-2 rounded-md text-center" to="/login">
+                    Авторизуйтесь, что бы сделать ставку
+                </Link>
+              }
             </div>
           </div>
         ) : (
