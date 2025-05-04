@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import gameService from "../services/gameService";
 import matchService from "../services/matchService";
+import { Link } from "react-router-dom";
 
 const esports = [
   { name: "Live", events: 120, color: "from-pink-500 to-red-500", icon: "🎮" },
@@ -72,9 +73,10 @@ function EsportsMatchCards() {
         <h2 className="text-2xl font-bold mb-4">Топ-события</h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
           {liveMatches?.map((match, index) => (
-            <div
+            <Link
               key={index}
               className="bg-white shadow-md rounded-lg p-4 border border-gray-200"
+              to={`/match/${match.id}`}
             >
               <div className="text-xs text-purple-600 font-semibold mb-1">Киберспорт</div>
               <div className="text-sm text-gray-500 mb-2">{match?.tournament.name}</div>
@@ -103,7 +105,7 @@ function EsportsMatchCards() {
                   {match?.win_event?.second_outcome?.coefficient || "Неизвестно"}
                 </button>
               </div>
-            </div>
+            </Link>
           ))}
         </div>
       </div>
