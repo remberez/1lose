@@ -1,5 +1,56 @@
 import { NavLink } from "react-router-dom";
 
+
+function MatchTime({ dateStart }) {
+    const now = new Date();
+    const matchDate = new Date(dateStart);
+  
+    const isSameDay =
+      now.getFullYear() === matchDate.getFullYear() &&
+      now.getMonth() === matchDate.getMonth() &&
+      now.getDate() === matchDate.getDate();
+  
+    const hasStarted = now > matchDate;
+  
+    const formatTime = (date) => {
+      const hours = date.getHours().toString().padStart(2, '0');
+      const minutes = date.getMinutes().toString().padStart(2, '0');
+      return `${hours}:${minutes}`;
+    };
+  
+    const formatDate = (date) => {
+      const day = date.getDate().toString().padStart(2, '0');
+      const month = (date.getMonth() + 1).toString().padStart(2, '0');
+      return `${day}.${month}`;
+    };
+  
+    if (hasStarted && !isSameDay) {
+      return (
+        <div className="flex flex-col items-center text-xs text-red-600 font-semibold">
+          Live
+        </div>
+      );
+    }
+  
+    if (isSameDay) {
+      return (
+        <div className="flex flex-col items-center text-xs">
+          <div>Сегодня</div>
+          <div>{formatTime(matchDate)}</div>
+        </div>
+      );
+    }
+  
+    // если матч не сегодня
+    return (
+      <div className="flex flex-col items-center text-xs">
+        <div>Дата - {formatDate(matchDate)}</div>
+        <div>Время - {formatTime(matchDate)}</div>
+      </div>
+    );
+}
+  
+
 const MatchHeader = ({ matchData }) => {
     return (
         <div className="rounded-lg bg-pink-900">
@@ -17,14 +68,8 @@ const MatchHeader = ({ matchData }) => {
                         height={50}
                     />
                 </div>
-                <div className="flex flex-col items-center text-xs">
-                    <div>
-                        Сегодня
-                    </div>
-                    <div>
-                        18:00
-                    </div>
-                </div>
+                <MatchTime dateStart={matchData.date_start} />
+
                 <div className="font-bold flex items-center gap-x-2">
                     <img
                         src={"http://localhost:8000/" + matchData.second_team.icon_path}
@@ -44,15 +89,11 @@ const MatchHeader = ({ matchData }) => {
                     <NavLink>
                         Матч
                     </NavLink>
-                    <NavLink>
-                        1 карта
-                    </NavLink>
-                    <NavLink>
-                        2 карта
-                    </NavLink>
-                    <NavLink>
-                        3 карта
-                    </NavLink>
+                    {Array.from({ length: matchData.best_of }, (_, i) => (
+                        <NavLink key={i}>
+                            {i + 1} карта
+                        </NavLink>
+                    ))}
                 </div>
             </div>
         </div>
