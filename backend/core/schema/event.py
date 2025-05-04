@@ -50,3 +50,7 @@ class EventUpdateSchema(EventSchema):
     map_id: int | None = Field(None, gt=0)
     first_outcome_id: int | None = Field(None, gt=0)
     second_outcome_id: int | None = Field(None, gt=0)
+
+
+class EventFilterSchema(BaseModel):
+    match_id: int | None = None

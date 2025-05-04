@@ -1,10 +1,10 @@
 from typing import Annotated
 
 from fastapi import APIRouter
-from fastapi.params import Depends
+from fastapi.params import Depends, Query
 
 from core.config import settings
-from core.schema.event import EventReadSchema, EventCreateSchema, EventUpdateSchema
+from core.schema.event import EventReadSchema, EventCreateSchema, EventUpdateSchema, EventFilterSchema
 from core.schema.user import UserReadSchema
 from core.service.event import EventService
 from .dependencies.services.event import event_service
@@ -16,8 +16,9 @@ router = APIRouter(prefix=settings.api.event, tags=["Events"])
 @router.get("/", response_model=list[EventReadSchema])
 async def event_list(
         service: Annotated[EventService, Depends(event_service)],
+        filters: Annotated[EventFilterSchema, Query()],
 ):
-    return await service.list()
+    return await service.list(filters)
 
 
 @router.post("/", response_model=EventReadSchema)

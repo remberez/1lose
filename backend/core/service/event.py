@@ -1,7 +1,7 @@
 from typing import Callable
 
 from core.exceptions.common import BusinessValidationError
-from core.schema.event import EventCreateSchema, EventUpdateSchema
+from core.schema.event import EventCreateSchema, EventUpdateSchema, EventFilterSchema
 from core.service.user import UserPermissionsService
 from core.uow.uow import UnitOfWork
 
@@ -15,9 +15,9 @@ class EventService:
         self._permissions_service = permissions_service
         self._uow_factory = uow_factory
 
-    async def list(self):
+    async def list(self, filters: EventFilterSchema = None):
         async with self._uow_factory() as uow:
-            return await uow.events.list()
+            return await uow.events.list(**filters.model_dump(exclude_none=True))
 
     async def get(self, event_id: int):
         async with self._uow_factory() as uow:

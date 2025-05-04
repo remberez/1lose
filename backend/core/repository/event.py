@@ -50,7 +50,7 @@ class SQLAlchemyEventRepository(
         result = await self._session.execute(stmt)
         return result.scalar_one_or_none()
 
-    async def list(self, *args, **kwargs) -> Sequence[EventModel]:
+    async def list(self, match_id: int = None) -> Sequence[EventModel]:
         stmt = (
             select(EventModel)
             .options(
@@ -62,6 +62,10 @@ class SQLAlchemyEventRepository(
                 joinedload(EventModel.second_outcome),
             )
         )
+
+        if match_id:
+            stmt = stmt.where(EventModel.match_id == match_id)
+
         result = await self._session.execute(stmt)
         return result.scalars().all()
 
