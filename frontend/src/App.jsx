@@ -15,6 +15,7 @@ import { observer } from 'mobx-react-lite';
 import { useEffect } from 'react';
 import userService from './services/userService';
 import UserEditPage from './components/UserEditPage';
+import MatchPage from './pages/MatchPage';
 
 function App() {
   useEffect(() => {
@@ -44,6 +45,7 @@ function App() {
           <Route index element={<MainPage />} />
           <Route path="/login" element={<LoginPage/>} />
           <Route path="/registration" element={<RegistrationPage/>}/>
+          <Route path="/match/:id" element={<MatchPage/>}/>
           {
             !userStore.isLoading && userStore.user?.role_code === "admin" &&
               <Route path="/admin" element={<AdminLayout/>}>
