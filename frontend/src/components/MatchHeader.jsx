@@ -53,7 +53,7 @@ function MatchTime({ dateStart }) {
 
 const MatchHeader = ({ matchData }) => {
     return (
-        <div className="rounded-lg bg-pink-900">
+        <div className="rounded-lg bg-blue-600">
             <div className="text-gray-300 text-xs px-5 py-4">
                 Главная / Киберспорт / Dota 2 / {matchData.tournament?.name}
             </div>
@@ -81,7 +81,7 @@ const MatchHeader = ({ matchData }) => {
                     </div>
                 </div>
             </div>
-            <div className="bg-rose-950 px-5 flex justiy-start gap-x-4 items-center py-1">
+            <div className="bg-blue-800 px-5 flex justiy-start gap-x-4 items-center py-1">
                 <div>
                     X
                 </div>
