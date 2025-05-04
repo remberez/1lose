@@ -14,6 +14,11 @@ class MatchService {
         const response = await api.get("/matches");
         return response.data;
     }
+
+    async getMatch(id) {
+        const response = await api.get(`/matches/${id}`);
+        return response.data;
+    }
 }
 
 export default new MatchService();

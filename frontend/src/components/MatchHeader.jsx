@@ -55,15 +55,15 @@ const MatchHeader = ({ matchData }) => {
     return (
         <div className="rounded-lg bg-pink-900">
             <div className="text-gray-300 text-xs px-5 py-4">
-                Главная / Киберспорт / Dota 2 / {matchData.tournament.name}
+                Главная / Киберспорт / Dota 2 / {matchData.tournament?.name}
             </div>
             <div className="flex items-center justify-center gap-x-4 mb-10">
                 <div className="font-bold flex items-center gap-x-2">
                     <div>
-                        {matchData.first_team.name}
+                        {matchData.first_team?.name}
                     </div>
                     <img
-                        src={"http://localhost:8000/" + matchData.first_team.icon_path}
+                        src={"http://localhost:8000/" + matchData.first_team?.icon_path}
                         width={50}
                         height={50}
                     />
@@ -72,12 +72,12 @@ const MatchHeader = ({ matchData }) => {
 
                 <div className="font-bold flex items-center gap-x-2">
                     <img
-                        src={"http://localhost:8000/" + matchData.second_team.icon_path}
+                        src={"http://localhost:8000/" + matchData.second_team?.icon_path}
                         width={50}
                         height={50}
                     />
                     <div>
-                        {matchData.second_team.name}
+                        {matchData.second_team?.name}
                     </div>
                 </div>
             </div>
