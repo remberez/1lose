@@ -1,3 +1,4 @@
+import logging
 import os
 import uuid
 from typing import Callable, BinaryIO
@@ -7,6 +8,8 @@ from core.schema.game import GameCreateSchema, GameReadSchema, GameUpdateSchema
 from core.service.user import UserPermissionsService
 from core.uow.uow import UnitOfWork
 from core.utils.files import save_file
+
+log = logging.getLogger(__name__)
 
 
 class GameService:
@@ -39,7 +42,10 @@ class GameService:
         async with self._uow_factory() as uow:
             await self.is_exists(game_id)
             game = await uow.games.get(game_id)
-            os.remove(game.icon_path)
+            try:
+                os.remove(game.icon_path)
+            except FileNotFoundError:
+                log.warning(f"Файл {game.icon_path} не был найден. Удаление без поиска файла.")
             await uow.games.delete(game_id)
 
     async def get(self, game_id: int):
