@@ -1,3 +1,4 @@
+from datetime import datetime
 from decimal import Decimal
 
 from pydantic import BaseModel, Field
@@ -18,6 +19,8 @@ class BetReadSchema(BetSchema):
     coefficient: Decimal = Field(max_digits=12, decimal_places=2)
     possible_gain: Decimal = Field(max_digits=12, decimal_places=2)
     bet_status: BetStatus
+    created_at: datetime
+    updated_at: datetime
 
 
 class BetCreateSchema(BetSchema):
