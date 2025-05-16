@@ -19,6 +19,7 @@ import MatchPage from './pages/MatchPage';
 import TeamEditPage from './pages/TeamEditPage';
 import GameEditPage from './pages/GameEditPage';
 import TournamentEditPage from './pages/TournamentEditPage';
+import MatchEditPage from './pages/MatchEditPage';
 
 function App() {
   useEffect(() => {
@@ -56,6 +57,7 @@ function App() {
                 <Route path="users/:id" element={<UserEditPage/>}/>
 
                 <Route path="matches" element={<MatchAdminPage/>}/>
+                <Route path="matches/:id" element={<MatchEditPage />} />
 
                 <Route path="games" element={<GameAdminPage/>}/>
                 <Route path="/admin/games/:id" element={<GameEditPage />} />
