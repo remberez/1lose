@@ -47,6 +47,12 @@ const SideBar = () => {
                 >
                     Турниры
                 </NavLink>
+                <NavLink
+                    to="/admin/events"
+                    className={linkClassName}
+                >
+                    События
+                </NavLink>
             </nav>
         </aside>
     );
