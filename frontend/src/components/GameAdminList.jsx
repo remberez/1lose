@@ -20,7 +20,7 @@ const GameAdminList = ({games, onGameDelete}) => {
         title: "Действия",
         render: (_, row) => (
           <div className="flex gap-2">
-            <Link className="text-blue-600 hover:underline" to={row.id}>✏️</Link>
+            <Link className="text-blue-600 hover:underline" to={`${row.id}`}>✏️</Link>
             <button className="text-red-600 hover:underline" onClick={() => onGameDelete(row.id)}>🗑</button>
           </div>
         ),

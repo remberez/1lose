@@ -28,6 +28,18 @@ class GameService {
         const response = await api.delete(`/games/${gameId}`);
         return response;
     }
+
+    async updateGame(id, formData) {
+        const response = await api.patch(`/games/${id}`, formData, {
+            headers: { "Content-Type": "multipart/form-data" },
+        });
+        return response.data;
+    }
+
+    async getGameById(id) {
+        const response = await api.get(`/games/${id}`);
+        return response.data;
+    }
 }
 
     export default new GameService();

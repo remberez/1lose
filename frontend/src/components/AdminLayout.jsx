@@ -8,7 +8,7 @@ const SideBar = () => {
     }`
 
     return (
-        <aside className="w-64 bg-oneWinBlue-600 text-white p-6 rounded-2xl shadow-lg">
+        <aside className="w-64 bg-oneWinBlue-600 text-white p-6 rounded-2xl shadow-lg self-start">
             <h1 className="text-2xl font-bold font-inter mb-8">Админ-панель</h1>
             <nav className="flex flex-col gap-4">
                 <NavLink
