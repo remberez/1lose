@@ -59,6 +59,7 @@ async def update_team(
     icon: Annotated[UploadFile | None, File()] = None,
 ):
     team = EATeamUpdateSchema(name=name, game_id=game_id)
+    file = icon.file if icon else None
     return await service.update(
-        team_id=team_id, user_id=user.id, team=team, icon=icon.file,
+        team_id=team_id, user_id=user.id, team=team, icon=file
     )

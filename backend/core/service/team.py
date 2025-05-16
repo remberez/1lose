@@ -5,7 +5,6 @@ import uuid
 from typing_extensions import BinaryIO
 
 from core.exceptions.common import NotFoundError
-from core.schema.game import GameUpdateSchema
 from core.schema.team import EATeamCreateSchema, EATeamUpdateSchema
 from core.service.user import UserPermissionsService
 from core.uow.uow import UnitOfWork
@@ -51,7 +50,7 @@ class EATeamService:
             await uow.teams.delete(team_id)
             os.remove(team.icon_path)
 
-    async def update(self, team_id: int, user_id: int, team: EATeamUpdateSchema, icon: BinaryIO):
+    async def update(self, team_id: int, user_id: int, team: EATeamUpdateSchema, icon: BinaryIO | None = None):
         await self._permissions_service.verify_admin_or_moderator(user_id=user_id)
 
         async with self._uow_factory() as uow:
@@ -63,6 +62,7 @@ class EATeamService:
                 except FileNotFoundError:
                     ...
                 icon_path = await save_file(icon, str(uuid.uuid4()) + ".png", "teams")
-                return await uow.teams.update(team_id, **team.model_dump(exclude_none=True), icon_path=icon_path)
+                await uow.teams.update(team_id, **team.model_dump(exclude_none=True), icon_path=icon_path)
             else:
-                return await uow.teams.update(team_id, **team.model_dump(exclude_none=True))
+                 await uow.teams.update(team_id, **team.model_dump(exclude_none=True))
+            return await uow.teams.get(team_id)
