@@ -1,6 +1,5 @@
-import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 import AdminList from "./AdminList";
-import teamService from "../services/teamService";
 
 const columns = [
   { key: "id", title: "ID" },
@@ -22,25 +21,14 @@ const columns = [
     title: "Действия",
     render: (_, row) => (
       <div className="flex gap-2">
-        <button className="text-blue-600 hover:underline">✏️</button>
+        <Link className="text-blue-600 hover:underline" to={`${row.id}`}>✏️</Link>
         <button className="text-red-600 hover:underline">🗑</button>
       </div>
     ),
   },
 ];
 
-const TeamAdminList = () => {
-  const [teams, setTeams] = useState([]);
-
-  useEffect(() => {
-    async function fetchData() {
-      const data = await teamService.getAllTeams();
-      setTeams(data);
-    }
-
-    fetchData();
-  }, []);
-
+const TeamAdminList = ({teams}) => {
   return (
     <div>
       <h2 className="text-xl font-semibold mb-4 font-inter">Команды</h2>

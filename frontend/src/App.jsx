@@ -16,6 +16,7 @@ import { useEffect } from 'react';
 import userService from './services/userService';
 import UserEditPage from './components/UserEditPage';
 import MatchPage from './pages/MatchPage';
+import TeamEditPage from './pages/TeamEditPage';
 
 function App() {
   useEffect(() => {
@@ -53,9 +54,14 @@ function App() {
                 <Route path="users/:id" element={<UserEditPage/>}/>
 
                 <Route path="matches" element={<MatchAdminPage/>}/>
+
                 <Route path="games" element={<GameAdminPage/>}/>
+
                 <Route path="teams" element={<TeamAdminPage/>}/>
+                <Route path="teams/:id" element={<TeamEditPage />} />
+
                 <Route path="tournaments" element={<TournamentAdminPage/>}/>
+
                 <Route path="business-settings" element={<BusinessSettingsAdminPage/>}/>
               </Route>
           }
