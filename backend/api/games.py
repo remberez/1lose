@@ -62,9 +62,10 @@ async def update_game(
     icon: Annotated[UploadFile | None, File()] = None,
 ):
     game = GameUpdateSchema(name=name, description=description)
+    file = icon.file if icon else None
     return await service.update(
         game_id=game_id,
         user_id=user.id,
         game=game,
-        icon=icon.file,
+        icon=file,
     )
