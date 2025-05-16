@@ -21,6 +21,7 @@ import GameEditPage from './pages/GameEditPage';
 import TournamentEditPage from './pages/TournamentEditPage';
 import MatchEditPage from './pages/MatchEditPage';
 import EventAdminPage from './pages/EventAdminPage';
+import ProfileLayout from './components/ProfileLayout';
 
 function App() {
   useEffect(() => {
@@ -73,6 +74,14 @@ function App() {
 
                 <Route path="events" element={<EventAdminPage />} />
               </Route>
+          }
+
+          {
+            !userStore.isLoading && userStore.isAuth &&
+            <Route path="/profile" element={<ProfileLayout/>}>
+              <Route path="deposits" element={""}/>
+              <Route path="bets" element={""}/>
+            </Route>
           }
         </Route>
       </Routes>
