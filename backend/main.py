@@ -9,7 +9,7 @@ from starlette.staticfiles import StaticFiles
 
 from api import router
 from core.config import settings
-from core.exceptions.common import NotFoundError, BusinessValidationError
+from core.exceptions.common import NotFoundError, BusinessValidationError, AlreadyExistsError
 from core.exceptions.match_exc import MatchInProgressException, MatchDateTimeException
 from core.exceptions.user_exc import UserPermissionError
 from core.models.db_helper import db_helper
@@ -59,6 +59,10 @@ async def match_datetime_handler(_request, exc: MatchDateTimeException):
 async def business_validation_handler(_request: Request, exc: BusinessValidationError):
     raise HTTPException(status_code=400, detail=str(exc))
 
+
+@app.exception_handler(AlreadyExistsError)
+async def already_exists_handler(_request: Request, exc: AlreadyExistsError):
+    raise HTTPException(status_code=409, detail=str(exc))
 
 
 # Входная точка

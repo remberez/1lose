@@ -5,3 +5,6 @@ class NotFoundError(Exception):
 
 
 class BusinessValidationError(Exception): ...
+
+
+class AlreadyExistsError(Exception): ...
