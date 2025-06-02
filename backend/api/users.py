@@ -2,7 +2,7 @@ from typing import Annotated
 
 from fastapi import APIRouter, Depends
 
-from api.dependencies.auth.current_user import current_user
+from api.dependencies.auth.current_user import get_current_active_verify_user
 from api.dependencies.services.user import get_user_service
 from core.config import settings
 from core.schema.user import UserReadSchema, UserUpdateSelfSchema, UserUpdateAdminSchema
@@ -11,7 +11,7 @@ from core.service.user import UserService
 router = APIRouter(prefix=settings.api.users, tags=["Users"])
 
 @router.get("/me", response_model=UserReadSchema)
-async def get_me(user: Annotated[UserReadSchema, Depends(current_user)]):
+async def get_me(user: Annotated[UserReadSchema, Depends(get_current_active_verify_user)]):
     return user
 
 
@@ -26,7 +26,7 @@ async def get_user(
 @router.get("/", response_model=list[UserReadSchema])
 async def user_list(
         service: Annotated[UserService, Depends(get_user_service)],
-        user: Annotated[UserReadSchema, Depends(current_user)],
+        user: Annotated[UserReadSchema, Depends(get_current_active_verify_user)],
 ):
     return await service.list(user_id=user.id)
 
@@ -34,7 +34,7 @@ async def user_list(
 @router.patch("/me", response_model=UserReadSchema)
 async def update_me(
         service: Annotated[UserService, Depends(get_user_service)],
-        user: Annotated[UserReadSchema, Depends(current_user)],
+        user: Annotated[UserReadSchema, Depends(get_current_active_verify_user)],
         data: UserUpdateSelfSchema,
 ):
     return await service.update(target_user_id=user.id, user_data=data)
@@ -43,7 +43,7 @@ async def update_me(
 @router.patch("/{user_id}", response_model=UserReadSchema)
 async def update_user(
         service: Annotated[UserService, Depends(get_user_service)],
-        user: Annotated[UserReadSchema, Depends(current_user)],
+        user: Annotated[UserReadSchema, Depends(get_current_active_verify_user)],
         data: UserUpdateAdminSchema,
         user_id: int,
 ):

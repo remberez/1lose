@@ -8,7 +8,7 @@ from core.schema.event import EventReadSchema, EventCreateSchema, EventUpdateSch
 from core.schema.user import UserReadSchema
 from core.service.event import EventService
 from .dependencies.services.event import event_service
-from .dependencies.auth.current_user import current_user
+from .dependencies.auth.current_user import get_current_active_verify_user
 
 router = APIRouter(prefix=settings.api.event, tags=["Events"])
 
@@ -24,7 +24,7 @@ async def event_list(
 @router.post("/", response_model=EventReadSchema)
 async def create_event(
         service: Annotated[EventService, Depends(event_service)],
-        user: Annotated[UserReadSchema, Depends(current_user)],
+        user: Annotated[UserReadSchema, Depends(get_current_active_verify_user)],
         event: EventCreateSchema,
 ):
     return await service.create(user.id, event)
@@ -42,7 +42,7 @@ async def get_event(
 async def update_event(
         service: Annotated[EventService, Depends(event_service)],
         event_id: int,
-        user: Annotated[UserReadSchema, Depends(current_user)],
+        user: Annotated[UserReadSchema, Depends(get_current_active_verify_user)],
         event: EventUpdateSchema,
 ):
     return await service.update(event_id, user.id, event)
@@ -52,6 +52,6 @@ async def update_event(
 async def delete_event(
         service: Annotated[EventService, Depends(event_service)],
         event_id: int,
-        user: Annotated[UserReadSchema, Depends(current_user)],
+        user: Annotated[UserReadSchema, Depends(get_current_active_verify_user)],
 ):
     return await service.delete(event_id, user.id)

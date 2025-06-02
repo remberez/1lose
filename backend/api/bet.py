@@ -7,7 +7,7 @@ from core.config import settings
 from core.schema.bet import BetCreateSchema, BetReadSchema
 from core.schema.user import UserReadSchema
 from core.service.bet import BetService
-from .dependencies.auth.current_user import current_user
+from .dependencies.auth.current_user import get_current_active_verify_user
 from .dependencies.services.bet import bet_service
 
 router = APIRouter(prefix=settings.api.bet, tags=["Bets"])
@@ -15,7 +15,7 @@ router = APIRouter(prefix=settings.api.bet, tags=["Bets"])
 
 @router.post("/", response_model=BetReadSchema)
 async def create_bet(
-        user: Annotated[UserReadSchema, Depends(current_user)],
+        user: Annotated[UserReadSchema, Depends(get_current_active_verify_user)],
         bet: BetCreateSchema,
         service: Annotated[BetService, Depends(bet_service)],
 ):
@@ -25,7 +25,7 @@ async def create_bet(
 @router.get("/", response_model=list[BetReadSchema])
 async def user_bets_list(
         service: Annotated[BetService, Depends(bet_service)],
-        user: Annotated[UserReadSchema, Depends(current_user)],
+        user: Annotated[UserReadSchema, Depends(get_current_active_verify_user)],
 ):
     return await service.user_list(user.id)
 
@@ -34,7 +34,7 @@ async def user_bets_list(
 async def delete_bet(
         bet_id: int,
         service: Annotated[BetService, Depends(bet_service)],
-        user: Annotated[UserReadSchema, Depends(current_user)],
+        user: Annotated[UserReadSchema, Depends(get_current_active_verify_user)],
 ):
     return await service.delete(bet_id, user.id)
 
@@ -43,7 +43,7 @@ async def delete_bet(
 async def get_bet(
         bet_id: int,
         service: Annotated[BetService, Depends(bet_service)],
-        user: Annotated[UserReadSchema, Depends(current_user)],
+        user: Annotated[UserReadSchema, Depends(get_current_active_verify_user)],
 ):
     return await service.get(bet_id, user.id)
 
@@ -52,6 +52,6 @@ async def get_bet(
 async def sell_bet(
         bet_id: int,
         service: Annotated[BetService, Depends(bet_service)],
-        user: Annotated[UserReadSchema, Depends(current_user)],
+        user: Annotated[UserReadSchema, Depends(get_current_active_verify_user)],
 ):
     return await service.sell(bet_id, user.id)
