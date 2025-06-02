@@ -8,6 +8,7 @@ from jwt import InvalidTokenError
 from core.auth.jwt import TOKEN_TYPE_FIELD, ACCESS_TOKEN_TYPE, REFRESH_TOKEN_TYPE
 from api.dependencies.services.user import get_user_service
 from core.config import settings
+from core.exceptions.user_exc import UserPermissionError
 from core.schema.user import UserReadSchema
 from core.service.user import UserService
 from core.utils.auth import decode_token
@@ -58,26 +59,37 @@ def get_current_user_from_token_of_type(token_type: str):
     return get_user_from_token
 
 
-async def get_current_active_verify_user(
-
-):
-    ...
-
-
-async def get_active_user(
-
-):
-    ...
-
-
-async def get_verified_user(
-
-):
-    ...
-
-
 get_current_user = get_current_user_from_token_of_type(ACCESS_TOKEN_TYPE)
 get_current_user_refresh = get_current_user_from_token_of_type(REFRESH_TOKEN_TYPE)
 
 CurrentUser = Annotated[UserReadSchema, Depends(get_current_user)]
 CurrentUserRefresh = Annotated[UserReadSchema, Depends(get_current_user_refresh)]
+
+
+async def get_current_active_verify_user(
+        user: CurrentUser
+):
+    if not user.is_active or not user.is_verified:
+        raise UserPermissionError("Account is inactive or unverified")
+    return user
+
+
+async def get_active_user(
+        user: CurrentUser
+):
+    if not user.is_active:
+        raise UserPermissionError("Account is inactive")
+    return user
+
+
+async def get_verified_user(
+        user: CurrentUser
+):
+    if not user.is_verified:
+        raise UserPermissionError("Account is verified")
+    return user
+
+
+CurrentVerifiedActiveUser = Annotated[UserReadSchema, get_current_active_verify_user]
+CurrentActiveUser = Annotated[UserReadSchema, get_active_user]
+CurrentVerifiedUser = Annotated[UserReadSchema, get_verified_user]
