@@ -5,7 +5,7 @@ from fastapi.params import Depends
 from fastapi.security import OAuth2PasswordBearer
 from jwt import InvalidTokenError
 
-from api.dependencies.auth.jwt import TOKEN_TYPE_FIELD
+from api.dependencies.auth.jwt import TOKEN_TYPE_FIELD, ACCESS_TOKEN_TYPE, REFRESH_TOKEN_TYPE
 from api.dependencies.services.user import get_user_service
 from core.config import settings
 from core.schema.user import UserReadSchema
@@ -57,13 +57,11 @@ def get_current_user_from_token_of_type(token_type: str):
         )
     return get_user_from_token
 
+
+get_current_user = get_current_user_from_token_of_type(ACCESS_TOKEN_TYPE)
+get_current_user_refresh = get_current_user_from_token_of_type(REFRESH_TOKEN_TYPE)
+
 async def get_current_active_verify_user(
-
-):
-    ...
-
-
-async def get_current_user(
 
 ):
     ...
