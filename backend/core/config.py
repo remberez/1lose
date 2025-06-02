@@ -49,6 +49,14 @@ class AuthSettings(BaseModel):
     verification_token_secret: str
 
 
+class JWTAuthSettings(BaseModel):
+    access_token_lifetime_minutes: int = 20
+    refresh_token_lifetime_days: int = 30
+    algorithm: str
+    private_key: str
+    public_key: str
+
+
 class StaticFilesSettings(BaseModel):
     media_url: str = "/media"
     media_path: str = "media"
@@ -68,6 +76,7 @@ class Settings(BaseSettings):
     auth: AuthSettings
     static_files: StaticFilesSettings = StaticFilesSettings()
     cors: CorsSettings = CorsSettings()
+    jwt_auth: JWTAuthSettings
 
 
 settings = Settings()
