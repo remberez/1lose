@@ -2,7 +2,7 @@ from typing import Annotated
 
 from fastapi import APIRouter, Depends
 
-from api.dependencies.auth.current_user import get_current_active_verify_user
+from api.dependencies.auth.current_user import get_current_active_verify_user, get_current_user
 from api.dependencies.services.user import get_user_service
 from core.config import settings
 from core.schema.user import UserReadSchema, UserUpdateSelfSchema, UserUpdateAdminSchema
@@ -11,7 +11,7 @@ from core.service.user import UserService
 router = APIRouter(prefix=settings.api.users, tags=["Users"])
 
 @router.get("/me", response_model=UserReadSchema)
-async def get_me(user: Annotated[UserReadSchema, Depends(get_current_active_verify_user)]):
+async def get_me(user: Annotated[UserReadSchema, Depends(get_current_user)]):
     return user
 
 

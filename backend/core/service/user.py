@@ -73,8 +73,8 @@ class UserService:
 
             if validate_password(password, user.hashed_password.encode()):
                 return TokenSchema(
-                    access=create_access_token(UserReadSchema.model_validate(user_model)),
-                    refresh=create_refresh_token(UserReadSchema.model_validate(user_model)),
+                    access_token=create_access_token(UserReadSchema.model_validate(user_model)),
+                    refresh_token=create_refresh_token(UserReadSchema.model_validate(user_model)),
                 )
             raise NotFoundError("Invalid username or password")
 

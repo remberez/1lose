@@ -22,8 +22,8 @@ class UserReadSchema(UserBaseSchema):
 
 
 class TokenSchema(BaseModel):
-    access: str
-    refresh: str | None = None
+    access_token: str
+    refresh_token: str | None = None
     type: str = "Bearer"
 
 

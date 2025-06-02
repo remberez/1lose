@@ -25,7 +25,7 @@ def create_jwt(
 
 def create_access_token(user: UserReadSchema) -> str:
     jwt_payload = {
-        "sub": user.id,
+        "sub": str(user.id),
         "email": user.email,
     }
     return create_jwt(
@@ -37,7 +37,7 @@ def create_access_token(user: UserReadSchema) -> str:
 
 def create_refresh_token(user: UserReadSchema) -> str:
     jwt_payload = {
-        "sub": user.id,
+        "sub": str(user.id),
     }
     return create_jwt(
         token_type=REFRESH_TOKEN_TYPE,
