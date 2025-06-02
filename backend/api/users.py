@@ -18,8 +18,9 @@ async def get_me(user: CurrentUser):
 
 @router.get("/{user_id}", response_model=UserReadSchema)
 async def get_user(
-    user_id: int,
-    service: Annotated[UserService, Depends(get_user_service)],
+        user_id: int,
+        service: Annotated[UserService, Depends(get_user_service)],
+        _: CurrentAdminUser,
 ):
     return await service.get(user_id)
 
