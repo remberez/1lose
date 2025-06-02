@@ -96,8 +96,8 @@ async def get_verified_user(
 async def get_admin_user(
         user: CurrentUser,
 ) -> UserReadSchema:
-    if user.role_code != UserRoleCodes.ADMIN:
-        raise NotFoundError("Not found")
+    if user.role_code != UserRoleCodes.ADMIN.value:
+        raise NotFoundError()
     return user
 
 
@@ -109,8 +109,8 @@ async def get_admin_or_moderator(
     return user
 
 
-CurrentVerifiedActiveUser = Annotated[UserReadSchema, get_current_active_verify_user]
-CurrentActiveUser = Annotated[UserReadSchema, get_active_user]
-CurrentVerifiedUser = Annotated[UserReadSchema, get_verified_user]
-CurrentAdminUser = Annotated[UserReadSchema, get_admin_user]
-CurrentAdminModeratorUser = Annotated[UserReadSchema, get_admin_or_moderator]
+CurrentVerifiedActiveUser = Annotated[UserReadSchema, Depends(get_current_active_verify_user)]
+CurrentActiveUser = Annotated[UserReadSchema, Depends(get_active_user)]
+CurrentVerifiedUser = Annotated[UserReadSchema, Depends(get_verified_user)]
+CurrentAdminUser = Annotated[UserReadSchema, Depends(get_admin_user)]
+CurrentAdminModeratorUser = Annotated[UserReadSchema, Depends(get_admin_or_moderator)]
