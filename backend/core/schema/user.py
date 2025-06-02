@@ -19,6 +19,12 @@ class UserReadSchema(UserBaseSchema):
     id: int
 
 
+class TokenSchema(BaseModel):
+    access: str
+    refresh: str | None = None
+    type: str = "Bearer"
+
+
 class UserUpdateSelfSchema(schemas.BaseUserUpdate):
     ...
 
