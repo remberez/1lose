@@ -58,9 +58,6 @@ def get_current_user_from_token_of_type(token_type: str):
     return get_user_from_token
 
 
-get_current_user = get_current_user_from_token_of_type(ACCESS_TOKEN_TYPE)
-get_current_user_refresh = get_current_user_from_token_of_type(REFRESH_TOKEN_TYPE)
-
 async def get_current_active_verify_user(
 
 ):
@@ -77,3 +74,10 @@ async def get_verified_user(
 
 ):
     ...
+
+
+get_current_user = get_current_user_from_token_of_type(ACCESS_TOKEN_TYPE)
+get_current_user_refresh = get_current_user_from_token_of_type(REFRESH_TOKEN_TYPE)
+
+CurrentUser = Annotated[UserReadSchema, Depends(get_current_user)]
+CurrentUserRefresh = Annotated[UserReadSchema, Depends(get_current_user_refresh)]
