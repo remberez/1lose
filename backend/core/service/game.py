@@ -28,7 +28,6 @@ class GameService:
 
     async def create(self, game: GameCreateSchema, icon: BinaryIO, user_id: int) -> GameReadSchema:
         async with self._uow_factory() as uow:
-            await self._permissions_service.verify_admin(user_id=user_id)
             icon_path = await save_file(icon, str(uuid.uuid4()) + ".png", "/games")
             return await uow.games.create(**game.model_dump(), icon_path=icon_path)
 
@@ -37,8 +36,6 @@ class GameService:
             return await uow.games.list()
 
     async def delete(self, game_id: int, user_id: int) -> None:
-        await self._permissions_service.verify_admin(user_id)
-
         async with self._uow_factory() as uow:
             await self.is_exists(game_id)
             game = await uow.games.get(game_id)
@@ -55,7 +52,6 @@ class GameService:
             return await uow.games.get(game_id)
 
     async def update(self, game_id: int, user_id: int, game: GameUpdateSchema, icon: BinaryIO | None = None):
-        await self._permissions_service.verify_admin(user_id)
         await self.is_exists(game_id)
 
         async with self._uow_factory() as uow:

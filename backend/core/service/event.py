@@ -24,20 +24,14 @@ class EventService:
             return await uow.events.get(event_id)
 
     async def delete(self, event_id: int, user_id: int):
-        await self._permissions_service.verify_admin(user_id)
-
         async with self._uow_factory() as uow:
             await uow.events.delete(event_id)
 
     async def update(self, event_id: int, user_id: int, event_data: EventUpdateSchema):
-        await self._permissions_service.verify_admin_or_moderator(user_id)
-
         async with self._uow_factory() as uow:
             return await uow.events.update(event_id, **event_data.model_dump(exclude_none=True))
 
     async def create(self, user_id: int, event_data: EventCreateSchema):
-        await self._permissions_service.verify_admin_or_moderator(user_id)
-
         async with self._uow_factory() as uow:
             map_match_id = await uow.maps.get_match_id(event_data.map_id)
 

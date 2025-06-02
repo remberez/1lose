@@ -20,23 +20,17 @@ class TournamentService:
             raise NotFoundError(f"Tournament {tournament_id} not found")
 
     async def create(self, user_id: int, **tournament_data):
-        await self._permissions_service.verify_admin_or_moderator(user_id)
-
         async with self._uow_factory() as uow:
             tournament = await uow.tournaments.create(**tournament_data)
             return await uow.tournaments.get(tournament.id)
 
     async def update(self, user_id: int, tournament_id: int, **tournament_data):
-        await self._permissions_service.verify_admin_or_moderator(user_id)
-
         async with self._uow_factory() as uow:
             await self._is_exists(tournament_id, uow)
             tournament = await uow.tournaments.update(tournament_id, **tournament_data)
             return await uow.tournaments.get(tournament.id)
 
     async def delete(self, user_id: int, tournament_id: int):
-        await self._permissions_service.verify_admin_or_moderator(user_id)
-
         async with self._uow_factory() as uow:
             await self._is_exists(tournament_id, uow)
             return await uow.tournaments.delete(tournament_id)

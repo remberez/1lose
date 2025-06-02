@@ -34,7 +34,6 @@ class EATeamService:
             return await uow.teams.get(team_id)
 
     async def create(self, user_id, team: EATeamCreateSchema, icon: BinaryIO):
-        await self._permissions_service.verify_admin_or_moderator(user_id=user_id)
         file_path = await save_file(icon, str(uuid.uuid4()) + ".png", "teams")
 
         async with self._uow_factory() as uow:
@@ -42,8 +41,6 @@ class EATeamService:
             return await uow.teams.get(team.id)
 
     async def delete(self, team_id: int, user_id: int) -> None:
-        await self._permissions_service.verify_admin_or_moderator(user_id=user_id)
-
         async with self._uow_factory() as uow:
             await self._is_exists(team_id, uow=uow)
             team = await uow.teams.get(team_id)
@@ -51,8 +48,6 @@ class EATeamService:
             os.remove(team.icon_path)
 
     async def update(self, team_id: int, user_id: int, team: EATeamUpdateSchema, icon: BinaryIO | None = None):
-        await self._permissions_service.verify_admin_or_moderator(user_id=user_id)
-
         async with self._uow_factory() as uow:
             await self._is_exists(team_id, uow=uow)
             if icon:

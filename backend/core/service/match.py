@@ -51,8 +51,6 @@ class MatchService:
             return await uow.matches.get(match_id)
 
     async def create(self, user_id: int, match_data: MatchCreateSchema):
-        await self._permissions_service.verify_admin(user_id)
-
         async with self._uow_factory() as uow:
             current_time = datetime.now(timezone.utc)
             min_start_date = current_time + timedelta(hours=24)
@@ -76,8 +74,6 @@ class MatchService:
             return await uow.matches.get(match.id)
 
     async def update(self, user_id: int, match_id: int, match_data: MatchUpdateSchema):
-        await self._permissions_service.verify_admin(user_id)
-
         async with self._uow_factory() as uow:
             await self._is_exists(match_id, uow)
 
@@ -94,7 +90,6 @@ class MatchService:
 
     async def delete(self, user_id: int, match_id: int):
         async with self._uow_factory() as uow:
-            await self._permissions_service.verify_admin(user_id)
             await self._is_exists(match_id, uow)
 
             match = await self.get(match_id)
