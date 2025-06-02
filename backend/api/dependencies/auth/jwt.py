@@ -26,7 +26,6 @@ def create_jwt(
 def create_access_token(user: UserReadSchema) -> str:
     jwt_payload = {
         "sub": user.id,
-        "username": user.username,
         "email": user.email,
     }
     return create_jwt(
