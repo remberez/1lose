@@ -3,10 +3,11 @@ from decimal import Decimal
 from typing import TypeVar
 
 from core.const.user_role import UserRoleCodes
-from core.exceptions.common import NotFoundError
+from core.exceptions.common import NotFoundError, AlreadyExistsError
 from core.exceptions.user_exc import UserPermissionError
-from core.schema.user import UserUpdateSelfSchema, UserUpdateAdminSchema
+from core.schema.user import UserUpdateSelfSchema, UserUpdateAdminSchema, UserRegisterSchema
 from core.uow.uow import UnitOfWork
+from core.utils.auth import hash_password
 
 UserModelT = TypeVar("UserModelT")
 
@@ -19,6 +20,18 @@ class UserService:
     ):
         self._uow_factory = uow_factory
         self._permissions_service = permissions_service
+
+    async def register(self, user_data: UserRegisterSchema):
+        async with self._uow_factory() as uow:
+            if await uow.users.get_user_by_email(email=str(user_data.email)):
+                raise AlreadyExistsError(f"Email {user_data.email} already exists")
+
+            hashed_password = hash_password(user_data.password).decode()
+            user_model = await uow.users.create(
+                email=str(user_data.email),
+                hashed_password=hashed_password
+            )
+            return user_model
 
     async def is_exists(self, user_id: int, uow: UnitOfWork):
         if not await uow.users.is_exists(user_id):
