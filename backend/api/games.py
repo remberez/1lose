@@ -7,7 +7,7 @@ from fastapi.params import Depends, File
 from core.config import settings
 from core.schema.game import GameCreateSchema, GameReadSchema, GameUpdateSchema
 from core.schema.user import UserReadSchema
-from .dependencies.auth.current_user import get_current_active_verify_user
+from .dependencies.auth.current_user import get_current_active_verify_user, CurrentAdminUser
 from .dependencies.services.game import get_game_service
 
 if TYPE_CHECKING:
@@ -18,7 +18,7 @@ router = APIRouter(prefix=settings.api.games, tags=["Games"])
 
 @router.post("/", response_model=GameReadSchema)
 async def create_game(
-    user: Annotated[UserReadSchema, Depends(get_current_active_verify_user)],
+    user: CurrentAdminUser,
     name: Annotated[str, Form()],
     description: Annotated[str, Form()],
     icon: Annotated[UploadFile, File()],
@@ -37,7 +37,7 @@ async def list_games(
 
 @router.delete("/{game_id}", response_model=None)
 async def delete_game(
-    user: Annotated[UserReadSchema, Depends(get_current_active_verify_user)],
+    user: CurrentAdminUser,
     game_id: int,
     service: Annotated["GameService", Depends(get_game_service)],
 ):
@@ -55,7 +55,7 @@ async def get_game(
 @router.patch("/{game_id}", response_model=GameReadSchema)
 async def update_game(
     game_id: int,
-    user: Annotated[UserReadSchema, Depends(get_current_active_verify_user)],
+    user: CurrentAdminUser,
     service: Annotated["GameService", Depends(get_game_service)],
     name: Annotated[str | None, Form()] = None,
     description: Annotated[str | None, Form()] = None,

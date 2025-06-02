@@ -7,7 +7,7 @@ from core.config import settings
 from core.schema.match import MatchReadSchema, MatchCreateSchema, MatchUpdateSchema, MathFilterSchema
 from core.schema.user import UserReadSchema
 from core.service.match import MatchService
-from .dependencies.auth.current_user import get_current_active_verify_user
+from .dependencies.auth.current_user import get_current_active_verify_user, CurrentAdminModeratorUser, CurrentAdminUser
 from .dependencies.services.match import match_service
 
 router = APIRouter(prefix=settings.api.match, tags=["Matches"])
@@ -23,7 +23,7 @@ async def list_matches(
 
 @router.post("/", response_model=MatchReadSchema)
 async def create_match(
-    user: Annotated[UserReadSchema, Depends(get_current_active_verify_user)],
+    user: CurrentAdminModeratorUser,
     service: Annotated[MatchService, Depends(match_service)],
     match: MatchCreateSchema,
 ):
@@ -33,7 +33,7 @@ async def create_match(
 @router.patch("/{match_id}", response_model=MatchReadSchema)
 async def update_match(
     match_id: int,
-    match_data: MatchUpdateSchema,
+    match_data: CurrentAdminModeratorUser,
     user: Annotated[UserReadSchema, Depends(get_current_active_verify_user)],
     service: Annotated[MatchService, Depends(match_service)],
 ):
@@ -43,7 +43,7 @@ async def update_match(
 @router.delete("/{match_id}")
 async def delete_match(
     match_id: int,
-    user: Annotated[UserReadSchema, Depends(get_current_active_verify_user)],
+    user: CurrentAdminUser,
     service: Annotated[MatchService, Depends(match_service)],
 ):
     return await service.delete(user.id, match_id)

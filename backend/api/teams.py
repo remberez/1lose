@@ -8,7 +8,7 @@ from core.schema.team import EATeamReadSchema, EATeamCreateSchema, EATeamUpdateS
 from core.schema.user import UserReadSchema
 from core.service.team import EATeamService
 from .dependencies.services.team import get_ea_team_service
-from .dependencies.auth.current_user import get_current_active_verify_user
+from .dependencies.auth.current_user import get_current_active_verify_user, CurrentAdminUser
 
 router = APIRouter(prefix=settings.api.teams, tags=["EA-Teams"])
 
@@ -23,7 +23,7 @@ async def list_team(
 @router.post("/", response_model=EATeamReadSchema)
 async def create_team(
     service: Annotated[EATeamService, Depends(get_ea_team_service)],
-    user: Annotated[UserReadSchema, Depends(get_current_active_verify_user)],
+    user: CurrentAdminUser,
     name: Annotated[str, Form()],
     game_id: Annotated[int, Form()],
     icon: Annotated[UploadFile, File()],
@@ -43,7 +43,7 @@ async def get_team(
 @router.delete("/{team_id}", response_model=None)
 async def delete_team(
     team_id: int,
-    service: Annotated[EATeamService, Depends(get_ea_team_service)],
+    service: CurrentAdminUser,
     user: Annotated[UserReadSchema, Depends(get_current_active_verify_user)],
 ):
     return await service.delete(team_id=team_id, user_id=user.id)
@@ -52,7 +52,7 @@ async def delete_team(
 @router.patch("/{team_id}", response_model=EATeamReadSchema)
 async def update_team(
     team_id: int,
-    service: Annotated[EATeamService, Depends(get_ea_team_service)],
+    service: CurrentAdminUser,
     user: Annotated[UserReadSchema, Depends(get_current_active_verify_user)],
     name: Annotated[str | None, Form()] = None,
     game_id: Annotated[int | None, Form()] = None,

@@ -8,7 +8,7 @@ from core.schema.event import EventReadSchema, EventCreateSchema, EventUpdateSch
 from core.schema.user import UserReadSchema
 from core.service.event import EventService
 from .dependencies.services.event import event_service
-from .dependencies.auth.current_user import get_current_active_verify_user
+from .dependencies.auth.current_user import get_current_active_verify_user, CurrentAdminUser
 
 router = APIRouter(prefix=settings.api.event, tags=["Events"])
 
@@ -23,7 +23,7 @@ async def event_list(
 
 @router.post("/", response_model=EventReadSchema)
 async def create_event(
-        service: Annotated[EventService, Depends(event_service)],
+        service: CurrentAdminUser,
         user: Annotated[UserReadSchema, Depends(get_current_active_verify_user)],
         event: EventCreateSchema,
 ):
@@ -40,7 +40,7 @@ async def get_event(
 
 @router.patch("/{event_id}", response_model=EventReadSchema)
 async def update_event(
-        service: Annotated[EventService, Depends(event_service)],
+        service: CurrentAdminUser,
         event_id: int,
         user: Annotated[UserReadSchema, Depends(get_current_active_verify_user)],
         event: EventUpdateSchema,
@@ -50,7 +50,7 @@ async def update_event(
 
 @router.delete("/{event_id}")
 async def delete_event(
-        service: Annotated[EventService, Depends(event_service)],
+        service: CurrentAdminUser,
         event_id: int,
         user: Annotated[UserReadSchema, Depends(get_current_active_verify_user)],
 ):

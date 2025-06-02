@@ -11,7 +11,7 @@ from core.schema.tournament import (
 )
 from core.schema.user import UserReadSchema
 from core.service.tournament import TournamentService
-from .dependencies.auth.current_user import get_current_active_verify_user
+from .dependencies.auth.current_user import get_current_active_verify_user, CurrentAdminModeratorUser
 from .dependencies.services.tournament import get_tournament_service
 
 router = APIRouter(prefix=settings.api.tournament, tags=["Tournaments"])
@@ -28,7 +28,7 @@ async def get_tournament(
 @router.post("/", response_model=TournamentReadSchema)
 async def create_tournament(
     tournament: TournamentCreateSchema,
-    user: Annotated[UserReadSchema, Depends(get_current_active_verify_user)],
+    user: CurrentAdminModeratorUser,
     service: Annotated[TournamentService, Depends(get_tournament_service)],
 ):
     return await service.create(user_id=user.id, **tournament.model_dump())
@@ -44,7 +44,7 @@ async def list_tournament(
 @router.delete("/{tournament_id}", response_model=None)
 async def delete_tournament(
     tournament_id: int,
-    user: Annotated[UserReadSchema, Depends(get_current_active_verify_user)],
+    user: CurrentAdminModeratorUser,
     service: Annotated[TournamentService, Depends(get_tournament_service)],
 ):
     await service.delete(user_id=user.id, tournament_id=tournament_id)
@@ -53,7 +53,7 @@ async def delete_tournament(
 @router.patch("/{tournament_id}", response_model=TournamentReadSchema)
 async def update_tournament(
     tournament_id: int,
-    user: Annotated[UserReadSchema, Depends(get_current_active_verify_user)],
+    user: CurrentAdminModeratorUser,
     service: Annotated[TournamentService, Depends(get_tournament_service)],
     tournament: TournamentUpdateSchema,
 ):
