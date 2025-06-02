@@ -2,7 +2,7 @@ import typing
 from decimal import Decimal
 from typing import TypeVar
 
-from api.dependencies.auth.jwt import create_access_token, create_refresh_token
+from core.auth.jwt import create_access_token, create_refresh_token
 from core.const.user_role import UserRoleCodes
 from core.exceptions.common import NotFoundError, AlreadyExistsError
 from core.exceptions.user_exc import UserPermissionError
