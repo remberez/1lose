@@ -2,7 +2,7 @@ from abc import ABC
 from decimal import Decimal
 
 from black.nodes import TypeVar
-from sqlalchemy import select, update
+from sqlalchemy import select, update, insert
 
 from core.repository.abc import AbstractReadRepository, AbstractWriteRepository
 from core.models.user import UserModel
@@ -26,6 +26,12 @@ class AbstractUserRepository(
     async def update_user_balance(self, user_id: int, value: Decimal) -> Decimal:
         raise NotImplementedError()
 
+    async def get_user_by_email(self, email: str) -> UserModelT:
+        raise NotImplementedError()
+
+    async def create(self, email: str, hashed_password: str) -> UserModelT:
+        raise NotImplementedError()
+
 
 class UserSQLAlchemyRepository(
     SQLAlchemyAbstractReadRepository[UserModel],
@@ -45,3 +51,19 @@ class UserSQLAlchemyRepository(
         user.balance += value
         return user.balance
 
+    async def get_user_by_email(self, email: str) -> UserModel | None:
+        stmt = (
+            select(UserModel)
+            .where(UserModel.email == email)
+        )
+        result = await self._session.execute(stmt)
+        return result.scalar_one_or_none()
+
+    async def create(self, email: str, hashed_password: str) -> UserModel:
+        model = UserModel(
+            email=email,
+            hashed_password=hashed_password,
+        )
+        self._session.add(model)
+        await self._session.flush()
+        return model
