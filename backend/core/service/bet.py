@@ -7,6 +7,7 @@ from core.schema.bet import BetCreateSchema, BetUpdateSchema
 from core.service.user import UserPermissionsService
 from core.exceptions.common import BusinessValidationError, NotFoundError
 from core.uow.uow import UnitOfWork
+from core.uow.utils import with_uow
 
 
 class BetService:
@@ -26,27 +27,27 @@ class BetService:
         # TODO: Использовать только для модераторов/администраторов
         ...
 
-    async def user_list(self, user_id: int):
-        async with self._uow_factory() as uow:
-            return await uow.bets.user_bets(user_id)
+    @with_uow
+    async def user_list(self, user_id: int, uow: UnitOfWork):
+        return await uow.bets.user_bets(user_id)
 
-    async def get(self, bet_id: int, user_id: int):
+    @with_uow
+    async def get(self, bet_id: int, user_id: int, uow: UnitOfWork):
         # TODO:
         #   При добавлении тех. поддержки разрешить модераторам просматривать ставки,
         #   если активна сессия поддержки
-        async with self._uow_factory() as uow:
-            await self._is_exists(bet_id, uow)
-            bet = await uow.bets.get(bet_id)
+        await self._is_exists(bet_id, uow)
+        bet = await uow.bets.get(bet_id)
 
-            if bet.user_id != user_id:
-                await self._permissions_service.verify_admin(user_id)
-            return bet
+        if bet.user_id != user_id:
+            await self._permissions_service.verify_admin(user_id)
+        return bet
 
-    async def delete(self, bet_id: int, user_id: int):
-        async with self._uow_factory() as uow:
-            bet = await uow.bets.get(bet_id)
-            await uow.users.update_user_balance(user_id, bet.amount)
-            await uow.bets.delete(bet_id)
+    @with_uow
+    async def delete(self, bet_id: int, user_id: int, uow: UnitOfWork):
+        bet = await uow.bets.get(bet_id)
+        await uow.users.update_user_balance(user_id, bet.amount)
+        await uow.bets.delete(bet_id)
 
     async def _validate_user_balance(self, user_id: int, bet_amount: Decimal, uow: UnitOfWork):
         user_balance = await uow.users.get_user_balance(user_id)
@@ -59,40 +60,41 @@ class BetService:
         if outcome.id not in (event.first_outcome_id, event.second_outcome_id):
             raise BusinessValidationError("Outcome IDs do not match the event outcome IDs")
 
-    async def create(self, user_id: int, bet: BetCreateSchema):
-        async with self._uow_factory() as uow:
-            await self._validate_user_balance(user_id, bet.amount, uow)
-            await self._validate_outcome_event(bet.outcome_id, bet.event_id, uow)
-            await uow.users.update_user_balance(user_id, -bet.amount)
+    @with_uow
+    async def create(self, user_id: int, bet: BetCreateSchema, uow):
+        await self._validate_user_balance(user_id, bet.amount, uow)
+        await self._validate_outcome_event(bet.outcome_id, bet.event_id, uow)
+        await uow.users.update_user_balance(user_id, -bet.amount)
 
-            outcome = await uow.outcomes.get(bet.outcome_id)
-            return await uow.bets.create(
-                **bet.model_dump(),
-                user_id=user_id,
-                coefficient=outcome.coefficient,
-                bet_status=BetStatus.ACTIVE,
-                possible_gain=bet.amount * outcome.coefficient,
-            )
+        outcome = await uow.outcomes.get(bet.outcome_id)
+        return await uow.bets.create(
+            **bet.model_dump(),
+            user_id=user_id,
+            coefficient=outcome.coefficient,
+            bet_status=BetStatus.ACTIVE,
+            possible_gain=bet.amount * outcome.coefficient,
+        )
 
-    async def update(self, bet_id: int, bet: BetUpdateSchema):
+    @with_uow
+    async def update(self, bet_id: int, bet: BetUpdateSchema, uow: UnitOfWork):
         ...
 
-    async def sell(self, bet_id: int, user_id: int):
+    @with_uow
+    async def sell(self, bet_id: int, user_id: int, uow: UnitOfWork):
         # Продаёт ставку, устанавливает поле bet_status = 'sold' и возвращает часть денег на баланс пользователю
-        async with self._uow_factory() as uow:
-            await self._is_exists(bet_id, uow)
-            bet = await uow.bets.get(bet_id)
-            outcome = await uow.outcomes.get(bet.outcome_id)
-            sales_commission = await uow.business_settings.get(BusinessSettingsItems.SALES_COMMISSION.value)
+        await self._is_exists(bet_id, uow)
+        bet = await uow.bets.get(bet_id)
+        outcome = await uow.outcomes.get(bet.outcome_id)
+        sales_commission = await uow.business_settings.get(BusinessSettingsItems.SALES_COMMISSION.value)
 
-            if bet.user_id != user_id:
-                raise PermissionError()
+        if bet.user_id != user_id:
+            raise PermissionError()
 
-            sales_coefficient = bet.coefficient / outcome.coefficient
-            commission = Decimal((100 - int(sales_commission.value)) / 100)
-            selling_price = bet.amount * round(sales_coefficient * commission, 2)
+        sales_coefficient = bet.coefficient / outcome.coefficient
+        commission = Decimal((100 - int(sales_commission.value)) / 100)
+        selling_price = bet.amount * round(sales_coefficient * commission, 2)
 
-            await uow.users.update_user_balance(user_id, selling_price)
-            bet.bet_status = BetStatus.SOLD
+        await uow.users.update_user_balance(user_id, selling_price)
+        bet.bet_status = BetStatus.SOLD
 
-            return bet
+        return bet

@@ -5,6 +5,7 @@ from core.exceptions.common import NotFoundError
 from core.exceptions.match_exc import MatchInProgressException, MatchDateTimeException
 from core.schema.match import MatchCreateSchema, MatchUpdateSchema, MathFilterSchema
 from core.uow.uow import UnitOfWork
+from core.uow.utils import with_uow
 
 if typing.TYPE_CHECKING:
     from core.service.user import UserPermissionsService
@@ -12,9 +13,9 @@ if typing.TYPE_CHECKING:
 
 class MatchService:
     def __init__(
-            self,
-            uow_factory: typing.Callable[[], UnitOfWork],
-            permissions_service: "UserPermissionsService"
+        self,
+        uow_factory: typing.Callable[[], UnitOfWork],
+        permissions_service: "UserPermissionsService"
     ):
         self._permissions_service = permissions_service
         self._uow_factory = uow_factory
@@ -41,64 +42,60 @@ class MatchService:
         if not await uow.matches.is_exists(match_id):
             raise NotFoundError(f"Match {match_id} not found")
 
-    async def list(self, filters: MathFilterSchema):
-        async with self._uow_factory() as uow:
-            return await uow.matches.list(is_live=filters.is_live)
+    @with_uow
+    async def list(self, filters: MathFilterSchema, uow: UnitOfWork):
+        return await uow.matches.list(is_live=filters.is_live)
 
-    async def get(self, match_id: int):
-        async with self._uow_factory() as uow:
-            await self._is_exists(match_id, uow)
-            return await uow.matches.get(match_id)
+    @with_uow
+    async def get(self, match_id: int, uow: UnitOfWork):
+        await self._is_exists(match_id, uow)
+        return await uow.matches.get(match_id)
 
-    async def create(self, user_id: int, match_data: MatchCreateSchema):
-        async with self._uow_factory() as uow:
-            current_time = datetime.now(timezone.utc)
-            min_start_date = current_time + timedelta(hours=24)
+    @with_uow
+    async def create(self, user_id: int, match_data: MatchCreateSchema, uow: UnitOfWork):
+        current_time = datetime.now(timezone.utc)
+        min_start_date = current_time + timedelta(hours=24)
 
-            if match_data.date_start:
-                if match_data.date_start.tzinfo is None:
-                    match_data.date_start = match_data.date_start.replace(
-                        tzinfo=timezone.utc
-                    )
-                if match_data.date_start < min_start_date:
-                    raise MatchDateTimeException("The start date must be at least 24 "
-                                                 "hours later than the current time")
-            await self._match_data_exists(
-                first_team_id=match_data.first_team_id,
-                second_team_id=match_data.second_team_id,
-                tournament_id=match_data.tournament_id,
-                uow=uow,
-            )
+        if match_data.date_start:
+            if match_data.date_start.tzinfo is None:
+                match_data.date_start = match_data.date_start.replace(tzinfo=timezone.utc)
+            if match_data.date_start < min_start_date:
+                raise MatchDateTimeException("The start date must be at least 24 hours later than the current time")
 
-            match = await uow.matches.create(**match_data.model_dump(), score=[0, 0])
-            return await uow.matches.get(match.id)
+        await self._match_data_exists(
+            first_team_id=match_data.first_team_id,
+            second_team_id=match_data.second_team_id,
+            tournament_id=match_data.tournament_id,
+            uow=uow,
+        )
 
-    async def update(self, user_id: int, match_id: int, match_data: MatchUpdateSchema):
-        async with self._uow_factory() as uow:
-            await self._is_exists(match_id, uow)
+        match = await uow.matches.create(**match_data.model_dump(), score=[0, 0])
+        return await uow.matches.get(match.id)
 
-            match = await self.get(match_id)
-            if match_data.date_end and not match.date_start:
-                raise MatchInProgressException(
-                    "You can't end a match that's not in progress"
-                )
+    @with_uow
+    async def update(self, user_id: int, match_id: int, match_data: MatchUpdateSchema, uow: UnitOfWork):
+        await self._is_exists(match_id, uow)
 
-            match = await uow.matches.update(
-                match_id, **match_data.model_dump(exclude_none=True)
-            )
-            return await uow.matches.get(match.id)
+        match = await self.get(match_id)
+        if match_data.date_end and not match.date_start:
+            raise MatchInProgressException("You can't end a match that's not in progress")
 
-    async def delete(self, user_id: int, match_id: int):
-        async with self._uow_factory() as uow:
-            await self._is_exists(match_id, uow)
+        match = await uow.matches.update(
+            match_id, **match_data.model_dump(exclude_none=True)
+        )
+        return await uow.matches.get(match.id)
 
-            match = await self.get(match_id)
-            match_is_on = (
-                match.date_start
-                and match.date_start <= datetime.now(timezone.utc)
-                and not match.date_end
-            )
-            if match_is_on:
-                raise MatchInProgressException("You can't delete a match in progress")
+    @with_uow
+    async def delete(self, user_id: int, match_id: int, uow: UnitOfWork):
+        await self._is_exists(match_id, uow)
 
-            return await uow.matches.delete(match_id)
+        match = await self.get(match_id)
+        match_is_on = (
+            match.date_start
+            and match.date_start <= datetime.now(timezone.utc)
+            and not match.date_end
+        )
+        if match_is_on:
+            raise MatchInProgressException("You can't delete a match in progress")
+
+        return await uow.matches.delete(match_id)
