@@ -8,6 +8,8 @@ from jwt import InvalidTokenError
 from core.auth.jwt import TOKEN_TYPE_FIELD, ACCESS_TOKEN_TYPE, REFRESH_TOKEN_TYPE
 from api.dependencies.services.user import get_user_service
 from core.config import settings
+from core.const.user_role import UserRoleCodes
+from core.exceptions.common import NotFoundError
 from core.exceptions.user_exc import UserPermissionError
 from core.schema.user import UserReadSchema
 from core.service.user import UserService
@@ -19,6 +21,7 @@ async def get_current_token_payload(
     token: Annotated[str, Depends(oauth2_schema)],
 ) -> dict:
     # Принимает в себя токен в запросе и возвращает payload токена
+    # TODO: Сделать что то с вызовом исключений здесь
     invalid_token_exc = HTTPException(
         status_code=401,
         detail="Token invalid"
@@ -68,7 +71,7 @@ CurrentUserRefresh = Annotated[UserReadSchema, Depends(get_current_user_refresh)
 
 async def get_current_active_verify_user(
         user: CurrentUser
-):
+) -> UserReadSchema:
     if not user.is_active or not user.is_verified:
         raise UserPermissionError("Account is inactive or unverified")
     return user
@@ -76,7 +79,7 @@ async def get_current_active_verify_user(
 
 async def get_active_user(
         user: CurrentUser
-):
+) -> UserReadSchema:
     if not user.is_active:
         raise UserPermissionError("Account is inactive")
     return user
@@ -84,12 +87,30 @@ async def get_active_user(
 
 async def get_verified_user(
         user: CurrentUser
-):
+) -> UserReadSchema:
     if not user.is_verified:
         raise UserPermissionError("Account is verified")
+    return user
+
+
+async def get_admin_user(
+        user: CurrentUser,
+) -> UserReadSchema:
+    if user.role_code != UserRoleCodes.ADMIN:
+        raise NotFoundError("Not found")
+    return user
+
+
+async def get_admin_or_moderator(
+        user: CurrentUser,
+) -> UserReadSchema:
+    if user.role_code not in (UserRoleCodes.ADMIN, UserRoleCodes.USER):
+        raise NotFoundError("Not found")
     return user
 
 
 CurrentVerifiedActiveUser = Annotated[UserReadSchema, get_current_active_verify_user]
 CurrentActiveUser = Annotated[UserReadSchema, get_active_user]
 CurrentVerifiedUser = Annotated[UserReadSchema, get_verified_user]
+CurrentAdminUser = Annotated[UserReadSchema, get_admin_user]
+CurrentAdminModeratorUser = Annotated[UserReadSchema, get_admin_or_moderator]
