@@ -1,7 +1,7 @@
 import re
 
 from fastapi_users import schemas
-from pydantic import Field, BaseModel, EmailStr, field_validator
+from pydantic import Field, BaseModel, EmailStr, field_validator, ConfigDict
 
 from core.types.user_id import UserID
 from decimal import Decimal
@@ -13,6 +13,8 @@ class UserBaseSchema(BaseModel):
     role_code: str
     is_active: bool
     is_verified: bool
+
+    model_config = ConfigDict(from_attributes=True)
 
 
 class UserReadSchema(UserBaseSchema):

@@ -2,12 +2,15 @@ import typing
 from decimal import Decimal
 from typing import TypeVar
 
+from api.dependencies.auth.jwt import create_access_token, create_refresh_token
 from core.const.user_role import UserRoleCodes
 from core.exceptions.common import NotFoundError, AlreadyExistsError
 from core.exceptions.user_exc import UserPermissionError
-from core.schema.user import UserUpdateSelfSchema, UserUpdateAdminSchema, UserRegisterSchema
+from core.models import UserModel
+from core.schema.user import UserUpdateSelfSchema, UserUpdateAdminSchema, UserRegisterSchema, TokenSchema, \
+    UserReadSchema
 from core.uow.uow import UnitOfWork
-from core.utils.auth import hash_password
+from core.utils.auth import hash_password, validate_password
 
 UserModelT = TypeVar("UserModelT")
 
@@ -61,6 +64,19 @@ class UserService:
 
         async with self._uow_factory() as uow:
             return await uow.users.update(target_user_id, **user_data.model_dump(exclude_none=True))
+
+    async def jwt_login(self, email: str, password: str):
+        async with self._uow_factory() as uow:
+            user_model: UserModel = await uow.users.get_user_by_email(email)
+            if not (user := user_model):
+                raise NotFoundError("Invalid username or password")
+
+            if validate_password(password, user.hashed_password.encode()):
+                return TokenSchema(
+                    access=create_access_token(UserReadSchema.model_validate(user_model)),
+                    refresh=create_refresh_token(UserReadSchema.model_validate(user_model)),
+                )
+            raise NotFoundError("Invalid username or password")
 
 class UserPermissionsService:
     def __init__(
