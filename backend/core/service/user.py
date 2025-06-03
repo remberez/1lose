@@ -95,6 +95,11 @@ class UserService:
             )
         raise NotFoundError("Invalid username or password")
 
+    async def jwt_refresh(self, user_data: UserReadSchema):
+        return TokenSchema(
+            access_token=create_access_token(user_data),
+        )
+
 
 class UserPermissionsService:
     def __init__(
