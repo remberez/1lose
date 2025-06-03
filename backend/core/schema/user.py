@@ -1,9 +1,7 @@
 import re
 
-from fastapi_users import schemas
 from pydantic import Field, BaseModel, EmailStr, field_validator, ConfigDict
 
-from core.types.user_id import UserID
 from decimal import Decimal
 
 
@@ -27,13 +25,15 @@ class TokenSchema(BaseModel):
     type: str = "Bearer"
 
 
-class UserUpdateSelfSchema(schemas.BaseUserUpdate):
-    ...
+class UserUpdateSelfSchema(BaseModel):
+    email: EmailStr
 
 
-class UserUpdateAdminSchema(schemas.BaseUserUpdate):
+class UserUpdateAdminSchema(BaseModel):
     balance: Decimal | None = Field(None, max_digits=12, decimal_places=2)
     role_code: str | None = None
+    is_active: bool | None = None
+    is_verified: bool | None = None
 
 
 class UserRegisterSchema(BaseModel):

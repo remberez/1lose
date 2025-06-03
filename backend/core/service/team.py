@@ -8,6 +8,7 @@ from core.exceptions.common import NotFoundError
 from core.schema.team import EATeamCreateSchema, EATeamUpdateSchema
 from core.service.user import UserPermissionsService
 from core.uow.uow import UnitOfWork
+from core.uow.utils import with_uow
 from core.utils.files import save_file
 
 

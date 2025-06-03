@@ -55,15 +55,30 @@ class UserService:
         return await uow.users.list()
 
     @with_uow
+    async def admin_update(
+            self,
+            target_user_id: int,
+            user_data: UserUpdateAdminSchema,
+            uow: UnitOfWork = None,
+    ):
+        return await uow.users.update(target_user_id, **user_data.model_dump(exclude_none=True))
+
+
+    @with_uow
     async def update(
         self,
         target_user_id: int,
-        user_data: UserUpdateSelfSchema | UserUpdateAdminSchema,
+            user_data: UserUpdateSelfSchema,
         user_id: int | None = None,
         uow: UnitOfWork = None,
     ):
         if user_id and user_id != target_user_id:
             await self._permissions_service.verify_admin(user_id)
+
+        if user_data.email:
+            user_same_email = await uow.users.get_user_by_email(str(user_data.email))
+            if user_same_email:
+                raise AlreadyExistsError(f"User with email {user_data.email!r} already exists")
 
         return await uow.users.update(target_user_id, **user_data.model_dump(exclude_none=True))
 

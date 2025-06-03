@@ -2,7 +2,7 @@ from typing import Annotated
 
 from fastapi import APIRouter, Depends
 
-from api.dependencies.auth.current_user import get_current_active_verify_user, get_current_user, CurrentUser, \
+from api.dependencies.auth.current_user import get_current_active_verify_user, CurrentUser, \
     CurrentAdminUser
 from api.dependencies.services.user import get_user_service
 from core.config import settings
@@ -45,8 +45,8 @@ async def update_me(
 @router.patch("/{user_id}", response_model=UserReadSchema)
 async def update_user(
         service: Annotated[UserService, Depends(get_user_service)],
-        user: CurrentAdminUser,
+        _: CurrentAdminUser,
         data: UserUpdateAdminSchema,
         user_id: int,
 ):
-    return await service.update(user_id, data, user.id)
+    return await service.admin_update(user_id, data)
