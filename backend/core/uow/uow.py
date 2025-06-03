@@ -4,6 +4,7 @@ from typing import Self
 from core.repository.bet import AbstractBetRepository
 from core.repository.business_settings import AbstractBusinessSettingsRepository
 from core.repository.event import AbstractEventRepository
+from core.repository.event_outcome import AbstractEventOutcomeRepository
 from core.repository.game import AbstractGameRepository
 from core.repository.map import AbstractMapRepository
 from core.repository.match import AbstractMatchRepository
@@ -24,6 +25,7 @@ class UnitOfWork(ABC):
     tournaments: AbstractTournamentRepository | None
     users: AbstractUserRepository | None
     business_settings: AbstractBusinessSettingsRepository | None
+    event_outcome: AbstractEventOutcomeRepository | None
 
     @abstractmethod
     def __init__(self):
