@@ -1,95 +1,35 @@
-import { BrowserRouter, Route, Routes } from 'react-router-dom';
-import MainPage from './pages/MainPage';
-import Layout from './components/Layout';
-import LoginPage from './pages/LoginPage';
-import RegistrationPage from './pages/RegistrationPage';
-import AdminLayout from './components/AdminLayout';
-import UserAdminPage from './pages/UserAdminPage';
-import MatchAdminPage from './pages/MatchAdminPage';
-import GameAdminPage from './pages/GameAdminPage';
-import TeamAdminPage from './pages/TeamAdminPage';
-import TournamentAdminPage from './pages/TournamentAdminPage';
-import BusinessSettingsAdminPage from './pages/BusinessSettingsAdminPage';
-import { userStore } from './stores/authStore';
-import { observer } from 'mobx-react-lite';
-import { useEffect } from 'react';
-import userService from './services/userService';
-import UserEditPage from './components/UserEditPage';
-import MatchPage from './pages/MatchPage';
-import TeamEditPage from './pages/TeamEditPage';
-import GameEditPage from './pages/GameEditPage';
-import TournamentEditPage from './pages/TournamentEditPage';
-import MatchEditPage from './pages/MatchEditPage';
-import EventAdminPage from './pages/EventAdminPage';
-import ProfileLayout from './components/ProfileLayout';
-import ProfilePage from './pages/ProfilePage';
-import MyBetsPage from './pages/MyBetsPage';
+import { useState } from 'react'
+import reactLogo from './assets/react.svg'
+import viteLogo from '/vite.svg'
+import './App.css'
 
 function App() {
-  useEffect(() => {
-    const initAuth = async () => {
-        const token = localStorage.getItem("token");
-
-        if (token) {
-            try {
-                userStore.setIsLoading(true);
-                const userData = await userService.getMe();
-                userStore.login(userData);
-                userStore.setIsLoading(false);
-            } catch (e) {
-                console.error("Ошибка при проверке токена:", e);
-                userStore.logout();
-            }
-        }
-    };
-
-    initAuth();
-  }, []);
+  const [count, setCount] = useState(0)
 
   return (
-    <BrowserRouter>
-      <Routes>
-        <Route path="/" element={<Layout />}>
-          <Route index element={<MainPage />} />
-          <Route path="/login" element={<LoginPage/>} />
-          <Route path="/registration" element={<RegistrationPage/>}/>
-          <Route path="/match/:id" element={<MatchPage/>}/>
-          {
-            !userStore.isLoading && userStore.user?.role_code === "admin" &&
-              <Route path="/admin" element={<AdminLayout/>}>
-                <Route path="users" element={<UserAdminPage/>}/>
-                <Route path="users/:id" element={<UserEditPage/>}/>
-
-                <Route path="matches" element={<MatchAdminPage/>}/>
-                <Route path="matches/:id" element={<MatchEditPage />} />
-
-                <Route path="games" element={<GameAdminPage/>}/>
-                <Route path="/admin/games/:id" element={<GameEditPage />} />
-
-                <Route path="teams" element={<TeamAdminPage/>}/>
-                <Route path="teams/:id" element={<TeamEditPage />} />
-
-                <Route path="tournaments" element={<TournamentAdminPage/>}/>
-                <Route path="tournaments/:id" element={<TournamentEditPage />} />
-
-                <Route path="business-settings" element={<BusinessSettingsAdminPage/>}/>
-
-                <Route path="events" element={<EventAdminPage />} />
-              </Route>
-          }
-
-          {
-            !userStore.isLoading && userStore.isAuth &&
-            <Route path="/profile" element={<ProfileLayout/>}>
-              <Route index element={<ProfilePage/>}/>
-              <Route path="deposits" element={""}/>
-              <Route path="bets" element={<MyBetsPage/>}/>
-            </Route>
-          }
-        </Route>
-      </Routes>
-    </BrowserRouter>
+    <>
+      <div>
+        <a href="https://vite.dev" target="_blank">
+          <img src={viteLogo} className="logo" alt="Vite logo" />
+        </a>
+        <a href="https://react.dev" target="_blank">
+          <img src={reactLogo} className="logo react" alt="React logo" />
+        </a>
+      </div>
+      <h1>Vite + React</h1>
+      <div className="card">
+        <button onClick={() => setCount((count) => count + 1)}>
+          count is {count}
+        </button>
+        <p>
+          Edit <code>src/App.jsx</code> and save to test HMR
+        </p>
+      </div>
+      <p className="read-the-docs">
+        Click on the Vite and React logos to learn more
+      </p>
+    </>
   )
 }
 
-export default observer(App);
+export default App
