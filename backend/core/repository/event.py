@@ -43,8 +43,7 @@ class SQLAlchemyEventRepository(
                 joinedload(EventModel.match).joinedload(MatchModel.first_team).joinedload(EATeamModel.game),
                 joinedload(EventModel.match).joinedload(MatchModel.second_team).joinedload(EATeamModel.game),
                 joinedload(EventModel.map).joinedload(MapModel.match),
-                joinedload(EventModel.first_outcome),
-                joinedload(EventModel.second_outcome),
+                selectinload(EventModel.outcomes)
             )
         )
         result = await self._session.execute(stmt)
