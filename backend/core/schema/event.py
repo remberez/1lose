@@ -31,8 +31,7 @@ class EventReadSchema(EventSchema):
     id: int
     match_id: int
     map: MapReadSchema | None = None
-    # first_outcome: OutComeReadSchema
-    # second_outcome: OutComeReadSchema
+    outcomes: list[OutComeReadSchema]
     created_at: datetime
     updated_at: datetime
 

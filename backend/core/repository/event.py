@@ -2,7 +2,7 @@ from abc import ABC, abstractmethod
 from typing import Sequence, cast
 
 from sqlalchemy import select, insert
-from sqlalchemy.orm import joinedload
+from sqlalchemy.orm import joinedload, selectinload
 
 from core.models import EventModel, MatchModel, MapModel, TournamentModel, EATeamModel
 from core.models.event import OutComeModel
@@ -58,8 +58,7 @@ class SQLAlchemyEventRepository(
                 joinedload(EventModel.match).joinedload(MatchModel.first_team).joinedload(EATeamModel.game),
                 joinedload(EventModel.match).joinedload(MatchModel.second_team).joinedload(EATeamModel.game),
                 joinedload(EventModel.map).joinedload(MapModel.match),
-                joinedload(EventModel.first_outcome),
-                joinedload(EventModel.second_outcome),
+                selectinload(EventModel.outcomes),
             )
         )
 
