@@ -1,9 +1,9 @@
-from pydantic import BaseModel, Field
+from pydantic import BaseModel
 
 
 class MapSchema(BaseModel):
     match_id: int
-    score: list[int]
+    score: list[int] = [0, 0]
 
 
 class MapReadSchema(MapSchema):
