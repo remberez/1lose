@@ -23,8 +23,8 @@ async def event_list(
 
 @router.post("/", response_model=EventReadSchema)
 async def create_event(
-        service: CurrentAdminUser,
-        user: Annotated[UserReadSchema, Depends(get_current_active_verify_user)],
+        service: Annotated[EventService, Depends(event_service)],
+        user: CurrentAdminUser,
         event: EventCreateSchema,
 ):
     return await service.create(user.id, event)
@@ -50,8 +50,8 @@ async def update_event(
 
 @router.delete("/{event_id}")
 async def delete_event(
-        service: CurrentAdminUser,
+        service: Annotated[EventService, Depends(event_service)],
         event_id: int,
-        user: Annotated[UserReadSchema, Depends(get_current_active_verify_user)],
+        user: CurrentAdminUser,
 ):
     return await service.delete(event_id, user.id)
