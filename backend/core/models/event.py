@@ -12,6 +12,13 @@ if typing.TYPE_CHECKING:
     from core.models import BetModel
 
 
+class EventOutcomeModel(Base):
+    __tablename__ = "event_outcome"
+
+    event_id: Mapped[int] = mapped_column(ForeignKey("event.id", ondelete="CASCADE"), primary_key=True)
+    outcome_id: Mapped[int] = mapped_column(ForeignKey("outcome.id", ondelete="CASCADE"), primary_key=True)
+
+
 class OutComeModel(Base, IntegerIDMixin):
     __tablename__ = "outcome"
 
@@ -35,11 +42,4 @@ class EventModel(Base, IntegerIDMixin, DateCreatedUpdatedMixin, UpdatedByMixin):
     match_as_win_event: Mapped["MatchModel"] = relationship(back_populates="win_event",
                                                             foreign_keys="MatchModel.win_event_id",
                                                             uselist=False)
-    outcomes: Mapped[list["EventOutcomeModel"]] = relationship()
-
-
-class EventOutcomeModel(Base):
-    __tablename__ = "event_outcome"
-
-    event_id: Mapped[int] = mapped_column(ForeignKey("event.id", ondelete="CASCADE"), primary_key=True)
-    outcome_id: Mapped[int] = mapped_column(ForeignKey("outcome.id", ondelete="CASCADE"), primary_key=True)
+    outcomes: Mapped[list["OutComeModel"]] = relationship(secondary=EventOutcomeModel.__table__)
