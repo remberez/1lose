@@ -31,8 +31,8 @@ class EventReadSchema(EventSchema):
     id: int
     match_id: int
     map: MapReadSchema | None = None
-    first_outcome: OutComeReadSchema
-    second_outcome: OutComeReadSchema
+    # first_outcome: OutComeReadSchema
+    # second_outcome: OutComeReadSchema
     created_at: datetime
     updated_at: datetime
 
@@ -40,16 +40,14 @@ class EventReadSchema(EventSchema):
 class EventCreateSchema(EventSchema):
     match_id: int = Field(gt=0)
     map_id: int | None = Field(None, gt=0)
-    first_outcome: OutComeCreateSchema
-    second_outcome: OutComeCreateSchema
-    updated_by: int | None = Field(None, exclude=True)
+    outcomes: list[OutComeCreateSchema]
 
 
 class EventUpdateSchema(EventSchema):
     match_id: int | None = Field(None, gt=0)
     map_id: int | None = Field(None, gt=0)
-    first_outcome_id: int | None = Field(None, gt=0)
-    second_outcome_id: int | None = Field(None, gt=0)
+    # first_outcome_id: int | None = Field(None, gt=0)
+    # second_outcome_id: int | None = Field(None, gt=0)
 
 
 class EventFilterSchema(BaseModel):
