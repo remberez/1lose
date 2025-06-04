@@ -1,0 +1,7 @@
+@import url('https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined');
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap');
+@import "tailwindcss";
+
+body, .font-display {
+  font-family: 'Montserrat', 'Arial', sans-serif;
+}
