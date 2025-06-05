@@ -44,7 +44,7 @@ class MatchService:
 
     @with_uow
     async def list(self, filters: MathFilterSchema, uow: UnitOfWork):
-        return await uow.matches.list(is_live=filters.is_live)
+        return await uow.matches.list(is_live=filters.is_live, game_id=filters.game_id)
 
     @with_uow
     async def get(self, match_id: int, uow: UnitOfWork):

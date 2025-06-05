@@ -74,3 +74,4 @@ class MatchUpdateSchema(MatchSchema):
 
 class MathFilterSchema(BaseModel):
     is_live: bool | None = None
+    game_id: int | None = None
