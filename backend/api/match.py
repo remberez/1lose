@@ -33,8 +33,8 @@ async def create_match(
 @router.patch("/{match_id}", response_model=MatchReadSchema)
 async def update_match(
     match_id: int,
-    match_data: CurrentAdminModeratorUser,
-    user: Annotated[UserReadSchema, Depends(get_current_active_verify_user)],
+    match_data: MatchUpdateSchema,
+    user: CurrentAdminModeratorUser,
     service: Annotated[MatchService, Depends(match_service)],
 ):
     return await service.update(user.id, match_id, match_data)
