@@ -104,7 +104,7 @@ async def get_admin_user(
 async def get_admin_or_moderator(
         user: CurrentUser,
 ) -> UserReadSchema:
-    if user.role_code not in (UserRoleCodes.ADMIN, UserRoleCodes.USER):
+    if user.role_code not in (UserRoleCodes.ADMIN.value, UserRoleCodes.USER.value):
         raise NotFoundError("Not found")
     return user
 
