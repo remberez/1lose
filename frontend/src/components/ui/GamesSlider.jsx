@@ -22,11 +22,10 @@ const GamesSlider = observer(() => {
       <Swiper
         modules={[Autoplay]}
         autoplay={{ delay: 4000, disableOnInteraction: false }}
-        slidesPerView={2}
-        spaceBetween={24}
+        slidesPerView={7}
         breakpoints={{
-          640: { slidesPerView: 3 },
-          1024: { slidesPerView: 4 },
+          640: { slidesPerView: 6 },
+          1024: { slidesPerView: 7 },
         }}
         loop={gamesStore.games.length > 4}
         className="w-full"
