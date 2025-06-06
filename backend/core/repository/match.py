@@ -1,7 +1,7 @@
 from abc import ABC
 from typing import Sequence
 
-from sqlalchemy import select
+from sqlalchemy import select, and_, or_
 from sqlalchemy.orm import joinedload, selectinload
 from typing_extensions import TypeVar
 
@@ -12,6 +12,7 @@ from core.repository.sqlalchemy import (
     SQLAlchemyAbstractReadRepository,
 )
 from core.models.match import MatchModel
+import datetime
 
 MatchT = TypeVar("MatchT")
 
@@ -59,9 +60,11 @@ class SQLAlchemyMatchRepository(
         )
 
         if is_live is not None:
+            filter_is_live = and_(MatchModel.date_end.is_(None), MatchModel.date_start <= datetime.datetime.now())
+            filter_is_not_live = or_(MatchModel.date_end.is_not(None), MatchModel.date_start > datetime.datetime.now())
+            
             stmt = stmt.where(
-                MatchModel.date_end.is_(None) if is_live
-                else MatchModel.date_end.is_not(None)
+                filter_is_live if is_live else filter_is_not_live
             )
 
         if game_id is not None:
