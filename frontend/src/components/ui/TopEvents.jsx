@@ -4,12 +4,14 @@ import { gamesStore } from '../../stores/games';
 import { MatchesService } from '../../services/matches';
 import Button from './Button';
 import { Link } from 'react-router-dom';
+import { GoDotFill } from "react-icons/go";
 
 const TopEvents = observer(() => {
   const [selectedGame, setSelectedGame] = useState(null);
   const [events, setEvents] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [showLive, setShowLive] = useState(false);
 
   useEffect(() => {
     gamesStore.fetchGames();
@@ -22,22 +24,37 @@ const TopEvents = observer(() => {
     }
   }, [gamesStore.games]);
 
-  // Загрузка событий при смене выбранной игры
+  // Загрузка событий при смене выбранной игры или фильтра Live
   useEffect(() => {
     if (!selectedGame) return;
     setLoading(true);
     setError(null);
-    MatchesService.list({ game_id: selectedGame })
+    const filters = { game_id: selectedGame };
+    if (showLive) filters.is_live = true;
+    MatchesService.list(filters)
       .then(data => {
         setEvents(Array.isArray(data) ? data : []);
       })
       .catch(() => setError('Ошибка загрузки событий'))
       .finally(() => setLoading(false));
-  }, [selectedGame]);
+  }, [selectedGame, showLive]);
 
   return (
     <div className="container mx-auto px-4 my-8">
-      <h2 className="text-2xl font-bold mb-4 text-black">Топ события</h2>
+      <div className="flex items-center justify-start gap-x-4 mb-6">
+        <h2 className="text-2xl font-bold text-black">Топ события</h2>
+        <button
+          className={`flex items-center gap-1 justify-start border border-gray-200 rounded-lg px-3 py-1 hover:bg-gray-100 transition-colors ${showLive ? 'bg-red-100 border-red-400' : ''}`}
+          onClick={() => setShowLive(live => !live)}
+        >
+          <span>
+            <GoDotFill color='red'/>
+          </span>
+          <span className="text-black font-semibold text-sm">
+            Live
+          </span>
+        </button>
+      </div>
       {/* Фильтрация по игре */}
       <div className="flex flex-wrap gap-2 mb-6">
         {gamesStore.games.map(game => (
@@ -74,15 +91,39 @@ const TopEvents = observer(() => {
                   <span className="text-xs text-blue-400 truncate">{event.tournament?.name || ''}</span>
                   <span className="ml-auto text-gray-400 cursor-pointer">★</span>
                 </div>
-                {/* Команды и время */}
+                {/* Команды и время/Live */}
                 <div className="flex items-center justify-between px-3 py-2">
                   <div className="flex flex-col items-center w-16">
                     <img src={event.first_team?.icon_path} alt={event.first_team?.name} className="w-10 h-10 rounded-full bg-white object-contain mb-1" />
                     <span className="text-xs font-semibold text-blue-900 text-center truncate w-full">{event.first_team?.name}</span>
                   </div>
                   <div className="flex flex-col items-center w-24">
-                    <span className="text-lg font-bold text-blue-900 mb-1">{new Date(event.date_start).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
-                    <span className="text-xs text-blue-500">{new Date(event.date_start).toLocaleDateString() === new Date().toLocaleDateString() ? 'Сегодня' : new Date(event.date_start).toLocaleDateString()}</span>
+                    {(() => {
+                      // Проверка: если сейчас между date_start и date_end (или если date_end нет, то date_start < now < date_start+3ч)
+                      const now = new Date();
+                      const start = event.date_start ? new Date(event.date_start) : null;
+                      const end = event.date_end ? new Date(event.date_end) : false;
+                      const isLive = start && !end && now >= start && now >= start;
+                      
+                      if (isLive && !end) {
+                        return <>
+                          <span className="text-xs font-bold text-red-600 mb-1 flex items-center gap-1"><GoDotFill className="inline-block" color="red" size={14}/> LIVE</span>
+                          <span className="text-lg font-bold text-blue-900">{Array.isArray(event.score) && event.score.length === 2 ? `${event.score[0] ?? 0} : ${event.score[1] ?? 0}` : '-'}</span>
+                        </>;
+                      } else if (end) {
+                        return (
+                          <>
+                            <span className="text-xs font-bold text-gray-600 mb-1">Закончен</span>
+                            <span className="text-lg font-bold text-blue-900">{Array.isArray(event.score) && event.score.length === 2 ? `${event.score[0] ?? 0} : ${event.score[1] ?? 0}` : '-'}</span>
+                          </>
+                        );
+                      }
+                      return <>
+                        <span className="text-lg font-bold text-blue-900 mb-1">{start ? start.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : '-'}</span>
+                        <span className="text-xs text-blue-500">{start && start.toLocaleDateString() === now.toLocaleDateString() ? 'Сегодня' : start ? start.toLocaleDateString() : '-'}</span>
+                      </>;
+                      
+                    })()}
                   </div>
                   <div className="flex flex-col items-center w-16">
                     <img src={event.second_team?.icon_path} alt={event.second_team?.name} className="w-10 h-10 rounded-full bg-white object-contain mb-1" />
