@@ -61,18 +61,22 @@ api.interceptors.response.use(
       originalRequest._retry = true;
       isRefreshing = true;
       try {
-        const { data } = await axios.post('/api/auth/refresh', {}, {
-          headers: { 'Authorization': 'Bearer ' + getRefreshToken() },
+        const auth = "Bearer " + getRefreshToken();
+        const response = await axios.post('http://localhost:8000/api/auth/refresh', {}, {
+          headers: { 'Authorization': auth },
         });
-        setTokens(data);
-        api.defaults.headers.common['Authorization'] = 'Bearer ' + data.access_token;
-        processQueue(null, data.access_token);
+        setTokens({access_token: response.data.access_token});
+        api.defaults.headers.common['Authorization'] = 'Bearer ' + response.data.access_token;
+        processQueue(null, response.data.access_token);
         return api(originalRequest);
       } catch (err) {
         processQueue(err, null);
-        localStorage.removeItem('access_token');
-        localStorage.removeItem('refresh_token');
-        // Можно добавить редирект на /login
+        // Удаляем токены только если refresh тоже невалиден (например, 401 на /refresh)
+        if (err.response && err.response.status === 401) {
+          localStorage.removeItem('access_token');
+          localStorage.removeItem('refresh_token');
+          // Можно добавить редирект на /login
+        }
         return Promise.reject(err);
       } finally {
         isRefreshing = false;
