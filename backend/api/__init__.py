@@ -10,6 +10,7 @@ from .event import router as event_router
 from .bet import router as bet_router
 from .business_settings import router as business_settings_router
 from .users import router as user_router
+from .event_type import router as event_type_router
 
 router = APIRouter(prefix=settings.api.prefix)
 router.include_router(router=user_router)
@@ -22,3 +23,4 @@ router.include_router(router=event_router)
 router.include_router(router=bet_router)
 router.include_router(router=business_settings_router)
 router.include_router(router=auth_router)
+router.include_router(router=event_type_router)
