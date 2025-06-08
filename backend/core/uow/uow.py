@@ -5,6 +5,7 @@ from core.repository.bet import AbstractBetRepository
 from core.repository.business_settings import AbstractBusinessSettingsRepository
 from core.repository.event import AbstractEventRepository
 from core.repository.event_outcome import AbstractEventOutcomeRepository
+from core.repository.event_type import AbstractEventTypeRepository
 from core.repository.game import AbstractGameRepository
 from core.repository.map import AbstractMapRepository
 from core.repository.match import AbstractMatchRepository
@@ -26,6 +27,7 @@ class UnitOfWork(ABC):
     users: AbstractUserRepository | None
     business_settings: AbstractBusinessSettingsRepository | None
     event_outcome: AbstractEventOutcomeRepository | None
+    event_type: AbstractEventTypeRepository | None = None
 
     @abstractmethod
     def __init__(self):

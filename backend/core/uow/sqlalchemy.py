@@ -3,7 +3,7 @@ from core.models import (
     MapModel, MatchModel, EATeamModel,
     TournamentModel, UserModel, BusinessSettings,
 )
-from core.models.event import OutComeModel, EventOutcomeModel
+from core.models.event import OutComeModel, EventOutcomeModel, EventTypeModel
 from core.repository.bet import AbstractBetRepository, SQLAlchemyBetRepository
 from core.repository.event import AbstractEventRepository, SQLAlchemyEventRepository
 from core.repository.game import AbstractGameRepository, SQLAlchemyGameRepository
@@ -16,6 +16,7 @@ from core.repository.user import AbstractUserRepository, UserSQLAlchemyRepositor
 from .uow import UnitOfWork
 from ..repository.business_settings import SQLAlchemyBusinessSettingsRepository
 from ..repository.event_outcome import AbstractEventOutcomeRepository, SQLAlchemyEventOutcomeRepository
+from ..repository.event_type import SQLAlchemyEventTypeRepository, AbstractEventTypeRepository
 
 
 class SqlAlchemyUnitOfWork(UnitOfWork):
@@ -33,6 +34,7 @@ class SqlAlchemyUnitOfWork(UnitOfWork):
         self.tournaments: AbstractTournamentRepository | None = None
         self.users: AbstractUserRepository | None = None
         self.event_outcome: AbstractEventOutcomeRepository | None = None
+        self.event_type: AbstractEventTypeRepository | None = None
 
     async def __aenter__(self):
         self.session = self.session_factory()
@@ -48,6 +50,7 @@ class SqlAlchemyUnitOfWork(UnitOfWork):
         self.users = UserSQLAlchemyRepository(session=self.session, model=UserModel)
         self.business_settings = SQLAlchemyBusinessSettingsRepository(session=self.session, model=BusinessSettings)
         self.event_outcome = SQLAlchemyEventOutcomeRepository(session=self.session, model=EventOutcomeModel)
+        self.event_type = SQLAlchemyEventTypeRepository(session=self.session, model=EventTypeModel)
 
         return self
 
