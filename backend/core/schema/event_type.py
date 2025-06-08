@@ -14,7 +14,7 @@ class EventTypeCreateSchema(EventTypeSchema):
 
 
 class EventTypeReadSchema(EventTypeSchema):
-    game: list["GameReadSchema"]
+    game: GameReadSchema
 
 
 class EvenTypeUpdateSchema(EventTypeSchema):
