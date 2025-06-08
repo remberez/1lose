@@ -3,6 +3,7 @@ import typing
 from sqlalchemy import ForeignKey, String, Numeric
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
+from core.models import GameModel
 from .base import Base, IntegerIDMixin, DateCreatedUpdatedMixin, UpdatedByMixin
 
 if typing.TYPE_CHECKING:
@@ -17,8 +18,10 @@ class EventTypeModel(Base):
 
     code: Mapped[str] = mapped_column(String(32), primary_key=True)
     name: Mapped[str] = mapped_column(String(64))
+    game_id: Mapped[int] = mapped_column(ForeignKey("game.id", ondelete="CASCADE"))
 
     events: Mapped[list["EventModel"]] = relationship(back_populates="type")
+    game: Mapped["GameModel"] = relationship()
 
 
 class EventOutcomeModel(Base):
